@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class PlayerMovementRB : MonoBehaviour {
 
+    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN }
+
+    [SerializeField]
+    private PlayerState _movementState = PlayerState.IDLE; // Init player state to standing idle
+    public PlayerState movementState { get { return _movementState;  } }
+
     //Assingables
     public Transform playerCam;
     public Transform orientation;
@@ -46,6 +52,22 @@ public class PlayerMovementRB : MonoBehaviour {
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
 
+    //Wallrunning
+    public LayerMask wallLayer;
+    public Transform wallContactCheck;
+    public float wallContactCheckRadius = 0.51f;
+    [SerializeField]
+    private Vector3 _meanSurfaceImpactNormal;
+    public Vector3 meanSurfaceImpactNormal { get { return _meanSurfaceImpactNormal; } }
+    [SerializeField]
+    private bool _isWallRight;
+    public bool isWallRight {  get { return _isWallRight; } }
+    /* Threshold that defines how small y component of the surface impact normal can be for wall running to be possible 
+       i.e. impact normal must be mostly horizontal, meaning walls are vertical, makes sense right? */
+    public float impactNormalYThreshold = 0.0001f;
+    public float wallRunThresholdSpeed = 12f; //Current max walk speed is ~20 units/s, player slows down significantly when colliding with wall
+    public float wallRunRaycastLength = 1f; //Making this longer will allow the player to wall run around curved walls
+
     void Awake() {
         rb = GetComponent<Rigidbody>();
     }
@@ -59,6 +81,8 @@ public class PlayerMovementRB : MonoBehaviour {
     
     private void FixedUpdate() {
         Movement();
+        //print(Vector3.Project(rb.velocity, orientation.transform.forward));
+        //print(orientation.transform.InverseTransformDirection(rb.velocity));
     }
 
     private void Update() {
@@ -127,20 +151,36 @@ public class PlayerMovementRB : MonoBehaviour {
         if (y < 0 && yMag < -maxSpeed) y = 0;
 
         //Some multipliers
-        float multiplier = 1f, multiplierV = 1f;
+        float multiplier = 1f, multiplierV = 1f, multiplierWallRun = 1f;
         
-        // Movement in air
+        //Movement in air
         if (!grounded) {
             multiplier = 0.5f;
             multiplierV = 0.5f;
         }
         
-        // Movement while sliding
+        //Movement while sliding
         if (grounded && crouching) multiplierV = 0f;
+
+        /* Wall run checks */
+        if (_movementState == PlayerState.WALL_RUN)
+        {
+            float rightOrLeft = 1f;         //If 1, wall is right. If -1, wall is left
+            if (!_isWallRight) { rightOrLeft = -1f; }
+            if (Physics.Raycast(orientation.transform.position, orientation.transform.right * rightOrLeft, wallRunRaycastLength))    //Check if player is still making contact with wall
+            {
+                multiplierWallRun = 0f;     //Cancel out left/right movement
+            }
+            else
+            {
+                _movementState = PlayerState.FALL;
+                rb.useGravity = true;
+            }
+        }
 
         //Apply forces to move player
         rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * multiplier * multiplierV);
-        rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier);
+        rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier * multiplierWallRun);
     }
 
     private void Jump() {
@@ -266,5 +306,42 @@ public class PlayerMovementRB : MonoBehaviour {
     private void StopGrounded() {
         grounded = false;
     }
-    
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //First check if we are colliding against a wall
+        if (Physics.CheckSphere(wallContactCheck.position, wallContactCheckRadius, wallLayer) && collision.collider.tag == "Wall")
+        {
+            //Calculate the mean surface impact normal
+            Vector3 meanSurfaceImpactNormal = new Vector3();
+
+            foreach (ContactPoint c in collision.contacts)
+            {
+                meanSurfaceImpactNormal += c.normal;
+            }
+
+            meanSurfaceImpactNormal /= collision.contacts.Length; //Calculate the average impact normal
+            _meanSurfaceImpactNormal = meanSurfaceImpactNormal.normalized; //Get the re-normalized value, store in variable so it can be viewable for debugging
+            float angleOfApproach = Mathf.Acos(Vector3.Dot(meanSurfaceImpactNormal.normalized, orientation.transform.forward)) * Mathf.Rad2Deg; //The angle at which the player contacts the wall
+
+            print(meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold);
+            print(angleOfApproach);
+            print(orientation.transform.InverseTransformDirection(rb.velocity));
+            
+            if (meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold && //If the surface impact normal is mostly horizontal i.e. low y component 
+                angleOfApproach >= 45f && angleOfApproach <= 160f &&                                     //AND the angle between orientation.transform.forward and meanSurfaceImpactNormal is within a threshold
+                orientation.transform.InverseTransformDirection(rb.velocity).z >= wallRunThresholdSpeed) //AND the player rigid body is moving forward fast enough //NOTE: This line gets the rigid body's velocity in local coordinate space. 
+                                                                                                         //                                                                We may need to consider cases where the player isn't just doing forward input,
+                                                                                                         //                                                                the character may be strafing, meaning the character's speed is high enough but
+                                                                                                         //                                                                it's split between forward and horizontal components (probably don't want to 
+                                                                                                         //                                                                allow player to wall run from strafing though)
+            {
+                print("Wall running!");                     //For debugging
+                _movementState = PlayerState.WALL_RUN;      //Set state to wall running
+                rb.useGravity = false;                      //Disable gravity
+                _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallRunRaycastLength);    // Determine to which side of the player the wall is
+                //TODO: Apply spped boost multiplier to use while in wall run state
+            }
+        }
+    }
 }
