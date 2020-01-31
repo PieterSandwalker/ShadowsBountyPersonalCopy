@@ -140,8 +140,8 @@ public class PlayerMovementRB : MonoBehaviour {
         if (_movementState != PlayerState.WALL_RUN)
             CounterMovement(x, y, mag);
         
-        //If holding jump && ready to jump, then jump (but not while wall running)
-        if (readyToJump && jumping && _movementState != PlayerState.WALL_RUN) Jump(); //TODO: Need to override jump for wallrun
+        //If holding jump && ready to jump, then jump
+        if ((readyToJump || _movementState == PlayerState.WALL_RUN) && jumping) Jump(); //TODO: Need to override jump for wallrun
 
         //Set max speed
         float maxSpeed = this.maxSpeed;
@@ -180,7 +180,7 @@ public class PlayerMovementRB : MonoBehaviour {
             // Check if the player is still contacting the wall by raycasting in the direction of the wall
             bool isContactingWall = Physics.Raycast(orientation.transform.position, orientation.transform.right * rightOrLeft, wallRunRaycastLength);
             //Check if the player is moving fast enough by checking the z component of their velocity (in local space)
-            bool isMovingFastEnough = orientation.transform.InverseTransformDirection(rb.velocity).z >= stopWallrunThresholdSpeed;
+            bool isMovingFastEnough = true; //orientation.transform.InverseTransformDirection(rb.velocity).z >= stopWallrunThresholdSpeed;
 
             if (isContactingWall && isMovingFastEnough)
             {
@@ -213,8 +213,6 @@ public class PlayerMovementRB : MonoBehaviour {
                 Vector3 vel = rb.velocity;
                 rb.velocity = new Vector3(vel.x, 0, vel.z);
             }
-
-            Debug.LogWarning("Wallrunning");
         }
         else
         {
@@ -226,21 +224,32 @@ public class PlayerMovementRB : MonoBehaviour {
         }
     }
 
+    //TODO: Refactor this so there isn't so much repeated code
     private void Jump() {
-        if (grounded && readyToJump) {
+        if (readyToJump)
+        {
             readyToJump = false;
 
-            //Add jump forces
-            rb.AddForce(Vector2.up * jumpForce * 1.5f);
-            rb.AddForce(normalVector * jumpForce * 0.5f);
-            
+            if (grounded)
+            {
+                //Add jump forces
+                rb.AddForce(Vector2.up * jumpForce * 1.5f);
+                rb.AddForce(normalVector * jumpForce * 0.5f);
+            }
+            else if (_movementState == PlayerState.WALL_RUN)
+            {
+                //Add jump forces
+                Vector3 jumpOffForce = (Vector3.up * jumpForce * 1.2f) + (_meanSurfaceImpactNormal * jumpForce * 3.5f); //TODO: Tweak this so it scales more with movement speed
+                rb.AddForce(jumpOffForce);
+            }
+
             //If jumping while falling, reset y velocity.
             Vector3 vel = rb.velocity;
             if (rb.velocity.y < 0.5f)
                 rb.velocity = new Vector3(vel.x, 0, vel.z);
-            else if (rb.velocity.y > 0) 
+            else if (rb.velocity.y > 0)
                 rb.velocity = new Vector3(vel.x, vel.y / 2, vel.z);
-            
+
             Invoke(nameof(ResetJump), jumpCooldown);
         }
     }
@@ -381,11 +390,9 @@ public class PlayerMovementRB : MonoBehaviour {
             _meanSurfaceImpactNormal = meanSurfaceImpactNormal.normalized; //Get the re-normalized value, store in variable so it can be viewable for debugging
             float angleOfApproach = Mathf.Acos(Vector3.Dot(meanSurfaceImpactNormal.normalized, orientation.transform.forward)) * Mathf.Rad2Deg; //The angle at which the player contacts the wall
 
-            /*
             print(meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold);
             print(angleOfApproach);
             print(orientation.transform.InverseTransformDirection(rb.velocity));
-            */
             
             if (meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold && //If the surface impact normal is mostly horizontal i.e. low y component 
                 angleOfApproach >= 45f && angleOfApproach <= 160f &&                                     //AND the angle between orientation.transform.forward and meanSurfaceImpactNormal is within a threshold
@@ -395,6 +402,7 @@ public class PlayerMovementRB : MonoBehaviour {
                                                                                                          //                                                                it's split between forward and horizontal components (probably don't want to 
                                                                                                          //                                                                allow player to wall run from strafing though)
             {
+                print("Start wallrun");
                 _movementState = PlayerState.WALL_RUN; //Set state to wall running
                 rb.useGravity = false; //Disable gravity
                 wallrunTime = 0; //Reset timer
