@@ -53,28 +53,30 @@ public class PlayerMovementRB : MonoBehaviour {
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
 
-    //TODO: Clean up these parameters, put them in a logical order (e.g. have parameters that are set on top, read only on bottom)
-    //Wallrunning
-    public float wallrunCameraAngle = 15f;
+    /* Wallrunning */
+    //Can edit from script
     public LayerMask wallLayer;
     public Transform wallContactCheck;
+    public float wallrunCameraAngle = 15f;
     public float wallContactCheckRadius = 0.51f;
+    public float wallrunRaycastLength = 1f; //Making this longer will allow the player to wall run around curved walls
+    public float impactNormalYThreshold = 0.0001f; //Threshold that defines how small y component of the surface impact normal can be for wall running to be possible 
+    public float startWallrunThreshold = 12f; //Current max walk speed is ~20 units/s, player slows down significantly when colliding with wall
+    public float stopWallrunThresholdSpeed = 12f; //The speed that the player must stay above to initiate or continue wallrunning
+    public float stopVerticalMovementThreshold = 1f; //How much vertical velocity the player can have while wallrunning before it gets zeroed out
+    public float wallrunSpeedBoost = 2f;
+    public float wallrunMaxSpeed = 35f;
+    public float resistanceFactor = 100f; //Affects how quickly the player loses momentum while wall running. Player slows down faster when this is larger. At 0 player can wallrun indefinitely
+    //Read only from script
     [SerializeField]
     private Vector3 _meanSurfaceImpactNormal;
     public Vector3 meanSurfaceImpactNormal { get { return _meanSurfaceImpactNormal; } }
     [SerializeField]
     private bool _isWallRight;
-    public bool isWallRight {  get { return _isWallRight; } }
-    /* Threshold that defines how small y component of the surface impact normal can be for wall running to be possible 
-       i.e. impact normal must be mostly horizontal, meaning walls are vertical, makes sense right? */
-    public float impactNormalYThreshold = 0.0001f;
-    public float startWallrunThreshold = 12f; //Current max walk speed is ~20 units/s, player slows down significantly when colliding with wall
-    public float wallRunRaycastLength = 1f; //Making this longer will allow the player to wall run around curved walls
-    public float stopWallrunThresholdSpeed = 12f; //The speed that the player must stay above to initiate or continue wallrunning
-    public float stopVerticalMovementThreshold = 1f; //How much vertical velocity the player can have while wallrunning before it gets zeroed out
-    public int wallrunTime = 0; //How many frames the player has been wallrunning
-    public float resistanceFactor = 100f; //Affects how quickly the player loses momentum while wall running. Player slows down faster when this is larger. At 0 player can wallrun indefinitely
-
+    public bool isWallRight { get { return _isWallRight; } }
+    [SerializeField]
+    private int _wallrunTime = 0; //How many frames the player has been wallrunning
+    public int wallrunTime { get { return _wallrunTime;  } }
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
@@ -151,8 +153,9 @@ public class PlayerMovementRB : MonoBehaviour {
             rb.AddForce(Vector3.down * Time.deltaTime * 3000);
             return;
         }
-        
-        //TODO: May need to modify this to allow faster speeds while wallrunning
+
+        if (_movementState == PlayerState.WALL_RUN) maxSpeed = wallrunMaxSpeed;
+
         //If speed is larger than maxspeed, cancel out the input so you don't go over max speed
         if (x > 0 && xMag > maxSpeed) x = 0;
         if (x < 0 && xMag < -maxSpeed) x = 0;
@@ -178,18 +181,21 @@ public class PlayerMovementRB : MonoBehaviour {
             if (!_isWallRight) { rightOrLeft = -1f; }
 
             // Check if the player is still contacting the wall by raycasting in the direction of the wall
-            bool isContactingWall = Physics.Raycast(orientation.transform.position, orientation.transform.right * rightOrLeft, wallRunRaycastLength);
+            bool isContactingWall = Physics.Raycast(orientation.transform.position, orientation.transform.right * rightOrLeft, wallrunRaycastLength);
             //Check if the player is moving fast enough by checking the z component of their velocity (in local space)
-            bool isMovingFastEnough = true; //orientation.transform.InverseTransformDirection(rb.velocity).z >= stopWallrunThresholdSpeed;
+            //bool isMovingFastEnough = orientation.transform.InverseTransformDirection(rb.velocity).z >= stopWallrunThresholdSpeed;
+            bool isMovingFastEnough = rb.velocity.magnitude >= stopWallrunThresholdSpeed; // Necessary for allowing smooth transition for wallrunning, jumping to another wall and continuing wallrunning
 
-            if (isContactingWall && isMovingFastEnough)
+            if (isContactingWall && isMovingFastEnough && !grounded)
             {
                 //Apply a gradually increasing resistance force to slow player movement while wallrunning
                 Vector3 proj = orientation.transform.forward - Vector3.Dot(orientation.transform.forward, _meanSurfaceImpactNormal) * _meanSurfaceImpactNormal;
-                Vector3 resistanceForce = proj * wallrunTime * resistanceFactor * Time.deltaTime * -1f;
+                Vector3 horizontalResistance = proj * _wallrunTime * resistanceFactor * Time.deltaTime * -1f;
+                Vector3 verticalResistance = Vector3.down * _wallrunTime * resistanceFactor * Time.deltaTime * 0.15f;
+                Vector3 resistanceForce = horizontalResistance + verticalResistance;
                 rb.AddForce(resistanceForce);
 
-                wallrunTime++; //Increment wallrun timer 
+                _wallrunTime++; //Increment wallrun timer 
             }
             else
             {
@@ -198,13 +204,12 @@ public class PlayerMovementRB : MonoBehaviour {
             }
         }
 
-        //TODO: Might not need to handle wall running as a special case for applying forces
-        //TODO: Can probably move everything in this if block into the above if block to clean things up
+        // Apply movement forces based on state
         if (_movementState == PlayerState.WALL_RUN)
         {
             // Direction to apply force in is the projection of the rigid body's forward vector onto the contact plane of the wall
             Vector3 proj = orientation.transform.forward - Vector3.Dot(orientation.transform.forward, _meanSurfaceImpactNormal) * _meanSurfaceImpactNormal;
-            Vector3 wallrunForce = proj * y * moveSpeed * Time.deltaTime;
+            Vector3 wallrunForce = proj * y * moveSpeed * wallrunSpeedBoost * Time.deltaTime;
             rb.AddForce(wallrunForce);
 
             //Counter unwanted vertical (upward) movement
@@ -239,7 +244,7 @@ public class PlayerMovementRB : MonoBehaviour {
             else if (_movementState == PlayerState.WALL_RUN)
             {
                 //Add jump forces
-                Vector3 jumpOffForce = (Vector3.up * jumpForce * 1.2f) + (_meanSurfaceImpactNormal * jumpForce * 3.5f); //TODO: Tweak this so it scales more with movement speed
+                Vector3 jumpOffForce = (Vector3.up * jumpForce * 1.5f) + (_meanSurfaceImpactNormal * jumpForce * 3.5f); //TODO: Tweak this so it scales more with movement speed
                 rb.AddForce(jumpOffForce);
             }
 
@@ -393,6 +398,8 @@ public class PlayerMovementRB : MonoBehaviour {
             print(meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold);
             print(angleOfApproach);
             print(orientation.transform.InverseTransformDirection(rb.velocity));
+
+            //TODO: Rather than checking actual numerical speed, can probably just check the state that the player is in
             
             if (meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold && //If the surface impact normal is mostly horizontal i.e. low y component 
                 angleOfApproach >= 45f && angleOfApproach <= 160f &&                                     //AND the angle between orientation.transform.forward and meanSurfaceImpactNormal is within a threshold
@@ -405,8 +412,8 @@ public class PlayerMovementRB : MonoBehaviour {
                 print("Start wallrun");
                 _movementState = PlayerState.WALL_RUN; //Set state to wall running
                 rb.useGravity = false; //Disable gravity
-                wallrunTime = 0; //Reset timer
-                _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallRunRaycastLength); // Determine to which side of the player the wall is
+                _wallrunTime = 0; //Reset timer
+                _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallrunRaycastLength); // Determine to which side of the player the wall is
             }
         }
     }
