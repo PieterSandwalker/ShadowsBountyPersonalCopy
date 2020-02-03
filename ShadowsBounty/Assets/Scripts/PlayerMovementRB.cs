@@ -11,6 +11,10 @@ public class PlayerMovementRB : MonoBehaviour {
     private PlayerState _movementState = PlayerState.IDLE; // Init player state to standing idle
     public PlayerState movementState { get { return _movementState;  } }
 
+    //Keycodes
+    public KeyCode crouchKey = KeyCode.C;
+    public KeyCode sprintKey = KeyCode.LeftShift;
+
     //Assingables
     public Transform playerCam;
     public Transform orientation;
@@ -27,6 +31,10 @@ public class PlayerMovementRB : MonoBehaviour {
     //Movement
     public float moveSpeed = 4500;
     public float maxSpeed = 20;
+    public float sprintMultipler = 2f;
+    public float crouchMultiplier = 0.66f;
+    public float slideMultiplier = 1.5f;
+    public float slideToCrouchThreshold = 15f;
     public bool grounded;
     public LayerMask whatIsGround;
     
@@ -36,6 +44,7 @@ public class PlayerMovementRB : MonoBehaviour {
 
     //Crouch & Slide
     private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
+    private Vector3 slideScale = new Vector3(1, 0.25f, 1);
     private Vector3 playerScale;
     public float slideForce = 400;
     public float slideCounterMovement = 0.2f;
@@ -47,8 +56,8 @@ public class PlayerMovementRB : MonoBehaviour {
     
     //Input
     float x, y;
-    bool jumping, sprinting, crouching;
-    
+    bool jumping, sprinting, crouching, sliding;
+
     //Sliding
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
@@ -105,35 +114,116 @@ public class PlayerMovementRB : MonoBehaviour {
         x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical");
         jumping = Input.GetButton("Jump");
-        crouching = Input.GetKey(KeyCode.LeftControl);
-      
+        crouching = Input.GetKey(crouchKey);
+        sprinting = Input.GetKey(sprintKey);
+        //Sprinting
+        if (Input.GetKeyDown(sprintKey))
+        {
+            if (_movementState == PlayerState.WALK)
+                StartSprint();
+        }
+        if (Input.GetKeyUp(sprintKey))
+        {
+            if (_movementState == PlayerState.RUN)
+                StopSprint();
+        }
+
         //Crouching
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(crouchKey))
             StartCrouch();
-        if (Input.GetKeyUp(KeyCode.LeftControl))
+        if (Input.GetKeyUp(crouchKey))
             StopCrouch();
     }
 
-    private void StartCrouch() {
+    private void StartSprint()
+    {
+        moveSpeed *= sprintMultipler;
+        maxSpeed *= sprintMultipler;
+        _movementState = PlayerState.RUN;
+    }
+
+    private void StopSprint()
+    {
+        moveSpeed /= sprintMultipler;
+        maxSpeed /= sprintMultipler;
+        _movementState = PlayerState.WALK;
+    }
+    private void StopSlide()
+    {
+        maxSpeed /= slideMultiplier;
+        moveSpeed /= sprintMultipler;
+        maxSpeed /= sprintMultipler;
+        _movementState = PlayerState.CROUCH_WALK;
+        moveSpeed *= crouchMultiplier;
+        maxSpeed *= crouchMultiplier;
+        transform.localScale = crouchScale;
+        transform.position = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
+    }
+
+    private void StartCrouch()
+    {
         transform.localScale = crouchScale;
         transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
-        if (rb.velocity.magnitude > 0.5f) {
-            if (grounded) {
-                rb.AddForce(orientation.transform.forward * slideForce);
+        PlayerState prevState = _movementState;
+        _movementState = PlayerState.CROUCH_IDLE;
+        moveSpeed *= crouchMultiplier;
+        maxSpeed *= crouchMultiplier;
+        sliding = false;
+        if (prevState == PlayerState.RUN)
+        {
+            if (rb.velocity.magnitude > 0.5f)
+            {
+                if (grounded)
+                {
+                    transform.localScale = slideScale;
+                    transform.position = new Vector3(transform.position.x, transform.position.y - 0.25f, transform.position.z);
+                    rb.AddForce(orientation.transform.forward * slideForce);
+                    _movementState = PlayerState.SLIDE;
+                    moveSpeed /= crouchMultiplier;
+                    maxSpeed /= crouchMultiplier;
+                    maxSpeed *= slideMultiplier;
+                    sliding = true;
+                    sprinting = false;
+                }
             }
         }
     }
 
-    private void StopCrouch() {
+    private void StopCrouch()
+    {
+        if (_movementState == PlayerState.SLIDE) StopSlide();
         transform.localScale = playerScale;
         transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+        moveSpeed /= crouchMultiplier;
+        maxSpeed /= crouchMultiplier;
+        _movementState = PlayerState.IDLE;
     }
 
     private void Movement() {
         //Extra gravity (only apply when not wallrunning)
         if (_movementState != PlayerState.WALL_RUN)
             rb.AddForce(Vector3.down * Time.deltaTime * 10);
-        
+        if (rb.velocity.magnitude > 0.5f)
+        {
+            if (_movementState == PlayerState.IDLE)
+                _movementState = PlayerState.WALK;
+            else if (_movementState == PlayerState.CROUCH_IDLE)
+                _movementState = PlayerState.CROUCH_WALK;
+        }
+
+        if (rb.velocity.magnitude < 0.5f)
+        {
+            if (_movementState == PlayerState.RUN)
+                StopSprint();
+            else if (_movementState == PlayerState.SLIDE)
+                StopSlide();
+            if (transform.localScale == playerScale)
+                _movementState = PlayerState.IDLE;
+            else if (transform.localScale == crouchScale)
+                _movementState = PlayerState.CROUCH_IDLE;
+        }
+        else if (rb.velocity.magnitude < slideToCrouchThreshold && _movementState == PlayerState.SLIDE)
+            StopSlide();
         //Find actual velocity relative to where player is looking
         Vector2 mag = FindVelRelativeToLook();
         float xMag = mag.x, yMag = mag.y;
@@ -147,9 +237,12 @@ public class PlayerMovementRB : MonoBehaviour {
 
         //Set max speed
         float maxSpeed = this.maxSpeed;
-        
+
         //If sliding down a ramp, add force down so player stays grounded and also builds speed
-        if (crouching && grounded && readyToJump) {
+        if (_movementState == PlayerState.SLIDE && grounded && readyToJump)
+        {
+            if (rb.velocity.magnitude < 0.9f)
+                sliding = false;
             rb.AddForce(Vector3.down * Time.deltaTime * 3000);
             return;
         }
@@ -170,9 +263,14 @@ public class PlayerMovementRB : MonoBehaviour {
             multiplier = 0.5f;
             multiplierV = 0.5f;
         }
-        
+
         //Movement while sliding
-        if (grounded && crouching) multiplierV = 0f;
+        if (grounded && _movementState == PlayerState.SLIDE)
+        {
+            if (rb.velocity.magnitude < moveSpeed * crouchMultiplier)
+                sliding = false;
+            multiplierV = 0f;
+        }
 
         /* Wall run checks */
         if (_movementState == PlayerState.WALL_RUN)
