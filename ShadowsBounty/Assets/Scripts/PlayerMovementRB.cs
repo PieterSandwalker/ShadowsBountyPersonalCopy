@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerMovementRB : MonoBehaviour {
 
     public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN }
-    public enum WallrunDebugInfo { }
+    public enum WallrunDebugInfo { TOO_SLOW, BAD_APPROACH_ANGLE, NON_HORIZONTAL_IMPACT_NORMAL, NOT_CONTACTING_WALL, GROUNDED }
 
     //Assingables
     public Transform playerCam;
