@@ -6,10 +6,7 @@ using UnityEngine;
 public class PlayerMovementRB : MonoBehaviour {
 
     public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN }
-
-    [SerializeField]
-    private PlayerState _movementState = PlayerState.IDLE; // Init player state to standing idle
-    public PlayerState movementState { get { return _movementState;  } }
+    public enum WallrunDebugInfo { }
 
     //Assingables
     public Transform playerCam;
@@ -54,6 +51,7 @@ public class PlayerMovementRB : MonoBehaviour {
     private Vector3 wallNormalVector;
 
     /* Wallrunning */
+
     //Can edit from script
     public LayerMask wallLayer;
     public Transform wallContactCheck;
@@ -67,7 +65,11 @@ public class PlayerMovementRB : MonoBehaviour {
     public float wallrunSpeedBoost = 2f;
     public float wallrunMaxSpeed = 35f;
     public float resistanceFactor = 100f; //Affects how quickly the player loses momentum while wall running. Player slows down faster when this is larger. At 0 player can wallrun indefinitely
+
     //Read only from script
+    [SerializeField]
+    private PlayerState _movementState = PlayerState.IDLE; // Init player state to standing idle
+    public PlayerState movementState { get { return _movementState; } }
     [SerializeField]
     private Vector3 _meanSurfaceImpactNormal;
     public Vector3 meanSurfaceImpactNormal { get { return _meanSurfaceImpactNormal; } }
@@ -229,7 +231,6 @@ public class PlayerMovementRB : MonoBehaviour {
         }
     }
 
-    //TODO: Refactor this so there isn't so much repeated code
     private void Jump() {
         if (readyToJump)
         {
@@ -409,12 +410,27 @@ public class PlayerMovementRB : MonoBehaviour {
                                                                                                          //                                                                it's split between forward and horizontal components (probably don't want to 
                                                                                                          //                                                                allow player to wall run from strafing though)
             {
-                print("Start wallrun");
                 _movementState = PlayerState.WALL_RUN; //Set state to wall running
                 rb.useGravity = false; //Disable gravity
                 _wallrunTime = 0; //Reset timer
                 _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallrunRaycastLength); // Determine to which side of the player the wall is
             }
         }
+    }
+
+    private bool IsLedge()
+    {
+        //Perform vertical and horizontal raycast. If the vertical raycast hits but horizontal doesn't, player is looking at a ledge
+        return false;
+    }
+
+    private void GetWallrunDebugInfo()
+    {
+
+    }
+
+    private void InitDictionary()
+    {
+
     }
 }

@@ -133,6 +133,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 740152560}
     m_Modifications:
+    - target: {fileID: 7789597512044231015, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7789597512558351560, guid: 77dc998bde79bf94f93ca988d8ebce71,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -209,6 +214,26 @@ PrefabInstance:
       value: Stairs (2)
       objectReference: {fileID: 0}
     - target: {fileID: 7789597512558351561, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597512645920498, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513185977211, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513659904890, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513992823174, guid: 77dc998bde79bf94f93ca988d8ebce71,
         type: 3}
       propertyPath: m_Layer
       value: 9
@@ -330,7 +355,7 @@ GameObject:
   - component: {fileID: 637296027}
   - component: {fileID: 637296026}
   - component: {fileID: 637296025}
-  m_Layer: 12
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -559,7 +584,7 @@ GameObject:
   - component: {fileID: 796280115}
   - component: {fileID: 796280114}
   - component: {fileID: 796280113}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Hurdle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -651,7 +676,7 @@ GameObject:
   - component: {fileID: 843088455}
   - component: {fileID: 843088454}
   - component: {fileID: 843088453}
-  m_Layer: 11
+  m_Layer: 9
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -743,7 +768,7 @@ GameObject:
   - component: {fileID: 1176293788}
   - component: {fileID: 1176293787}
   - component: {fileID: 1176293786}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Hurdle (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -922,6 +947,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 740152560}
     m_Modifications:
+    - target: {fileID: 7789597512044231015, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7789597512558351560, guid: 77dc998bde79bf94f93ca988d8ebce71,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -998,6 +1028,26 @@ PrefabInstance:
       value: Stairs (1)
       objectReference: {fileID: 0}
     - target: {fileID: 7789597512558351561, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597512645920498, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513185977211, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513659904890, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513992823174, guid: 77dc998bde79bf94f93ca988d8ebce71,
         type: 3}
       propertyPath: m_Layer
       value: 9
@@ -1482,7 +1532,7 @@ GameObject:
   - component: {fileID: 1648699487}
   - component: {fileID: 1648699486}
   - component: {fileID: 1648699485}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Hurdle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1574,7 +1624,7 @@ GameObject:
   - component: {fileID: 1795896488}
   - component: {fileID: 1795896487}
   - component: {fileID: 1795896486}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Hurdle (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1761,7 +1811,7 @@ PrefabInstance:
     - target: {fileID: 2085447920674384943, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.6
+      value: 17.1
       objectReference: {fileID: 0}
     - target: {fileID: 2085447920674384943, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
@@ -1838,6 +1888,21 @@ PrefabInstance:
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2085447921504194457, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921504194457, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921504194457, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2085447921629470624, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_Enabled
@@ -1886,17 +1951,37 @@ PrefabInstance:
     - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -19.4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -25.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -45.9
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59abfd4064bccc942a5f75ae31509ab0, type: 3}
@@ -1907,6 +1992,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 740152560}
     m_Modifications:
+    - target: {fileID: 7789597512044231015, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 7789597512558351560, guid: 77dc998bde79bf94f93ca988d8ebce71,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1978,6 +2068,26 @@ PrefabInstance:
       value: Stairs
       objectReference: {fileID: 0}
     - target: {fileID: 7789597512558351561, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597512645920498, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513185977211, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513659904890, guid: 77dc998bde79bf94f93ca988d8ebce71,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789597513992823174, guid: 77dc998bde79bf94f93ca988d8ebce71,
         type: 3}
       propertyPath: m_Layer
       value: 9
