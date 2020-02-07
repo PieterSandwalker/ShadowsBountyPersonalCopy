@@ -1,5 +1,6 @@
 // Some stupid rigidbody based movement by Dani
 
+using System.Collections.Generic;
 using System;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ public class PlayerMovementRB : MonoBehaviour {
 
     public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN }
     public enum WallrunDebugInfo { TOO_SLOW, BAD_APPROACH_ANGLE, NON_HORIZONTAL_IMPACT_NORMAL, NOT_CONTACTING_WALL, GROUNDED }
+
+    private Dictionary<WallrunDebugInfo, bool> WallrunDebugLog;
 
     //Assingables
     public Transform playerCam;
@@ -88,6 +91,8 @@ public class PlayerMovementRB : MonoBehaviour {
         playerScale =  transform.localScale;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        InitWallrunDebugLog();
     }
 
     
@@ -204,6 +209,12 @@ public class PlayerMovementRB : MonoBehaviour {
                 _movementState = PlayerState.FALL;
                 rb.useGravity = true;
             }
+
+            WallrunDebugLog[WallrunDebugInfo.NOT_CONTACTING_WALL] = !isContactingWall;
+            WallrunDebugLog[WallrunDebugInfo.TOO_SLOW] = !isMovingFastEnough;
+            WallrunDebugLog[WallrunDebugInfo.GROUNDED] = grounded;
+
+            GetWallrunDebugInfo();
         }
 
         // Apply movement forces based on state
@@ -396,25 +407,25 @@ public class PlayerMovementRB : MonoBehaviour {
             _meanSurfaceImpactNormal = meanSurfaceImpactNormal.normalized; //Get the re-normalized value, store in variable so it can be viewable for debugging
             float angleOfApproach = Mathf.Acos(Vector3.Dot(meanSurfaceImpactNormal.normalized, orientation.transform.forward)) * Mathf.Rad2Deg; //The angle at which the player contacts the wall
 
-            print(meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold);
-            print(angleOfApproach);
-            print(orientation.transform.InverseTransformDirection(rb.velocity));
+            bool isImpactHorizontal = meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold; //If the surface impact normal is mostly horizontal i.e. low y component 
+            bool isGoodApproachAngle = angleOfApproach >= 45f && angleOfApproach <= 160f; // The angle between orientation.transform.forward and meanSurfaceImpactNormal is within a threshold
+            bool isMovingFastEnough = orientation.transform.InverseTransformDirection(rb.velocity).z >= startWallrunThreshold; // The player is moving fast enough
 
             //TODO: Rather than checking actual numerical speed, can probably just check the state that the player is in
-            
-            if (meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold && //If the surface impact normal is mostly horizontal i.e. low y component 
-                angleOfApproach >= 45f && angleOfApproach <= 160f &&                                     //AND the angle between orientation.transform.forward and meanSurfaceImpactNormal is within a threshold
-                orientation.transform.InverseTransformDirection(rb.velocity).z >= startWallrunThreshold) //AND the player rigid body is moving forward fast enough //NOTE: This line gets the rigid body's velocity in local coordinate space. 
-                                                                                                         //                                                                We may need to consider cases where the player isn't just doing forward input,
-                                                                                                         //                                                                the character may be strafing, meaning the character's speed is high enough but
-                                                                                                         //                                                                it's split between forward and horizontal components (probably don't want to 
-                                                                                                         //                                                                allow player to wall run from strafing though)
+
+            if (isImpactHorizontal && isGoodApproachAngle && isMovingFastEnough)
             {
                 _movementState = PlayerState.WALL_RUN; //Set state to wall running
                 rb.useGravity = false; //Disable gravity
                 _wallrunTime = 0; //Reset timer
                 _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallrunRaycastLength); // Determine to which side of the player the wall is
             }
+
+            WallrunDebugLog[WallrunDebugInfo.NON_HORIZONTAL_IMPACT_NORMAL] = !isImpactHorizontal;
+            WallrunDebugLog[WallrunDebugInfo.BAD_APPROACH_ANGLE] = !isGoodApproachAngle;
+            WallrunDebugLog[WallrunDebugInfo.TOO_SLOW] = !isMovingFastEnough;
+
+            GetWallrunDebugInfo();
         }
     }
 
@@ -424,13 +435,25 @@ public class PlayerMovementRB : MonoBehaviour {
         return false;
     }
 
-    private void GetWallrunDebugInfo()
+    private void InitWallrunDebugLog()
     {
-
+        WallrunDebugLog = new Dictionary<WallrunDebugInfo, bool>();
+        WallrunDebugLog.Add(WallrunDebugInfo.BAD_APPROACH_ANGLE, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.GROUNDED, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.NON_HORIZONTAL_IMPACT_NORMAL, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.NOT_CONTACTING_WALL, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.TOO_SLOW, false);
     }
 
-    private void InitDictionary()
+    private void GetWallrunDebugInfo()
     {
+        foreach (KeyValuePair<WallrunDebugInfo, bool> kvp in WallrunDebugLog)
+            if (kvp.Value) Debug.LogWarning(kvp.Key);
+        ResetWallrunDebugLog();
+    }
 
+    private void ResetWallrunDebugLog()
+    {
+        foreach (WallrunDebugInfo key in Enum.GetValues(typeof(WallrunDebugInfo))) WallrunDebugLog[key] = false;
     }
 }
