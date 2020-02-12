@@ -1,16 +1,25 @@
 // Some stupid rigidbody based movement by Dani
 
+using System.Collections.Generic;
 using System;
 using UnityEngine;
 
 public class PlayerMovementRB : MonoBehaviour {
 
-    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN }
+    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN, LEDGE_CLIMB }
     public enum WallrunDebugInfo { TOO_SLOW, BAD_APPROACH_ANGLE, NON_HORIZONTAL_IMPACT_NORMAL, NOT_CONTACTING_WALL, GROUNDED }
+
+    private Dictionary<WallrunDebugInfo, bool> WallrunDebugLog;
+
+    //Keycodes from Sam's Code {
+    public KeyCode crouchKey = KeyCode.C;
+    public KeyCode sprintKey = KeyCode.LeftShift;
+    //}
 
     //Assingables
     public Transform playerCam;
     public Transform orientation;
+    public Transform head;
     
     //Other
     private Rigidbody rb;
@@ -26,7 +35,14 @@ public class PlayerMovementRB : MonoBehaviour {
     public float maxSpeed = 20;
     public bool grounded;
     public LayerMask whatIsGround;
-    
+
+    //added by Sam's Code {
+    public float sprintMultipler = 2f;
+    public float crouchMultiplier = 0.66f;
+    public float slideMultiplier = 1.5f;
+    public float slideToCrouchThreshold = 15f;
+    //}
+
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
     public float maxSlopeAngle = 35f;
@@ -50,6 +66,17 @@ public class PlayerMovementRB : MonoBehaviour {
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
 
+    /* Ledge Climb */
+
+    //Can edit from script
+    public float verticalCheckDistance = 1.25f;
+    public float horizontalCheckDistance = 1.0f;
+    public float upwardForce = 100f;
+    public float forwardForce = 100f;
+
+    //Not viewable or editable from script
+    private const string LEDGE_TAG_NAME = "Ledge";
+
     /* Wallrunning */
 
     //Can edit from script
@@ -60,7 +87,7 @@ public class PlayerMovementRB : MonoBehaviour {
     public float wallrunRaycastLength = 1f; //Making this longer will allow the player to wall run around curved walls
     public float impactNormalYThreshold = 0.0001f; //Threshold that defines how small y component of the surface impact normal can be for wall running to be possible 
     public float startWallrunThreshold = 12f; //Current max walk speed is ~20 units/s, player slows down significantly when colliding with wall
-    public float stopWallrunThresholdSpeed = 12f; //The speed that the player must stay above to initiate or continue wallrunning
+    public float stopWallrunThresholdS = 12f; //The speed that the player must stay above to initiate or continue wallrunning
     public float stopVerticalMovementThreshold = 1f; //How much vertical velocity the player can have while wallrunning before it gets zeroed out
     public float wallrunSpeedBoost = 2f;
     public float wallrunMaxSpeed = 35f;
@@ -80,6 +107,9 @@ public class PlayerMovementRB : MonoBehaviour {
     private int _wallrunTime = 0; //How many frames the player has been wallrunning
     public int wallrunTime { get { return _wallrunTime;  } }
 
+    //Not viewable or editable from script
+    private const string WALL_LAYER_NAME = "Wall";
+
     void Awake() {
         rb = GetComponent<Rigidbody>();
     }
@@ -88,6 +118,8 @@ public class PlayerMovementRB : MonoBehaviour {
         playerScale =  transform.localScale;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        InitWallrunDebugLog();
     }
 
     
@@ -176,6 +208,17 @@ public class PlayerMovementRB : MonoBehaviour {
         //Movement while sliding
         if (grounded && crouching) multiplierV = 0f;
 
+        //TODO: Override jump function with this instead of calling it directly in movement. If the player presses jump and they're looking at a ledge, perform ledge climb
+
+        //Ledge grab
+        if (IsLedge())
+        {
+            //_movementState = PlayerState.LEDGE_CLIMB; //TODO: Once animations are in place, change state when the climbing animation is done playing
+            Debug.LogWarning("Ledge detected");
+
+            ClimbLedge();
+        }
+
         /* Wall run checks */
         if (_movementState == PlayerState.WALL_RUN)
         {
@@ -183,10 +226,14 @@ public class PlayerMovementRB : MonoBehaviour {
             if (!_isWallRight) { rightOrLeft = -1f; }
 
             // Check if the player is still contacting the wall by raycasting in the direction of the wall
-            bool isContactingWall = Physics.Raycast(orientation.transform.position, orientation.transform.right * rightOrLeft, wallrunRaycastLength);
+            RaycastHit wallHitCheck;
+            bool isContactingWall = Physics.Raycast(orientation.transform.position, orientation.transform.right * rightOrLeft, out wallHitCheck, wallrunRaycastLength);
+
+            //TODO: Check if the object we've hit (if any) has the WALL_LAYER_TAG
+
             //Check if the player is moving fast enough by checking the z component of their velocity (in local space)
             //bool isMovingFastEnough = orientation.transform.InverseTransformDirection(rb.velocity).z >= stopWallrunThresholdSpeed;
-            bool isMovingFastEnough = rb.velocity.magnitude >= stopWallrunThresholdSpeed; // Necessary for allowing smooth transition for wallrunning, jumping to another wall and continuing wallrunning
+            bool isMovingFastEnough = rb.velocity.magnitude >= stopWallrunThresholdS; // Necessary for allowing smooth transition for wallrunning, jumping to another wall and continuing wallrunning
 
             if (isContactingWall && isMovingFastEnough && !grounded)
             {
@@ -197,29 +244,30 @@ public class PlayerMovementRB : MonoBehaviour {
                 Vector3 resistanceForce = horizontalResistance + verticalResistance;
                 rb.AddForce(resistanceForce);
 
-                _wallrunTime++; //Increment wallrun timer 
+                _wallrunTime++; //Increment wallrun timer
+
+                // Direction to apply force in is the projection of the rigid body's forward vector onto the contact plane of the wall
+                Vector3 wallrunForce = proj * y * moveSpeed * wallrunSpeedBoost * Time.deltaTime;
+                rb.AddForce(wallrunForce);
+
+                //Counter unwanted vertical (upward) movement
+                if (rb.velocity.y > stopVerticalMovementThreshold)
+                {
+                    Vector3 vel = rb.velocity;
+                    rb.velocity = new Vector3(vel.x, 0, vel.z);
+                }
             }
             else
             {
                 _movementState = PlayerState.FALL;
                 rb.useGravity = true;
             }
-        }
 
-        // Apply movement forces based on state
-        if (_movementState == PlayerState.WALL_RUN)
-        {
-            // Direction to apply force in is the projection of the rigid body's forward vector onto the contact plane of the wall
-            Vector3 proj = orientation.transform.forward - Vector3.Dot(orientation.transform.forward, _meanSurfaceImpactNormal) * _meanSurfaceImpactNormal;
-            Vector3 wallrunForce = proj * y * moveSpeed * wallrunSpeedBoost * Time.deltaTime;
-            rb.AddForce(wallrunForce);
+            WallrunDebugLog[WallrunDebugInfo.NOT_CONTACTING_WALL] = !isContactingWall;
+            WallrunDebugLog[WallrunDebugInfo.TOO_SLOW] = !isMovingFastEnough;
+            WallrunDebugLog[WallrunDebugInfo.GROUNDED] = grounded;
 
-            //Counter unwanted vertical (upward) movement
-            if (rb.velocity.y > stopVerticalMovementThreshold)
-            {
-                Vector3 vel = rb.velocity;
-                rb.velocity = new Vector3(vel.x, 0, vel.z);
-            }
+            GetWallrunDebugInfo();
         }
         else
         {
@@ -232,6 +280,9 @@ public class PlayerMovementRB : MonoBehaviour {
     }
 
     private void Jump() {
+
+        //TODO: Add wall climb override here. This will allow players to jump part way up a wall and then press jump again to fully climb the wall
+
         if (readyToJump)
         {
             readyToJump = false;
@@ -396,41 +447,82 @@ public class PlayerMovementRB : MonoBehaviour {
             _meanSurfaceImpactNormal = meanSurfaceImpactNormal.normalized; //Get the re-normalized value, store in variable so it can be viewable for debugging
             float angleOfApproach = Mathf.Acos(Vector3.Dot(meanSurfaceImpactNormal.normalized, orientation.transform.forward)) * Mathf.Rad2Deg; //The angle at which the player contacts the wall
 
-            print(meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold);
-            print(angleOfApproach);
-            print(orientation.transform.InverseTransformDirection(rb.velocity));
+            bool isImpactHorizontal = meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold; //If the surface impact normal is mostly horizontal i.e. low y component 
+            bool isGoodApproachAngle = angleOfApproach >= 45f && angleOfApproach <= 160f; // The angle between orientation.transform.forward and meanSurfaceImpactNormal is within a threshold
+            //bool isMovingFastEnough = orientation.transform.InverseTransformDirection(rb.velocity).z >= startWallrunThreshold; // The player is moving fast enough
+            bool isMovingFastEnough = rb.velocity.magnitude >= startWallrunThreshold;
 
             //TODO: Rather than checking actual numerical speed, can probably just check the state that the player is in
-            
-            if (meanSurfaceImpactNormal.y >= -impactNormalYThreshold && meanSurfaceImpactNormal.y <= impactNormalYThreshold && //If the surface impact normal is mostly horizontal i.e. low y component 
-                angleOfApproach >= 45f && angleOfApproach <= 160f &&                                     //AND the angle between orientation.transform.forward and meanSurfaceImpactNormal is within a threshold
-                orientation.transform.InverseTransformDirection(rb.velocity).z >= startWallrunThreshold) //AND the player rigid body is moving forward fast enough //NOTE: This line gets the rigid body's velocity in local coordinate space. 
-                                                                                                         //                                                                We may need to consider cases where the player isn't just doing forward input,
-                                                                                                         //                                                                the character may be strafing, meaning the character's speed is high enough but
-                                                                                                         //                                                                it's split between forward and horizontal components (probably don't want to 
-                                                                                                         //                                                                allow player to wall run from strafing though)
+
+            if (isImpactHorizontal && isGoodApproachAngle && isMovingFastEnough)
             {
                 _movementState = PlayerState.WALL_RUN; //Set state to wall running
                 rb.useGravity = false; //Disable gravity
                 _wallrunTime = 0; //Reset timer
                 _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallrunRaycastLength); // Determine to which side of the player the wall is
             }
+
+            WallrunDebugLog[WallrunDebugInfo.NON_HORIZONTAL_IMPACT_NORMAL] = !isImpactHorizontal;
+            WallrunDebugLog[WallrunDebugInfo.BAD_APPROACH_ANGLE] = !isGoodApproachAngle;
+            WallrunDebugLog[WallrunDebugInfo.TOO_SLOW] = !isMovingFastEnough;
+
+            GetWallrunDebugInfo();
         }
     }
 
     private bool IsLedge()
     {
-        //Perform vertical and horizontal raycast. If the vertical raycast hits but horizontal doesn't, player is looking at a ledge
-        return false;
+        //Vertical raycast: Start @ x units along the forward vector + y units up, direct down
+        RaycastHit verticalHit = new RaycastHit();
+        Vector3 startPos = head.transform.position + orientation.transform.forward * horizontalCheckDistance + new Vector3(0, 1, 0);
+        bool isVerticalContact = Physics.Raycast(startPos, Vector3.down, out verticalHit, verticalCheckDistance);
+        Debug.DrawRay(startPos, Vector3.down * verticalCheckDistance, Color.red);
+
+        //Forward raycast: Start @ player head, direct towards forward vector (orientation.transform.forward)
+        RaycastHit horizontalHit = new RaycastHit();
+        bool isHorizontalContact = Physics.Raycast(head.transform.position, orientation.transform.forward, out horizontalHit, horizontalCheckDistance);
+        Debug.DrawRay(head.transform.position, orientation.transform.forward * horizontalCheckDistance, Color.blue);
+
+        //Check if the object is actually a ledge (i.e. has a ledge tag)
+        bool isLedge = false;
+        if (isVerticalContact) //This check prevents NPE
+            isLedge = verticalHit.collider.gameObject.tag.Equals(LEDGE_TAG_NAME);
+
+        //If the vertical raycast hits but horizontal doesn't and both raycasts hit something with the ledge tag
+        return isVerticalContact && !isHorizontalContact && isLedge;
+    }
+
+    //TODO: This will most likely be deprecated when we add animations. We can just use a root motion climbing animation to move the player up and over a ledge rather than doing this separately via forces
+    private void ClimbLedge()
+    {
+        //Apply an upward and forward force to move the player up and over the wall
+        /*
+        Vector3 up = orientation.transform.up * upwardForce;
+        Vector3 fwd = orientation.transform.forward * forwardForce;
+        Vector3 resultant = up + fwd;
+        rb.AddForce(resultant);
+        */
+    }
+
+    private void InitWallrunDebugLog()
+    {
+        WallrunDebugLog = new Dictionary<WallrunDebugInfo, bool>();
+        WallrunDebugLog.Add(WallrunDebugInfo.BAD_APPROACH_ANGLE, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.GROUNDED, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.NON_HORIZONTAL_IMPACT_NORMAL, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.NOT_CONTACTING_WALL, false);
+        WallrunDebugLog.Add(WallrunDebugInfo.TOO_SLOW, false);
     }
 
     private void GetWallrunDebugInfo()
     {
-
+        foreach (KeyValuePair<WallrunDebugInfo, bool> kvp in WallrunDebugLog)
+            if (kvp.Value) Debug.LogWarning(kvp.Key);
+        ResetWallrunDebugLog();
     }
 
-    private void InitDictionary()
+    private void ResetWallrunDebugLog()
     {
-
+        foreach (WallrunDebugInfo key in Enum.GetValues(typeof(WallrunDebugInfo))) WallrunDebugLog[key] = false;
     }
 }
