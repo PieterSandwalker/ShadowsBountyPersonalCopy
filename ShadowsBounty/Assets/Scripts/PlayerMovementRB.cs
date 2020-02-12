@@ -6,10 +6,15 @@ using UnityEngine;
 
 public class PlayerMovementRB : MonoBehaviour {
 
-    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN }
+    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN, LEDGE_CLIMB }
     public enum WallrunDebugInfo { TOO_SLOW, BAD_APPROACH_ANGLE, NON_HORIZONTAL_IMPACT_NORMAL, NOT_CONTACTING_WALL, GROUNDED }
 
     private Dictionary<WallrunDebugInfo, bool> WallrunDebugLog;
+
+    //Keycodes from Sam's Code {
+    public KeyCode crouchKey = KeyCode.C;
+    public KeyCode sprintKey = KeyCode.LeftShift;
+    //}
 
     //Assingables
     public Transform playerCam;
@@ -30,7 +35,14 @@ public class PlayerMovementRB : MonoBehaviour {
     public float maxSpeed = 20;
     public bool grounded;
     public LayerMask whatIsGround;
-    
+
+    //added by Sam's Code {
+    public float sprintMultipler = 2f;
+    public float crouchMultiplier = 0.66f;
+    public float slideMultiplier = 1.5f;
+    public float slideToCrouchThreshold = 15f;
+    //}
+
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
     public float maxSlopeAngle = 35f;
@@ -54,14 +66,16 @@ public class PlayerMovementRB : MonoBehaviour {
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
 
-    /* Ledge Grab */
+    /* Ledge Climb */
 
-    //Can edti from script
+    //Can edit from script
     public float verticalCheckDistance = 1.25f;
     public float horizontalCheckDistance = 1.0f;
+    public float upwardForce = 100f;
+    public float forwardForce = 100f;
 
     //Not viewable or editable from script
-    private const string LEDGE_LAYER_NAME = "Ledge";
+    private const string LEDGE_TAG_NAME = "Ledge";
 
     /* Wallrunning */
 
@@ -194,8 +208,16 @@ public class PlayerMovementRB : MonoBehaviour {
         //Movement while sliding
         if (grounded && crouching) multiplierV = 0f;
 
+        //TODO: Override jump function with this instead of calling it directly in movement. If the player presses jump and they're looking at a ledge, perform ledge climb
+
         //Ledge grab
-        if (IsLedge()) Debug.LogWarning("Ledge detected");
+        if (IsLedge())
+        {
+            //_movementState = PlayerState.LEDGE_CLIMB; //TODO: Once animations are in place, change state when the climbing animation is done playing
+            Debug.LogWarning("Ledge detected");
+
+            ClimbLedge();
+        }
 
         /* Wall run checks */
         if (_movementState == PlayerState.WALL_RUN)
@@ -258,6 +280,9 @@ public class PlayerMovementRB : MonoBehaviour {
     }
 
     private void Jump() {
+
+        //TODO: Add wall climb override here. This will allow players to jump part way up a wall and then press jump again to fully climb the wall
+
         if (readyToJump)
         {
             readyToJump = false;
@@ -448,18 +473,35 @@ public class PlayerMovementRB : MonoBehaviour {
     private bool IsLedge()
     {
         //Vertical raycast: Start @ x units along the forward vector + y units up, direct down
-        RaycastHit verticalHit;
+        RaycastHit verticalHit = new RaycastHit();
         Vector3 startPos = head.transform.position + orientation.transform.forward * horizontalCheckDistance + new Vector3(0, 1, 0);
         bool isVerticalContact = Physics.Raycast(startPos, Vector3.down, out verticalHit, verticalCheckDistance);
         Debug.DrawRay(startPos, Vector3.down * verticalCheckDistance, Color.red);
 
         //Forward raycast: Start @ player head, direct towards forward vector (orientation.transform.forward)
-        RaycastHit horizontalHit;
+        RaycastHit horizontalHit = new RaycastHit();
         bool isHorizontalContact = Physics.Raycast(head.transform.position, orientation.transform.forward, out horizontalHit, horizontalCheckDistance);
         Debug.DrawRay(head.transform.position, orientation.transform.forward * horizontalCheckDistance, Color.blue);
 
-        //If the vertical raycast hits but horizontal doesn't, we're looking at a ledge
-        return isVerticalContact && !isHorizontalContact;
+        //Check if the object is actually a ledge (i.e. has a ledge tag)
+        bool isLedge = false;
+        if (isVerticalContact) //This check prevents NPE
+            isLedge = verticalHit.collider.gameObject.tag.Equals(LEDGE_TAG_NAME);
+
+        //If the vertical raycast hits but horizontal doesn't and both raycasts hit something with the ledge tag
+        return isVerticalContact && !isHorizontalContact && isLedge;
+    }
+
+    //TODO: This will most likely be deprecated when we add animations. We can just use a root motion climbing animation to move the player up and over a ledge rather than doing this separately via forces
+    private void ClimbLedge()
+    {
+        //Apply an upward and forward force to move the player up and over the wall
+        /*
+        Vector3 up = orientation.transform.up * upwardForce;
+        Vector3 fwd = orientation.transform.forward * forwardForce;
+        Vector3 resultant = up + fwd;
+        rb.AddForce(resultant);
+        */
     }
 
     private void InitWallrunDebugLog()
