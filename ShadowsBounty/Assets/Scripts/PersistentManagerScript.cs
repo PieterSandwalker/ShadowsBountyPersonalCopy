@@ -25,14 +25,16 @@ public class PersistentManagerScript : MonoBehaviour
         Bounty += addBounty;
     }
 
-    public void CostBounty(int costBounty)
+    public bool CostBounty(int costBounty)
     {
         if ( costBounty > Bounty )
         {
             Debug.Log("not enough bounty");
+            return false;
         } else
         {
             Bounty -= costBounty;
+            return true;
         }
     }
 }
