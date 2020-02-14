@@ -6,15 +6,13 @@ using UnityEngine;
 
 public class PlayerMovementRB : MonoBehaviour {
 
-    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, RUN, SLIDE, JUMP, FALL, WALL_RUN, LEDGE_CLIMB }
+    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, SPRINT, SLIDE, FALL, WALL_RUN, LEDGE_CLIMB }
     public enum WallrunDebugInfo { TOO_SLOW, BAD_APPROACH_ANGLE, NON_HORIZONTAL_IMPACT_NORMAL, NOT_CONTACTING_WALL, GROUNDED }
 
     private Dictionary<WallrunDebugInfo, bool> WallrunDebugLog;
 
-    //Keycodes from Sam's Code {
-    public KeyCode crouchKey = KeyCode.C;
-    public KeyCode sprintKey = KeyCode.LeftShift;
-    //}
+    private KeyCode crouchKey = KeyCode.C;
+    private KeyCode sprintKey = KeyCode.LeftShift;
 
     //Assingables
     public Transform playerCam;
@@ -60,7 +58,7 @@ public class PlayerMovementRB : MonoBehaviour {
     
     //Input
     float x, y;
-    bool jumping, sprinting, crouching;
+    bool jumpPressed, sprintPressed, crouchPressed;
     
     //Sliding
     private Vector3 normalVector = Vector3.up;
@@ -138,16 +136,37 @@ public class PlayerMovementRB : MonoBehaviour {
     private void MyInput() {
         x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical");
-        jumping = Input.GetButton("Jump");
-        crouching = Input.GetKey(KeyCode.LeftControl);
-      
+        jumpPressed = Input.GetButton("Jump");
+        crouchPressed = Input.GetKey(KeyCode.LeftControl);
+
+        //Sprinting
+        if (Input.GetKeyDown(sprintKey) && _movementState == PlayerState.WALK) //Can only transition to sprint state if walking
+            StartSprint();
+        if (Input.GetKeyUp(sprintKey) && _movementState == PlayerState.SPRINT)
+            StopSprint();
+
         //Crouching
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(crouchKey))
             StartCrouch();
-        if (Input.GetKeyUp(KeyCode.LeftControl))
+        if (Input.GetKeyUp(crouchKey))
             StopCrouch();
     }
 
+    private void StartSprint()
+    {
+        moveSpeed *= sprintMultipler;
+        maxSpeed *= sprintMultipler;
+        _movementState = PlayerState.SPRINT;
+    }
+
+    private void StopSprint()
+    {
+        moveSpeed /= sprintMultipler;
+        maxSpeed /= sprintMultipler;
+        _movementState = PlayerState.WALK;
+    }
+
+    //TODO: Add a raycast check that prevents player from uncrouching if there is an object above them
     private void StartCrouch() {
         transform.localScale = crouchScale;
         transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
@@ -175,15 +194,22 @@ public class PlayerMovementRB : MonoBehaviour {
         //Counteract sliding and sloppy movement
         if (_movementState != PlayerState.WALL_RUN)
             CounterMovement(x, y, mag);
+
+        //State transitions
+        //if vel.x and vel.z != 0 
+            //if state is idle
+                // state = walking
+            //if state is crouch idle
+                // state = crouch walking
         
         //If holding jump && ready to jump, then jump
-        if ((readyToJump || _movementState == PlayerState.WALL_RUN) && jumping) Jump(); //TODO: Need to override jump for wallrun
+        if ((readyToJump || _movementState == PlayerState.WALL_RUN) && jumpPressed) Jump(); 
 
         //Set max speed
         float maxSpeed = this.maxSpeed;
         
         //If sliding down a ramp, add force down so player stays grounded and also builds speed
-        if (crouching && grounded && readyToJump) {
+        if (crouchPressed && grounded && readyToJump) {
             rb.AddForce(Vector3.down * Time.deltaTime * 3000);
             return;
         }
@@ -203,10 +229,12 @@ public class PlayerMovementRB : MonoBehaviour {
         if (!grounded) {
             multiplier = 0.5f;
             multiplierV = 0.5f;
+
+            //TODO: if state != wallrun, state = falling
         }
         
         //Movement while sliding
-        if (grounded && crouching) multiplierV = 0f;
+        if (grounded && crouchPressed) multiplierV = 0f;
 
         //TODO: Override jump function with this instead of calling it directly in movement. If the player presses jump and they're looking at a ledge, perform ledge climb
 
@@ -348,10 +376,10 @@ public class PlayerMovementRB : MonoBehaviour {
     }
 
     private void CounterMovement(float x, float y, Vector2 mag) {
-        if (!grounded || jumping) return;
+        if (!grounded || jumpPressed) return;
 
         //Slow down sliding
-        if (crouching) {
+        if (crouchPressed) {
             rb.AddForce(moveSpeed * Time.deltaTime * -rb.velocity.normalized * slideCounterMovement);
             return;
         }
