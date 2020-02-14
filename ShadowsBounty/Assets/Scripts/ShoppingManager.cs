@@ -43,7 +43,7 @@ public class ShoppingManager : MonoBehaviour
 
     public void NextGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        SceneManager.LoadScene("MovementTesting");
     }
 
     public void Shopping(int cost)

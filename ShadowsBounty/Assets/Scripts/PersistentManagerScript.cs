@@ -25,7 +25,7 @@ public class PersistentManagerScript : MonoBehaviour
         Bounty += addBounty;
     }
 
-    public bool CostBounty(int costBounty)
+    public bool CostBounty(int costBounty) //(int itemIndex)
     {
         if ( costBounty > Bounty )
         {
