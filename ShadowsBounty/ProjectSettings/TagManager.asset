@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Wall
   - Ledge
+  - Treasure
   layers:
   - Default
   - TransparentFX
