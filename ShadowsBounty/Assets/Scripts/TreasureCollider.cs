@@ -6,6 +6,11 @@ public class TreasureCollider : MonoBehaviour
 {
     int score = 0;
 
+    private void Start()
+    {
+        score = PlayerPrefs.GetInt("score", 0);
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Treasure"))
@@ -15,5 +20,10 @@ public class TreasureCollider : MonoBehaviour
         }
 
         Debug.Log("Score: " + score);
+    }
+
+    private void OnDisable()
+    {
+        PlayerPrefs.SetInt("score", score);
     }
 }

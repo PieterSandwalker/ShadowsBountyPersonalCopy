@@ -10,4 +10,6 @@ public class TreasureMaster : MonoBehaviour
     {
         return value;
     }
+
+
 }
