@@ -9,9 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 87bfee367244ca0489a41f4d86012cc0
   - enabled: 1
-    path: Assets/Scenes/MovementTesting.unity
-    guid: 5c0918b5e98a6c84fbdc3b7affac9470
-  - enabled: 1
     path: Assets/Scenes/ShoppingMenu.unity
     guid: 0607782f8ad38a0488e6cedff084f357
+  - enabled: 1
+    path: Assets/Scenes/TreasureTesting.unity
+    guid: 0ffca0f6e11a7a247adcb222e07bbfb1
   m_configObjects: {}

@@ -7,7 +7,8 @@ public class MainMenu : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+        PlayerPrefs.SetInt("score", 0);
+        SceneManager.LoadScene("ShoppingMenu");
     }
 
     public void QuiteGame()

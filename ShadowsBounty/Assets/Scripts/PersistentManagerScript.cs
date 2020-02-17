@@ -9,7 +9,7 @@ public class PersistentManagerScript : MonoBehaviour
     public int Bounty;
     private void Start()
     {
-        Bounty = PlayerPrefs.GetInt("score", 0);
+        SetupBounty();
         Debug.Log("Start: " + Bounty);
     }
     private void Awake()
@@ -29,6 +29,7 @@ public class PersistentManagerScript : MonoBehaviour
         Bounty += addBounty;
         Debug.Log("Current: " + Bounty);
         PlayerPrefs.SetInt("score", Bounty);
+        Debug.Log(PlayerPrefs.GetInt("score"));
     }
 
     public bool CostBounty(int costBounty) //(int itemIndex)
@@ -43,8 +44,11 @@ public class PersistentManagerScript : MonoBehaviour
             Bounty -= costBounty;
             return true;
         }
+    }
 
-
+    public void SetupBounty()
+    {
+        Bounty = PlayerPrefs.GetInt("score");
     }
 
     private void OnDisable()

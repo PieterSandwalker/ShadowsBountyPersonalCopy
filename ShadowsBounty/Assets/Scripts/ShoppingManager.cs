@@ -7,7 +7,7 @@ using TMPro;
 
 public class ShoppingManager : MonoBehaviour
 {
-    PersistentManagerScript Instance;
+    //PersistentManagerScript Instance;
 
     [SerializeField] TextMeshProUGUI M_Object;
 
@@ -19,13 +19,20 @@ public class ShoppingManager : MonoBehaviour
 
     const string BuyFailTxt = "I can count, don't fool me";
 
+    int Bounty;
+
     // Start is called before the first frame update
     private void Start()
     {
-        Instance = PersistentManagerScript.Instance;
+        Bounty = PlayerPrefs.GetInt("score");
+        Debug.Log(Bounty);
+        //Instance = PersistentManagerScript.Instance;
         //BountyTxt.text = Instance.Bounty.ToString();
-        M_Object.text = Instance.Bounty.ToString();
+        //Instance.SetupBounty();
+        //M_Object.text = Instance.Bounty.ToString();
+        M_Object.text = Bounty.ToString();
         Message_Object.text = OpeningTxt;
+        Cursor.visible = true;
     }
 
     // Update is called once per frame
@@ -33,9 +40,13 @@ public class ShoppingManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            PersistentManagerScript.Instance.AddBounty(100);
+            //PersistentManagerScript.Instance.AddBounty(100);
             //BountyTxt.text = Instance.Bounty.ToString();
-            M_Object.text = Instance.Bounty.ToString();
+            //M_Object.text = Instance.Bounty.ToString();
+            Bounty += 100;
+            Debug.Log("Current: " + Bounty);
+            PlayerPrefs.SetInt("score", Bounty);
+            M_Object.text = Bounty.ToString();
             Message_Object.text = OpeningTxt;
         }
 
@@ -43,18 +54,22 @@ public class ShoppingManager : MonoBehaviour
 
     public void NextGame()
     {
-        SceneManager.LoadScene("MovementTesting");
+        PlayerPrefs.SetInt("score", Bounty);
+        SceneManager.LoadScene("TreasureTesting");
     }
 
     public void Shopping(int cost)
     {
-        if (Instance.CostBounty(cost))
+        if (cost > Bounty)
         {
-            M_Object.text = Instance.Bounty.ToString();
-            Message_Object.text = BuySuccessTxt;
-        } else
-        {
+            Debug.Log("not enough bounty");
             Message_Object.text = BuyFailTxt;
+        }
+        else
+        {
+            Bounty -= cost;
+            M_Object.text = Bounty.ToString();
+            Message_Object.text = BuySuccessTxt;
         }
     }
 
