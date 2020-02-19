@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerMovementRB : MonoBehaviour {
 
-    public enum PlayerState { IDLE, CROUCH_IDLE, CROUCH_WALK, WALK, SPRINT, SLIDE, FALL, WALL_RUN, LEDGE_CLIMB }
+    public enum PlayerState { IDLING, CROUCH_IDLING, CROUCH_WALKING, WALKING, SPRINTING, SLIDING, FALLING, WALL_RUNNING, MANTLING, LADDER_CLIMBING }
     public enum WallrunDebugInfo { TOO_SLOW, BAD_APPROACH_ANGLE, NON_HORIZONTAL_IMPACT_NORMAL, NOT_CONTACTING_WALL, GROUNDED }
 
     private Dictionary<WallrunDebugInfo, bool> WallrunDebugLog;
@@ -67,10 +67,12 @@ public class PlayerMovementRB : MonoBehaviour {
     /* Ledge Climb */
 
     //Can edit from script
+    public Transform ledgeClearCheck;
     public float verticalCheckDistance = 1.25f;
     public float horizontalCheckDistance = 1.0f;
-    public float upwardForce = 100f;
-    public float forwardForce = 100f;
+    public float upwardMantleForce = 5000f;
+    public float forwardMantleForce = 500f;
+    public float counterMantleForce = 2000f; //Used to make mantling feel less floating by grounding the character more quickly and giving the player back control faster
 
     //Not viewable or editable from script
     private const string LEDGE_TAG_NAME = "Ledge";
@@ -93,7 +95,7 @@ public class PlayerMovementRB : MonoBehaviour {
 
     //Read only from script
     [SerializeField]
-    private PlayerState _movementState = PlayerState.IDLE; // Init player state to standing idle
+    private PlayerState _movementState = PlayerState.IDLING; // Init player state to standing idle
     public PlayerState movementState { get { return _movementState; } }
     [SerializeField]
     private Vector3 _meanSurfaceImpactNormal;
@@ -108,24 +110,28 @@ public class PlayerMovementRB : MonoBehaviour {
     //Not viewable or editable from script
     private const string WALL_LAYER_NAME = "Wall";
 
-    void Awake() {
+    void Awake()
+    {
         rb = GetComponent<Rigidbody>();
     }
     
-    void Start() {
+    void Start()
+    {
         playerScale =  transform.localScale;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         InitWallrunDebugLog();
     }
-
     
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
+        StateMachineUpdate();
         Movement();
     }
 
-    private void Update() {
+    private void Update()
+    {
         MyInput();
         Look();
     }
@@ -133,16 +139,17 @@ public class PlayerMovementRB : MonoBehaviour {
     /// <summary>
     /// Find user input. Should put this in its own class but im lazy
     /// </summary>
-    private void MyInput() {
+    private void MyInput()
+    {
         x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical");
         jumpPressed = Input.GetButton("Jump");
-        crouchPressed = Input.GetKey(KeyCode.LeftControl);
+        crouchPressed = Input.GetKey(crouchKey);
 
         //Sprinting
-        if (Input.GetKeyDown(sprintKey) && _movementState == PlayerState.WALK) //Can only transition to sprint state if walking
+        if (Input.GetKeyDown(sprintKey) && _movementState == PlayerState.WALKING) //Can only transition to sprint state if walking
             StartSprint();
-        if (Input.GetKeyUp(sprintKey) && _movementState == PlayerState.SPRINT)
+        if (Input.GetKeyUp(sprintKey) && _movementState == PlayerState.SPRINTING)
             StopSprint();
 
         //Crouching
@@ -152,22 +159,44 @@ public class PlayerMovementRB : MonoBehaviour {
             StopCrouch();
     }
 
+    private void StateMachineUpdate()
+    {
+        /* State transitions */
+        if (rb.velocity.magnitude > 0.1f) //Transition from idle states to walking states
+            if (_movementState == PlayerState.IDLING)
+                _movementState = PlayerState.WALKING;
+            else if (_movementState == PlayerState.CROUCH_IDLING)
+                _movementState = PlayerState.CROUCH_WALKING;
+        else if (Mathf.Approximately(rb.velocity.magnitude, 0f)) //Transition from walking states to idle states
+            if (_movementState == PlayerState.WALKING)
+                _movementState = PlayerState.IDLING;
+            else if (_movementState == PlayerState.CROUCH_WALKING)
+                _movementState = PlayerState.CROUCH_IDLING;
+        //TODO: Add transition from walk to sprint, sprint to walk and sprint to idle
+
+        if (!grounded && _movementState != PlayerState.WALL_RUNNING && _movementState != PlayerState.MANTLING) //Transition to falling
+            _movementState = PlayerState.FALLING;
+        else if (grounded && _movementState == PlayerState.FALLING) //Transition from falling to grounded
+            _movementState = PlayerState.IDLING;
+    }
+
     private void StartSprint()
     {
         moveSpeed *= sprintMultipler;
         maxSpeed *= sprintMultipler;
-        _movementState = PlayerState.SPRINT;
+        _movementState = PlayerState.SPRINTING;
     }
 
     private void StopSprint()
     {
         moveSpeed /= sprintMultipler;
         maxSpeed /= sprintMultipler;
-        _movementState = PlayerState.WALK;
+        _movementState = PlayerState.WALKING;
     }
 
     //TODO: Add a raycast check that prevents player from uncrouching if there is an object above them
-    private void StartCrouch() {
+    private void StartCrouch()
+    {
         transform.localScale = crouchScale;
         transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
         if (rb.velocity.magnitude > 0.5f) {
@@ -177,14 +206,16 @@ public class PlayerMovementRB : MonoBehaviour {
         }
     }
 
-    private void StopCrouch() {
+    private void StopCrouch()
+    {
         transform.localScale = playerScale;
         transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
     }
 
-    private void Movement() {
+    private void Movement()
+    {
         //Extra gravity (only apply when not wallrunning)
-        if (_movementState != PlayerState.WALL_RUN)
+        if (_movementState != PlayerState.WALL_RUNNING)
             rb.AddForce(Vector3.down * Time.deltaTime * 10);
         
         //Find actual velocity relative to where player is looking
@@ -192,18 +223,11 @@ public class PlayerMovementRB : MonoBehaviour {
         float xMag = mag.x, yMag = mag.y;
 
         //Counteract sliding and sloppy movement
-        if (_movementState != PlayerState.WALL_RUN)
+        if (_movementState != PlayerState.WALL_RUNNING)
             CounterMovement(x, y, mag);
-
-        //State transitions
-        //if vel.x and vel.z != 0 
-            //if state is idle
-                // state = walking
-            //if state is crouch idle
-                // state = crouch walking
         
         //If holding jump && ready to jump, then jump
-        if ((readyToJump || _movementState == PlayerState.WALL_RUN) && jumpPressed) Jump(); 
+        if ((readyToJump || _movementState == PlayerState.WALL_RUNNING) && jumpPressed) Jump(); 
 
         //Set max speed
         float maxSpeed = this.maxSpeed;
@@ -214,7 +238,7 @@ public class PlayerMovementRB : MonoBehaviour {
             return;
         }
 
-        if (_movementState == PlayerState.WALL_RUN) maxSpeed = wallrunMaxSpeed;
+        if (_movementState == PlayerState.WALL_RUNNING) maxSpeed = wallrunMaxSpeed;
 
         //If speed is larger than maxspeed, cancel out the input so you don't go over max speed
         if (x > 0 && xMag > maxSpeed) x = 0;
@@ -229,26 +253,21 @@ public class PlayerMovementRB : MonoBehaviour {
         if (!grounded) {
             multiplier = 0.5f;
             multiplierV = 0.5f;
-
-            //TODO: if state != wallrun, state = falling
         }
         
         //Movement while sliding
         if (grounded && crouchPressed) multiplierV = 0f;
 
-        //TODO: Override jump function with this instead of calling it directly in movement. If the player presses jump and they're looking at a ledge, perform ledge climb
-
-        //Ledge grab
+        //Check for ledge
         if (IsLedge())
         {
-            //_movementState = PlayerState.LEDGE_CLIMB; //TODO: Once animations are in place, change state when the climbing animation is done playing
-            Debug.LogWarning("Ledge detected");
-
-            ClimbLedge();
+            readyToJump = false;
+            _movementState = PlayerState.MANTLING;
+            Debug.LogWarning("Ledge detected!");
         }
 
-        /* Wall run checks */
-        if (_movementState == PlayerState.WALL_RUN)
+        /* Apply forces based on player's movement state */
+        if (_movementState == PlayerState.WALL_RUNNING)
         {
             float rightOrLeft = 1f; //If 1, wall is right. If -1, wall is left
             if (!_isWallRight) { rightOrLeft = -1f; }
@@ -287,7 +306,7 @@ public class PlayerMovementRB : MonoBehaviour {
             }
             else
             {
-                _movementState = PlayerState.FALL;
+                _movementState = PlayerState.FALLING;
                 rb.useGravity = true;
             }
 
@@ -296,6 +315,10 @@ public class PlayerMovementRB : MonoBehaviour {
             WallrunDebugLog[WallrunDebugInfo.GROUNDED] = grounded;
 
             GetWallrunDebugInfo();
+        }
+        else if (_movementState == PlayerState.MANTLING)
+        {
+            Mantle();
         }
         else
         {
@@ -307,10 +330,8 @@ public class PlayerMovementRB : MonoBehaviour {
         }
     }
 
-    private void Jump() {
-
-        //TODO: Add wall climb override here. This will allow players to jump part way up a wall and then press jump again to fully climb the wall
-
+    private void Jump()
+    {
         if (readyToJump)
         {
             readyToJump = false;
@@ -321,7 +342,7 @@ public class PlayerMovementRB : MonoBehaviour {
                 rb.AddForce(Vector2.up * jumpForce * 1.5f);
                 rb.AddForce(normalVector * jumpForce * 0.5f);
             }
-            else if (_movementState == PlayerState.WALL_RUN)
+            else if (_movementState == PlayerState.WALL_RUNNING)
             {
                 //Add jump forces
                 Vector3 jumpOffForce = (Vector3.up * jumpForce * 1.5f) + (_meanSurfaceImpactNormal * jumpForce * 3.5f); //TODO: Tweak this so it scales more with movement speed
@@ -339,12 +360,11 @@ public class PlayerMovementRB : MonoBehaviour {
         }
     }
     
-    private void ResetJump() {
-        readyToJump = true;
-    }
+    private void ResetJump() { readyToJump = true; }
     
     private float desiredX;
-    private void Look() {
+    private void Look()
+    {
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
 
@@ -357,7 +377,7 @@ public class PlayerMovementRB : MonoBehaviour {
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         //Handle tilting the camera left/right when entering wallrun, resetting back to neutral when out of wallrun
-        if (_movementState == PlayerState.WALL_RUN)
+        if (_movementState == PlayerState.WALL_RUNNING)
         {
             if (_isWallRight) zRotation++; //If the wall is to our right, want to add to z rotation to tilt to the left
             else              zRotation--; //If the wall is to our left, want to subtract to tilt to the right
@@ -375,7 +395,8 @@ public class PlayerMovementRB : MonoBehaviour {
         orientation.transform.localRotation = Quaternion.Euler(0, desiredX, zRotation);
     }
 
-    private void CounterMovement(float x, float y, Vector2 mag) {
+    private void CounterMovement(float x, float y, Vector2 mag)
+    {
         if (!grounded || jumpPressed) return;
 
         //Slow down sliding
@@ -405,7 +426,8 @@ public class PlayerMovementRB : MonoBehaviour {
     /// Useful for vectors calculations regarding movement and limiting movement
     /// </summary>
     /// <returns></returns>
-    public Vector2 FindVelRelativeToLook() {
+    public Vector2 FindVelRelativeToLook()
+    {
         float lookAngle = orientation.transform.eulerAngles.y;
         float moveAngle = Mathf.Atan2(rb.velocity.x, rb.velocity.z) * Mathf.Rad2Deg;
 
@@ -419,7 +441,8 @@ public class PlayerMovementRB : MonoBehaviour {
         return new Vector2(xMag, yMag);
     }
 
-    private bool IsFloor(Vector3 v) {
+    private bool IsFloor(Vector3 v)
+    {
         float angle = Vector3.Angle(Vector3.up, v);
         return angle < maxSlopeAngle;
     }
@@ -429,7 +452,8 @@ public class PlayerMovementRB : MonoBehaviour {
     /// <summary>
     /// Handle ground detection
     /// </summary>
-    private void OnCollisionStay(Collision other) {
+    private void OnCollisionStay(Collision other)
+    {
         //Make sure we are only checking for walkable layers
         int layer = other.gameObject.layer;
         if (whatIsGround != (whatIsGround | (1 << layer))) return;
@@ -454,12 +478,11 @@ public class PlayerMovementRB : MonoBehaviour {
         }
     }
 
-    private void StopGrounded() {
-        grounded = false;
-    }
+    private void StopGrounded() { grounded = false; }
 
     private void OnCollisionEnter(Collision collision)
     {
+        //TODO: Should wrap any wallrun-specific code in a function, call it here
         //First check if we are colliding against a wall
         if (Physics.CheckSphere(wallContactCheck.position, wallContactCheckRadius, wallLayer) && collision.collider.tag == "Wall")
         {
@@ -484,7 +507,7 @@ public class PlayerMovementRB : MonoBehaviour {
 
             if (isImpactHorizontal && isGoodApproachAngle && isMovingFastEnough)
             {
-                _movementState = PlayerState.WALL_RUN; //Set state to wall running
+                _movementState = PlayerState.WALL_RUNNING; //Set state to wall running
                 rb.useGravity = false; //Disable gravity
                 _wallrunTime = 0; //Reset timer
                 _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallrunRaycastLength); // Determine to which side of the player the wall is
@@ -520,16 +543,32 @@ public class PlayerMovementRB : MonoBehaviour {
         return isVerticalContact && !isHorizontalContact && isLedge;
     }
 
-    //TODO: This will most likely be deprecated when we add animations. We can just use a root motion climbing animation to move the player up and over a ledge rather than doing this separately via forces
-    private void ClimbLedge()
+    private void Mantle()
     {
-        //Apply an upward and forward force to move the player up and over the wall
-        /*
-        Vector3 up = orientation.transform.up * upwardForce;
-        Vector3 fwd = orientation.transform.forward * forwardForce;
-        Vector3 resultant = up + fwd;
-        rb.AddForce(resultant);
-        */
+        //Perform forward raycast check from node. If check successful, apply upward force. If unsuccessful, apply forward force.
+        RaycastHit hit = new RaycastHit();
+        bool stillClimbing = Physics.Raycast(ledgeClearCheck.position, orientation.transform.forward, out hit, horizontalCheckDistance);
+
+        rb.useGravity = !stillClimbing; //Use gravity if not climbing anymore
+
+        //If still climbing, climb force is upward. Else, apply a forward force
+        Vector3 climbForce = stillClimbing ? orientation.transform.up * upwardMantleForce : orientation.transform.forward * forwardMantleForce;
+
+        rb.AddForce(climbForce * Time.deltaTime);
+
+        //TODO: Need to ignore movement inputs anyway, rather than trying to constrain along axii can probably just do that
+        //Constrain movement to only vertical (soruce: https://answers.unity.com/questions/404420/rigidbody-constraints-in-local-space.html)
+        Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
+        localVelocity.x = 0;
+        if (stillClimbing) localVelocity.z = 0; //Only constrain on forward axis if still climbing. Otherwise, the player can't be pushed forward over the ledge
+        rb.velocity = transform.TransformDirection(localVelocity);
+
+        //If raycast didn't hit and grounded, no longer ledgeclimbing, set state to IDLE, set canJump to true
+        if (!stillClimbing && grounded)
+        {
+            _movementState = PlayerState.IDLING;
+            readyToJump = true;
+        }
     }
 
     private void InitWallrunDebugLog()
