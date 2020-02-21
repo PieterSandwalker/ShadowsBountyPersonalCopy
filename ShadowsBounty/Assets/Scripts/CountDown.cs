@@ -62,7 +62,7 @@ public class CountDown : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         //PlayerPrefs.SetInt("score", score);
-        Debug.Log(PlayerPrefs.GetInt("score"));
+        //Debug.Log(PlayerPrefs.GetInt("score"));
         roundNumber++;
         if (roundNumber > 3)
         {
