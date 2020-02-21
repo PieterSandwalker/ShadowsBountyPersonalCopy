@@ -8,6 +8,8 @@ public class EconomySystem : MonoBehaviour
 {
     //public TextMeshPro BountyTxt;
 
+    [SerializeField] TextMeshProUGUI Bounty;
+
     [SerializeField] TextMeshProUGUI M_Object;
 
     PersistentManagerScript Instance;
@@ -17,7 +19,7 @@ public class EconomySystem : MonoBehaviour
     {
         Instance = PersistentManagerScript.Instance;
         //BountyTxt.text = Instance.Bounty.ToString();
-        M_Object.text = Instance.Bounty.ToString();
+        Bounty.text = Instance.Bounty.ToString();
     }
 
     // Update is called once per frame
@@ -27,7 +29,7 @@ public class EconomySystem : MonoBehaviour
         {
             PersistentManagerScript.Instance.AddBounty(100);
            //BountyTxt.text = Instance.Bounty.ToString();
-            M_Object.text = Instance.Bounty.ToString();
+            Bounty.text = Instance.Bounty.ToString();
         }
         
     }
