@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TreasureTesting.unity
     guid: 0ffca0f6e11a7a247adcb222e07bbfb1
+  - enabled: 1
+    path: Assets/Scenes/GameOverMenu.unity
+    guid: 29f01ce7e08b13d4e93c243f68f40ada
   m_configObjects: {}

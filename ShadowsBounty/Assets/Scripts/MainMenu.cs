@@ -8,6 +8,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         PlayerPrefs.SetInt("score", 100);
+        PlayerPrefs.SetInt("round", 1);
         SceneManager.LoadScene("ShoppingMenu");
     }
 
