@@ -30,7 +30,9 @@ public class PlayerMovementRB : MonoBehaviour {
     
     //Movement
     public float moveSpeed = 4500;
-    public float maxSpeed = 20;
+    public float walkMaxSpeed = 20;
+    public float sprintMaxSpeed = 40f;
+    public float wallrunMaxSpeed = 30f;
     public bool grounded;
     public LayerMask whatIsGround;
 
@@ -71,8 +73,8 @@ public class PlayerMovementRB : MonoBehaviour {
     public float verticalCheckDistance = 1.25f;
     public float horizontalCheckDistance = 1.0f;
     public float upwardMantleForce = 5000f;
-    public float forwardMantleForce = 500f;
-    public float counterMantleForce = 2000f; //Used to make mantling feel less floating by grounding the character more quickly and giving the player back control faster
+    public float forwardMantleForce = 750f;
+    public float counterMantleForce = 5000f; //Used to make mantling feel less floating by grounding the character more quickly and giving the player back control faster
 
     //Not viewable or editable from script
     private const string LEDGE_TAG_NAME = "Ledge";
@@ -90,7 +92,6 @@ public class PlayerMovementRB : MonoBehaviour {
     public float stopWallrunThresholdS = 12f; //The speed that the player must stay above to initiate or continue wallrunning
     public float stopVerticalMovementThreshold = 1f; //How much vertical velocity the player can have while wallrunning before it gets zeroed out
     public float wallrunSpeedBoost = 2f;
-    public float wallrunMaxSpeed = 35f;
     public float resistanceFactor = 100f; //Affects how quickly the player loses momentum while wall running. Player slows down faster when this is larger. At 0 player can wallrun indefinitely
 
     //Read only from script
@@ -128,6 +129,7 @@ public class PlayerMovementRB : MonoBehaviour {
     {
         StateMachineUpdate();
         Movement();
+        Debug.LogWarning(rb.velocity.magnitude);
     }
 
     private void Update()
@@ -183,14 +185,12 @@ public class PlayerMovementRB : MonoBehaviour {
     private void StartSprint()
     {
         moveSpeed *= sprintMultipler;
-        maxSpeed *= sprintMultipler;
         _movementState = PlayerState.SPRINTING;
     }
 
     private void StopSprint()
     {
         moveSpeed /= sprintMultipler;
-        maxSpeed /= sprintMultipler;
         _movementState = PlayerState.WALKING;
     }
 
@@ -223,22 +223,23 @@ public class PlayerMovementRB : MonoBehaviour {
         float xMag = mag.x, yMag = mag.y;
 
         //Counteract sliding and sloppy movement
-        if (_movementState != PlayerState.WALL_RUNNING)
-            CounterMovement(x, y, mag);
+        if (_movementState != PlayerState.WALL_RUNNING) CounterMovement(x, y, mag);
         
         //If holding jump && ready to jump, then jump
         if ((readyToJump || _movementState == PlayerState.WALL_RUNNING) && jumpPressed) Jump(); 
 
         //Set max speed
-        float maxSpeed = this.maxSpeed;
+        float maxSpeed = walkMaxSpeed;
         
         //If sliding down a ramp, add force down so player stays grounded and also builds speed
-        if (crouchPressed && grounded && readyToJump) {
+        if (crouchPressed && grounded && readyToJump)
+        {
             rb.AddForce(Vector3.down * Time.deltaTime * 3000);
             return;
         }
 
         if (_movementState == PlayerState.WALL_RUNNING) maxSpeed = wallrunMaxSpeed;
+        if (_movementState == PlayerState.SPRINTING) maxSpeed = sprintMaxSpeed;
 
         //If speed is larger than maxspeed, cancel out the input so you don't go over max speed
         if (x > 0 && xMag > maxSpeed) x = 0;
@@ -246,11 +247,15 @@ public class PlayerMovementRB : MonoBehaviour {
         if (y > 0 && yMag > maxSpeed) y = 0;
         if (y < 0 && yMag < -maxSpeed) y = 0;
 
+        //If sprinting, don't allow strafing, block horizontal axis input
+        if (_movementState == PlayerState.SPRINTING) x = 0;
+
         //Some multipliers
         float multiplier = 1f, multiplierV = 1f;
         
         //Movement in air
-        if (!grounded) {
+        if (!grounded)
+        {
             multiplier = 0.5f;
             multiplierV = 0.5f;
         }
@@ -414,9 +419,9 @@ public class PlayerMovementRB : MonoBehaviour {
         }
         
         //Limit diagonal running. This will also cause a full stop if sliding fast and un-crouching, so not optimal.
-        if (Mathf.Sqrt((Mathf.Pow(rb.velocity.x, 2) + Mathf.Pow(rb.velocity.z, 2))) > maxSpeed) {
+        if (Mathf.Sqrt((Mathf.Pow(rb.velocity.x, 2) + Mathf.Pow(rb.velocity.z, 2))) > walkMaxSpeed) {
             float fallspeed = rb.velocity.y;
-            Vector3 n = rb.velocity.normalized * maxSpeed;
+            Vector3 n = rb.velocity.normalized * walkMaxSpeed;
             rb.velocity = new Vector3(n.x, fallspeed, n.z);
         }
     }
@@ -551,17 +556,10 @@ public class PlayerMovementRB : MonoBehaviour {
 
         rb.useGravity = !stillClimbing; //Use gravity if not climbing anymore
 
-        //If still climbing, climb force is upward. Else, apply a forward force
-        Vector3 climbForce = stillClimbing ? orientation.transform.up * upwardMantleForce : orientation.transform.forward * forwardMantleForce;
+        //If still climbing, climb force is upward. Else, apply a forward and downward force
+        Vector3 climbForce = stillClimbing ? orientation.transform.up * upwardMantleForce : (orientation.transform.forward * forwardMantleForce) + (Vector3.down * counterMantleForce);
 
         rb.AddForce(climbForce * Time.deltaTime);
-
-        //TODO: Need to ignore movement inputs anyway, rather than trying to constrain along axii can probably just do that
-        //Constrain movement to only vertical (soruce: https://answers.unity.com/questions/404420/rigidbody-constraints-in-local-space.html)
-        Vector3 localVelocity = transform.InverseTransformDirection(rb.velocity);
-        localVelocity.x = 0;
-        if (stillClimbing) localVelocity.z = 0; //Only constrain on forward axis if still climbing. Otherwise, the player can't be pushed forward over the ledge
-        rb.velocity = transform.TransformDirection(localVelocity);
 
         //If raycast didn't hit and grounded, no longer ledgeclimbing, set state to IDLE, set canJump to true
         if (!stillClimbing && grounded)
