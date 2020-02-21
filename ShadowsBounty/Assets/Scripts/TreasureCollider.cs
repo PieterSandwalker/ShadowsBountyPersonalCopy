@@ -33,6 +33,10 @@ public class TreasureCollider : MonoBehaviour
             PlayerPrefs.SetInt("score", score);
             Debug.Log(PlayerPrefs.GetInt("score"));
             SceneManager.LoadScene("ShoppingMenu");
+        } else if (other.gameObject.CompareTag("Key"))
+        {
+            Animmanager.doorKey = true;
+            Destroy(other.gameObject);
         }
     }
 
