@@ -195,14 +195,14 @@ public class PlayerMovementRB : MonoBehaviour {
     private void StartSprint()
     {
         moveSpeed *= sprintMultipler;
-        _maxSpeed = sprintMaxSpeed;
+        _maxSpeed *= sprintMultipler;
         _movementState = PlayerState.SPRINTING;
     }
 
     private void StopSprint()
     {
         moveSpeed /= sprintMultipler;
-        _maxSpeed = walkMaxSpeed;
+        _maxSpeed /= sprintMultipler;
         _movementState = PlayerState.WALKING;
     }
 
@@ -232,7 +232,7 @@ public class PlayerMovementRB : MonoBehaviour {
             sliding = true;
             sprinting = false;
         }
-        else if (grounded)
+        else
         {
             _movementState = PlayerState.CROUCH_IDLING;
             moveSpeed *= crouchMultiplier;
