@@ -261,8 +261,8 @@ public class PlayerMovementRB : MonoBehaviour {
         if (_movementState == PlayerState.SLIDING || _movementState == PlayerState.FALLING) StopSlide();
         transform.localScale = playerScale;
         transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
-        moveSpeed /= crouchMultiplier;
-        _maxSpeed /= crouchMultiplier;
+        moveSpeed = crouchBaseSpeed;
+        _maxSpeed = crouchMaxSpeed;
         _movementState = PlayerState.IDLING;
     }
 
