@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class DoorKey : MonoBehaviour
 {
-/*    public bool inTrigger;
+    public bool inTrigger;
      void OnTriggerEnter(Collider other)
     {
-        inTrigger = true;
+        if (other.gameObject.CompareTag("player"))
+        {
+            inTrigger = true;
+        } else
+        {
+            inTrigger = false;
+        }
+
     }
 
      void OnTriggerExit(Collider other)
@@ -31,6 +38,9 @@ public class DoorKey : MonoBehaviour
     {
         if (inTrigger)
             GUI.Box(new Rect(0, 60, 200, 25), "Press E to take Key");
-    }*/
+    }
+
+
+
 
 }

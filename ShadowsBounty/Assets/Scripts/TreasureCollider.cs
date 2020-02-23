@@ -16,7 +16,7 @@ public class TreasureCollider : MonoBehaviour
         Bounty.text = score.ToString();
     }
 
-    void OnTriggerEnter(Collider other)
+/*    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Treasure"))
         {
@@ -26,23 +26,28 @@ public class TreasureCollider : MonoBehaviour
             Debug.Log("Score: " + score);
             Bounty.text = score.ToString();
         }
-        else if (other.gameObject.CompareTag("Finish"))
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            PlayerPrefs.SetInt("score", score);
-            Debug.Log(PlayerPrefs.GetInt("score"));
-            SceneManager.LoadScene("ShoppingMenu");
-        } else if (other.gameObject.CompareTag("Key"))
+*//*         else if (other.gameObject.CompareTag("Key"))
         {
             Animmanager.doorKey = true;
             Destroy(other.gameObject);
-        }
-    }
+        }*//*
+    }*/
 
     private void OnDisable()
     {
         PlayerPrefs.SetInt("score", score);
     }
+
+    public void addScore(int point)
+    {
+        score += point;
+        Bounty.text = score.ToString();
+    }
+
+/*    public int getScore()
+    {
+        return score;
+    }
+*/
 
 }
