@@ -133,6 +133,7 @@ public class PlayerMovementRB : MonoBehaviour {
         _maxSpeed = walkMaxSpeed; //Init max speed
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
         walkMaxSpeed = _maxSpeed;
         walkBaseSpeed = moveSpeed;
         sprintMaxSpeed = _maxSpeed * sprintMultipler;
