@@ -2290,17 +2290,17 @@ PrefabInstance:
     - target: {fileID: 2085447920674384943, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 38.55
+      value: 49.38
       objectReference: {fileID: 0}
     - target: {fileID: 2085447920674384943, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.21
+      value: 2.96
       objectReference: {fileID: 0}
     - target: {fileID: 2085447920674384943, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 102.1
+      value: 108.8
       objectReference: {fileID: 0}
     - target: {fileID: 2085447920674384943, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
@@ -2460,12 +2460,12 @@ PrefabInstance:
     - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: slideForce
-      value: 450
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: stopWallrunThresholdS
-      value: 12
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
@@ -2475,6 +2475,21 @@ PrefabInstance:
     - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
         type: 3}
       propertyPath: horizontalCheckDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: walkMaxSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: wallrunMaxSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: sprintMultipler
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2085447921629470638, guid: 59abfd4064bccc942a5f75ae31509ab0,

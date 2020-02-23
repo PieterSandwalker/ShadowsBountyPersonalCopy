@@ -1,12 +1,11 @@
 // Some stupid rigidbody based movement by Dani
-
 using System.Collections.Generic;
 using System;
 using UnityEngine;
 
 public class PlayerMovementRB : MonoBehaviour {
-
-    public enum PlayerState { IDLING, CROUCH_IDLING, CROUCH_WALKING, WALKING, SPRINTING, SLIDING, FALLING, WALL_RUNNING, MANTLING, LADDER_CLIMBING }
+    //TODO: Consider adding JUMP_FROM_SPRINT and JUMP_FROM_WALLRUN states to make initiating and chaining wallruns more consistent
+    public enum PlayerState { IDLING, CROUCH_IDLING, CROUCH_WALKING, WALKING, SPRINTING, SLIDING, FALLING, WALL_RUNNING, MANTLING }
     public enum WallrunDebugInfo { TOO_SLOW, BAD_APPROACH_ANGLE, NON_HORIZONTAL_IMPACT_NORMAL, NOT_CONTACTING_WALL, GROUNDED }
 
     private Dictionary<WallrunDebugInfo, bool> WallrunDebugLog;
@@ -29,15 +28,16 @@ public class PlayerMovementRB : MonoBehaviour {
     private float sensMultiplier = 1f;
     
     //Movement
-    public float moveSpeed = 4500;
-    public float walkMaxSpeed = 20;
-    public float sprintMaxSpeed = 40f;
+    public float moveSpeed = 4500f; //Movement force
+    public float crouchMaxSpeed = 10f; //Max velocities that the player can accelerate to via the movement force
+    public float walkMaxSpeed = 18f;
+    public float sprintMaxSpeed = 33f;
     public float wallrunMaxSpeed = 30f;
     public bool grounded;
     public LayerMask whatIsGround;
 
     //added by Sam's Code {
-    public float sprintMultipler = 2f;
+    public float sprintMultipler = 1f;
     public float crouchMultiplier = 0.66f;
     public float slideMultiplier = 1.5f;
     public float slideToCrouchThreshold = 15f;
@@ -60,7 +60,7 @@ public class PlayerMovementRB : MonoBehaviour {
     
     //Input
     float x, y;
-    bool jumpPressed, sprintPressed, crouchPressed;
+    bool jumping, sprinting, crouching, sliding;
     
     //Sliding
     private Vector3 normalVector = Vector3.up;
@@ -99,6 +99,12 @@ public class PlayerMovementRB : MonoBehaviour {
     private PlayerState _movementState = PlayerState.IDLING; // Init player state to standing idle
     public PlayerState movementState { get { return _movementState; } }
     [SerializeField]
+    private float _maxSpeed;
+    public float maxSpeed { get { return _maxSpeed; } }
+    [SerializeField]
+    private float _currentSpeed;
+    public float currentSpeed { get { return _currentSpeed; } }
+    [SerializeField]
     private Vector3 _meanSurfaceImpactNormal;
     public Vector3 meanSurfaceImpactNormal { get { return _meanSurfaceImpactNormal; } }
     [SerializeField]
@@ -119,6 +125,7 @@ public class PlayerMovementRB : MonoBehaviour {
     void Start()
     {
         playerScale =  transform.localScale;
+        _maxSpeed = walkMaxSpeed; //Init max speed
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -129,7 +136,6 @@ public class PlayerMovementRB : MonoBehaviour {
     {
         StateMachineUpdate();
         Movement();
-        Debug.LogWarning(rb.velocity.magnitude);
     }
 
     private void Update()
@@ -145,71 +151,105 @@ public class PlayerMovementRB : MonoBehaviour {
     {
         x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical");
-        jumpPressed = Input.GetButton("Jump");
-        crouchPressed = Input.GetKey(crouchKey);
+        jumping = Input.GetButton("Jump");
+        crouching = Input.GetKey(crouchKey);
 
-        //Sprinting
         if (Input.GetKeyDown(sprintKey) && _movementState == PlayerState.WALKING) //Can only transition to sprint state if walking
             StartSprint();
-        if (Input.GetKeyUp(sprintKey) && _movementState == PlayerState.SPRINTING)
+        else if (Input.GetKeyUp(sprintKey) && (_movementState == PlayerState.SPRINTING))
             StopSprint();
-
-        //Crouching
-        if (Input.GetKeyDown(crouchKey))
+        else if (Input.GetKeyDown(crouchKey))
             StartCrouch();
-        if (Input.GetKeyUp(crouchKey))
+        else if (Input.GetKeyUp(crouchKey))
             StopCrouch();
     }
 
+    //Bug: If player transitions from sprint->falling->grounded, they retain sprint movespeed bonuses. May need to resort to setting flat values rather than using multipliers for each state
     private void StateMachineUpdate()
     {
         /* State transitions */
-        if (rb.velocity.magnitude > 0.1f) //Transition from idle states to walking states
-            if (_movementState == PlayerState.IDLING)
-                _movementState = PlayerState.WALKING;
-            else if (_movementState == PlayerState.CROUCH_IDLING)
-                _movementState = PlayerState.CROUCH_WALKING;
-        else if (Mathf.Approximately(rb.velocity.magnitude, 0f)) //Transition from walking states to idle states
-            if (_movementState == PlayerState.WALKING)
-                _movementState = PlayerState.IDLING;
-            else if (_movementState == PlayerState.CROUCH_WALKING)
-                _movementState = PlayerState.CROUCH_IDLING;
-        //TODO: Add transition from walk to sprint, sprint to walk and sprint to idle
+        if (rb.velocity.magnitude > 0.5f) //Transition from idle states to walking states
+        {
+            if (_movementState == PlayerState.IDLING) _movementState = PlayerState.WALKING;
+            else if (_movementState == PlayerState.CROUCH_IDLING) _movementState = PlayerState.CROUCH_WALKING;
+        }
+        else if (rb.velocity.magnitude < 0.5f) //Transition from walking states to idle states
+        {
+            if (_movementState == PlayerState.SPRINTING) StopSprint();
+            else if (_movementState == PlayerState.SLIDING) StopSlide();
+
+            if (_movementState == PlayerState.WALKING) _movementState = PlayerState.IDLING;
+            else if (_movementState == PlayerState.CROUCH_WALKING) _movementState = PlayerState.CROUCH_IDLING;
+        }
+        else if (_movementState == PlayerState.SLIDING && rb.velocity.magnitude < slideToCrouchThreshold) StopSlide(); //Transition out of sliding
 
         if (!grounded && _movementState != PlayerState.WALL_RUNNING && _movementState != PlayerState.MANTLING) //Transition to falling
             _movementState = PlayerState.FALLING;
         else if (grounded && _movementState == PlayerState.FALLING) //Transition from falling to grounded
-            _movementState = PlayerState.IDLING;
+        {
+            if (_maxSpeed == walkMaxSpeed) _movementState = PlayerState.WALKING;
+            else if (_maxSpeed == sprintMaxSpeed) _movementState = PlayerState.SPRINTING;
+        }
     }
 
     private void StartSprint()
     {
         moveSpeed *= sprintMultipler;
+        _maxSpeed = sprintMaxSpeed;
         _movementState = PlayerState.SPRINTING;
     }
 
     private void StopSprint()
     {
         moveSpeed /= sprintMultipler;
+        _maxSpeed = walkMaxSpeed;
         _movementState = PlayerState.WALKING;
+    }
+
+    private void StopSlide()
+    {
+        StopSprint();
+        _maxSpeed /= slideMultiplier;
+        _movementState = PlayerState.SLIDING;
+        StartCrouch();
     }
 
     //TODO: Add a raycast check that prevents player from uncrouching if there is an object above them
     private void StartCrouch()
     {
-        transform.localScale = crouchScale;
-        transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
-        if (rb.velocity.magnitude > 0.5f) {
-            if (grounded) {
-                rb.AddForce(orientation.transform.forward * slideForce);
-            }
+        Debug.LogWarning("StartCrouch");
+        if (_movementState != PlayerState.SLIDING)
+        {
+            transform.localScale = crouchScale;
+            transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
+        }
+
+        if (_movementState == PlayerState.SPRINTING && grounded)
+        {
+            _movementState = PlayerState.SLIDING;
+            rb.AddForce(orientation.transform.forward * slideForce);
+            _maxSpeed *= slideMultiplier;
+            sliding = true;
+            sprinting = false;
+        }
+        else if (grounded)
+        {
+            _movementState = PlayerState.CROUCH_IDLING;
+            moveSpeed *= crouchMultiplier;
+            _maxSpeed *= crouchMultiplier;
+            sliding = false;
         }
     }
 
     private void StopCrouch()
     {
+        Debug.LogWarning("StopCrouch");
+        if (_movementState == PlayerState.SLIDING || _movementState == PlayerState.FALLING) StopSlide();
         transform.localScale = playerScale;
         transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+        moveSpeed /= crouchMultiplier;
+        _maxSpeed /= crouchMultiplier;
+        _movementState = PlayerState.IDLING;
     }
 
     private void Movement()
@@ -224,31 +264,29 @@ public class PlayerMovementRB : MonoBehaviour {
 
         //Counteract sliding and sloppy movement
         if (_movementState != PlayerState.WALL_RUNNING) CounterMovement(x, y, mag);
-        
-        //If holding jump && ready to jump, then jump
-        if ((readyToJump || _movementState == PlayerState.WALL_RUNNING) && jumpPressed) Jump(); 
 
-        //Set max speed
-        float maxSpeed = walkMaxSpeed;
-        
+        //If sprinting, don't allow strafing, block horizontal axis input
+        //if (_movementState == PlayerState.SPRINTING) x = 0;
+
+        //If holding jump && ready to jump, then jump
+        if ((readyToJump || _movementState == PlayerState.WALL_RUNNING) && jumping) Jump();
+
         //If sliding down a ramp, add force down so player stays grounded and also builds speed
-        if (crouchPressed && grounded && readyToJump)
+        if (_movementState == PlayerState.SLIDING && grounded && readyToJump)
         {
+            if (rb.velocity.magnitude < 0.9) sliding = false;
+
             rb.AddForce(Vector3.down * Time.deltaTime * 3000);
             return;
         }
 
-        if (_movementState == PlayerState.WALL_RUNNING) maxSpeed = wallrunMaxSpeed;
-        if (_movementState == PlayerState.SPRINTING) maxSpeed = sprintMaxSpeed;
+        if (_movementState == PlayerState.WALL_RUNNING) _maxSpeed = wallrunMaxSpeed;
 
         //If speed is larger than maxspeed, cancel out the input so you don't go over max speed
-        if (x > 0 && xMag > maxSpeed) x = 0;
-        if (x < 0 && xMag < -maxSpeed) x = 0;
-        if (y > 0 && yMag > maxSpeed) y = 0;
-        if (y < 0 && yMag < -maxSpeed) y = 0;
-
-        //If sprinting, don't allow strafing, block horizontal axis input
-        if (_movementState == PlayerState.SPRINTING) x = 0;
+        if (x > 0 && xMag > _maxSpeed) x = 0;
+        if (x < 0 && xMag < -_maxSpeed) x = 0;
+        if (y > 0 && yMag > _maxSpeed) y = 0;
+        if (y < 0 && yMag < -_maxSpeed) y = 0;
 
         //Some multipliers
         float multiplier = 1f, multiplierV = 1f;
@@ -259,9 +297,13 @@ public class PlayerMovementRB : MonoBehaviour {
             multiplier = 0.5f;
             multiplierV = 0.5f;
         }
-        
+
         //Movement while sliding
-        if (grounded && crouchPressed) multiplierV = 0f;
+        if (grounded && _movementState == PlayerState.SLIDING)
+        {
+            if (rb.velocity.magnitude < moveSpeed * crouchMultiplier) sliding = false;
+            multiplierV = 0f;
+        }
 
         //Check for ledge
         if (IsLedge())
@@ -312,6 +354,7 @@ public class PlayerMovementRB : MonoBehaviour {
             else
             {
                 _movementState = PlayerState.FALLING;
+                _maxSpeed = walkMaxSpeed;
                 rb.useGravity = true;
             }
 
@@ -333,10 +376,20 @@ public class PlayerMovementRB : MonoBehaviour {
             Vector3 resultant = forwardForce + sidewaysForce;
             rb.AddForce(resultant);
         }
+
+        _currentSpeed = rb.velocity.magnitude; //For debugging
     }
 
     private void Jump()
     {
+        /*
+        if (IsLedge())
+        {
+            readyToJump = false;
+            _movementState = PlayerState.MANTLING;
+        }
+        */
+
         if (readyToJump)
         {
             readyToJump = false;
@@ -355,11 +408,13 @@ public class PlayerMovementRB : MonoBehaviour {
             }
 
             //If jumping while falling, reset y velocity.
+            /*
             Vector3 vel = rb.velocity;
             if (rb.velocity.y < 0.5f)
                 rb.velocity = new Vector3(vel.x, 0, vel.z);
             else if (rb.velocity.y > 0)
                 rb.velocity = new Vector3(vel.x, vel.y / 2, vel.z);
+            */
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
@@ -400,12 +455,13 @@ public class PlayerMovementRB : MonoBehaviour {
         orientation.transform.localRotation = Quaternion.Euler(0, desiredX, zRotation);
     }
 
+    //TODO: Bug where player gets flung out of map when sprinting, sliding and turning, probably caused by this
     private void CounterMovement(float x, float y, Vector2 mag)
     {
-        if (!grounded || jumpPressed) return;
+        if (!grounded || jumping) return;
 
         //Slow down sliding
-        if (crouchPressed) {
+        if (_movementState == PlayerState.SLIDING) {
             rb.AddForce(moveSpeed * Time.deltaTime * -rb.velocity.normalized * slideCounterMovement);
             return;
         }
@@ -419,9 +475,9 @@ public class PlayerMovementRB : MonoBehaviour {
         }
         
         //Limit diagonal running. This will also cause a full stop if sliding fast and un-crouching, so not optimal.
-        if (Mathf.Sqrt((Mathf.Pow(rb.velocity.x, 2) + Mathf.Pow(rb.velocity.z, 2))) > walkMaxSpeed) {
+        if (Mathf.Sqrt((Mathf.Pow(rb.velocity.x, 2) + Mathf.Pow(rb.velocity.z, 2))) > _maxSpeed) {
             float fallspeed = rb.velocity.y;
-            Vector3 n = rb.velocity.normalized * walkMaxSpeed;
+            Vector3 n = rb.velocity.normalized * _maxSpeed;
             rb.velocity = new Vector3(n.x, fallspeed, n.z);
         }
     }
@@ -487,7 +543,7 @@ public class PlayerMovementRB : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        //TODO: Should wrap any wallrun-specific code in a function, call it here
+        //TODO: Should wrap any wallrun-specific code in a function, call it here e.g. WallrunStart()
         //First check if we are colliding against a wall
         if (Physics.CheckSphere(wallContactCheck.position, wallContactCheckRadius, wallLayer) && collision.collider.tag == "Wall")
         {
@@ -513,6 +569,7 @@ public class PlayerMovementRB : MonoBehaviour {
             if (isImpactHorizontal && isGoodApproachAngle && isMovingFastEnough)
             {
                 _movementState = PlayerState.WALL_RUNNING; //Set state to wall running
+                _maxSpeed = wallrunMaxSpeed;
                 rb.useGravity = false; //Disable gravity
                 _wallrunTime = 0; //Reset timer
                 _isWallRight = Physics.Raycast(orientation.transform.position, orientation.transform.right, wallrunRaycastLength); // Determine to which side of the player the wall is
