@@ -30,8 +30,13 @@ public class PlayerMovementRB : MonoBehaviour {
     //Movement
     public float moveSpeed = 4500f; //Movement force
     public float crouchMaxSpeed = 10f; //Max velocities that the player can accelerate to via the movement force
+    public float crouchBaseSpeed = 10f; 
     public float walkMaxSpeed = 18f;
+    public float walkBaseSpeed = 18f;
     public float sprintMaxSpeed = 33f;
+    public float sprintBaseSpeed = 33f;
+    public float slideMaxSpeed = 33f;
+    public float slideBaseSpeed = 33f;
     public float wallrunMaxSpeed = 30f;
     public bool grounded;
     public LayerMask whatIsGround;
@@ -128,6 +133,13 @@ public class PlayerMovementRB : MonoBehaviour {
         _maxSpeed = walkMaxSpeed; //Init max speed
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        walkMaxSpeed = _maxSpeed;
+        sprintMaxSpeed = _maxSpeed * sprintMultipler;
+        sprintBaseSpeed = moveSpeed * sprintMultipler;
+        crouchMaxSpeed = _maxSpeed * crouchMultiplier;
+        crouchBaseSpeed = moveSpeed * crouchMultiplier;
+        slideMaxSpeed = _maxSpeed * slideMultiplier * sprintMultipler;
+        slideBaseSpeed = moveSpeed * slideMultiplier * sprintMultipler;
 
         InitWallrunDebugLog();
     }
@@ -167,6 +179,7 @@ public class PlayerMovementRB : MonoBehaviour {
     //Bug: If player transitions from sprint->falling->grounded, they retain sprint movespeed bonuses. May need to resort to setting flat values rather than using multipliers for each state
     private void StateMachineUpdate()
     {
+
         /* State transitions */
         if (rb.velocity.magnitude > 0.5f) //Transition from idle states to walking states
         {
@@ -189,27 +202,28 @@ public class PlayerMovementRB : MonoBehaviour {
         {
             if (_maxSpeed == walkMaxSpeed) _movementState = PlayerState.WALKING;
             else if (_maxSpeed == sprintMaxSpeed) _movementState = PlayerState.SPRINTING;
+            else if (_maxSpeed == crouchMaxSpeed) _movementState = PlayerState.CROUCH_WALKING;
+            else if (_maxSpeed == slideMaxSpeed) _movementState = PlayerState.SLIDING;
         }
     }
 
     private void StartSprint()
     {
-        moveSpeed *= sprintMultipler;
-        _maxSpeed *= sprintMultipler;
+        moveSpeed = sprintBaseSpeed;
+        _maxSpeed = sprintMaxSpeed;
         _movementState = PlayerState.SPRINTING;
     }
 
     private void StopSprint()
     {
-        moveSpeed /= sprintMultipler;
-        _maxSpeed /= sprintMultipler;
+        moveSpeed = walkBaseSpeed;
+        _maxSpeed = walkMaxSpeed;
         _movementState = PlayerState.WALKING;
     }
 
     private void StopSlide()
     {
         StopSprint();
-        _maxSpeed /= slideMultiplier;
         _movementState = PlayerState.SLIDING;
         StartCrouch();
     }
@@ -228,15 +242,15 @@ public class PlayerMovementRB : MonoBehaviour {
         {
             _movementState = PlayerState.SLIDING;
             rb.AddForce(orientation.transform.forward * slideForce);
-            _maxSpeed *= slideMultiplier;
+            _maxSpeed = slideMaxSpeed;
             sliding = true;
             sprinting = false;
         }
         else
         {
             _movementState = PlayerState.CROUCH_IDLING;
-            moveSpeed *= crouchMultiplier;
-            _maxSpeed *= crouchMultiplier;
+            moveSpeed = crouchBaseSpeed;
+            _maxSpeed = crouchMaxSpeed;
             sliding = false;
         }
     }
