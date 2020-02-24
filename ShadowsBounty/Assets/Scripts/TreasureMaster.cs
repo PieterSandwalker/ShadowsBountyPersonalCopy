@@ -10,4 +10,15 @@ public class TreasureMaster : MonoBehaviour
     {
         return value;
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            this.gameObject.SetActive(false);
+            other.gameObject.GetComponent<TreasureCollider>().addScore(value);
+        //    Debug.Log(other.gameObject.GetComponent<TreasureCollider>().getScore());
+
+        }
+    }
 }
