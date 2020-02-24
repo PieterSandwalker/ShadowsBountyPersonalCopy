@@ -290,7 +290,7 @@ public class PlayerMovementRB : MonoBehaviour {
             else if (_movementState == PlayerState.SLIDING)
                 StopSlide();
             if (transform.localScale == playerScale)
-                _movementState = PlayerState.IDLI;
+                _movementState = PlayerState.IDLING;
             else if (transform.localScale == crouchScale)
                 _movementState = PlayerState.CROUCH_IDLING;
         }
