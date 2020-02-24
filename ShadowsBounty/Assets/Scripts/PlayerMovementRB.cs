@@ -10,8 +10,6 @@ public class PlayerMovementRB : MonoBehaviour {
 
     private Dictionary<WallrunDebugInfo, bool> WallrunDebugLog;
 
-    private KeyCode crouchKey = KeyCode.C;
-    private KeyCode sprintKey = KeyCode.LeftShift;
 
     //Keycodes
     public KeyCode crouchKey = KeyCode.C;
@@ -280,24 +278,24 @@ public class PlayerMovementRB : MonoBehaviour {
             rb.AddForce(Vector3.down * Time.deltaTime * 10);
         if (rb.velocity.magnitude > 0.5f)
         {
-            if (_movementState == PlayerState.IDLE)
-                _movementState = PlayerState.WALK;
-            else if (_movementState == PlayerState.CROUCH_IDLE)
-                _movementState = PlayerState.CROUCH_WALK;
+            if (_movementState == PlayerState.IDLING)
+                _movementState = PlayerState.WALKING;
+            else if (_movementState == PlayerState.CROUCH_IDLING)
+                _movementState = PlayerState.CROUCH_WALKING;
         }
 
         if (rb.velocity.magnitude < 0.5f)
         {
-            if (_movementState == PlayerState.RUN)
+            if (_movementState == PlayerState.SPRINTING)
                 StopSprint();
-            else if (_movementState == PlayerState.SLIDE)
+            else if (_movementState == PlayerState.SLIDING)
                 StopSlide();
             if (transform.localScale == playerScale)
-                _movementState = PlayerState.IDLE;
+                _movementState = PlayerState.IDLI;
             else if (transform.localScale == crouchScale)
-                _movementState = PlayerState.CROUCH_IDLE;
+                _movementState = PlayerState.CROUCH_IDLING;
         }
-        else if (rb.velocity.magnitude < slideToCrouchThreshold && _movementState == PlayerState.SLIDE)
+        else if (rb.velocity.magnitude < slideToCrouchThreshold && _movementState == PlayerState.SLIDING)
             StopSlide();
         //Find actual velocity relative to where player is looking
         Vector2 mag = FindVelRelativeToLook();
