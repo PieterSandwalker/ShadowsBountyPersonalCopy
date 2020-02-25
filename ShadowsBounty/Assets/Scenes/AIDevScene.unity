@@ -1569,6 +1569,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500612128}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &505378421 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2085447920103793532, guid: 59abfd4064bccc942a5f75ae31509ab0,
+    type: 3}
+  m_PrefabInstance: {fileID: 819857283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &569033663
 GameObject:
   m_ObjectHideFlags: 0
@@ -2001,6 +2007,12 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!4 &724860133 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5777243937488200001, guid: 59abfd4064bccc942a5f75ae31509ab0,
+    type: 3}
+  m_PrefabInstance: {fileID: 819857283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &727428823
 GameObject:
   m_ObjectHideFlags: 0
@@ -2047,15 +2059,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54670ba2fad6bb942902fd816cfd84d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectile: {fileID: 0}
-  firePoint: {fileID: 0}
+  projectile: {fileID: 680295159}
+  firePoint: {fileID: 1814045637}
+  accuracy: 3.1415927
   engageRadius: 15
   playerTag: Player
   players: []
+  readyToFire: 1
+  fireRate: 5
+  power: 1000
   Target: {fileID: 855798100}
   RotationSpeed: 1
-  _lookRotation: {x: 0, y: 0, z: 0, w: 0}
-  _direction: {x: 0, y: 0, z: 0}
 --- !u!1 &736821870
 GameObject:
   m_ObjectHideFlags: 0
@@ -2539,6 +2553,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: head
+      value: 
+      objectReference: {fileID: 505378421}
+    - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: ledgeClearCheck
+      value: 
+      objectReference: {fileID: 1808434436}
+    - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: wallContactCheck
+      value: 
+      objectReference: {fileID: 724860133}
+    - target: {fileID: 2085447921629470637, guid: 59abfd4064bccc942a5f75ae31509ab0,
+        type: 3}
+      propertyPath: wallLayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59abfd4064bccc942a5f75ae31509ab0, type: 3}
@@ -4861,6 +4895,12 @@ Transform:
   m_Father: {fileID: 1615371165}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1808434436 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2825929142475191902, guid: 59abfd4064bccc942a5f75ae31509ab0,
+    type: 3}
+  m_PrefabInstance: {fileID: 819857283}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1814045636
 GameObject:
   m_ObjectHideFlags: 0
