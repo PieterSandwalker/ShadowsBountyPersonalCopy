@@ -285,6 +285,7 @@ Transform:
   - {fileID: 2085447920454110625}
   - {fileID: 2085447920103793532}
   - {fileID: 5777243937488200001}
+  - {fileID: 2825929142475191902}
   m_Father: {fileID: 2085447920674384943}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -378,19 +379,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCam: {fileID: 2085447921504194457}
   orientation: {fileID: 2085447920454110625}
+  head: {fileID: 0}
   moveSpeed: 4500
   maxSpeed: 20
   grounded: 0
   whatIsGround:
     serializedVersion: 2
     m_Bits: 512
+  sprintMultipler: 2
+  crouchMultiplier: 0.66
+  slideMultiplier: 1.5
+  slideToCrouchThreshold: 15
   counterMovement: 0.175
   maxSlopeAngle: 35
   slideForce: 400
   slideCounterMovement: 0.2
   jumpForce: 550
+  verticalCheckDistance: 1.25
+  horizontalCheckDistance: 1
+  upwardForce: 100
+  forwardForce: 100
   wallLayer:
     serializedVersion: 2
     m_Bits: 0
   wallContactCheck: {fileID: 0}
+  wallrunCameraAngle: 15
   wallContactCheckRadius: 0.5
+  wallrunRaycastLength: 1
+  impactNormalYThreshold: 0.0001
+  startWallrunThreshold: 12
+  stopWallrunThresholdS: 12
+  stopVerticalMovementThreshold: 1
+  wallrunSpeedBoost: 2
+  wallrunMaxSpeed: 35
+  resistanceFactor: 100
+  _movementState: 0
+  _meanSurfaceImpactNormal: {x: 0, y: 0, z: 0}
+  _isWallRight: 0
+  _wallrunTime: 0
+--- !u!1 &3858648955614676953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2825929142475191902}
+  m_Layer: 0
+  m_Name: LedgeClearCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2825929142475191902
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3858648955614676953}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2085447921629470638}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
