@@ -61,3 +61,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Compiled libraries and associated meta for photon bolt
+/[Aa]ssets/Photon/PhotonBolt/assemblies/bolt.user.dll
+/[Aa]ssets/Photon/PhotonBolt/assemblies/bolt.user.dll.meta
