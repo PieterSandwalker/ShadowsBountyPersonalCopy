@@ -1,13 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    DataJSON data;
+
+
     public void PlayGame()
     {
-        PlayerPrefs.SetInt("score", 100);
+        data = new DataJSON(100);
+        DataJSON.Save(data);
+        //Debug.Log(data);
+        //PlayerPrefs.SetInt("score", 100);
         PlayerPrefs.SetInt("round", 1);
         SceneManager.LoadScene("ShoppingMenu");
     }
