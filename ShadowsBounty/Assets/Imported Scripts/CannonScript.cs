@@ -6,13 +6,13 @@ public class CannonScript : MonoBehaviour
 {
     public GameObject projectile;
     public Transform firePoint;
-    public float accuracy = Mathf.PI;
+    public float accuracy = Mathf.PI/3;
     public float engageRadius = 15.0f;
     public string playerTag = "Player";
     public GameObject[] players;
     public bool readyToFire = true;
     public float fireRate = 5.0f;
-    public float power = 1000.0f;
+    public float power = 4000.0f;
 
     //values that will be set in the Inspector
     public Transform Target;
@@ -23,7 +23,17 @@ public class CannonScript : MonoBehaviour
     private Vector3 _direction;
 
     void resetFire() { readyToFire = true; }
-
+    void CheckFire(float angleView)
+    {
+        if (readyToFire && angleView <= accuracy)
+        {
+            readyToFire = false;
+            GameObject bullet = Instantiate(projectile, firePoint.position, Quaternion.identity);
+            Rigidbody rb = bullet.GetComponent<Rigidbody>();
+            rb.AddForce(transform.forward * power);
+            Invoke("resetFire", fireRate);
+        }
+    }
     void Start()
     {
         players = GameObject.FindGameObjectsWithTag(playerTag);
@@ -34,12 +44,7 @@ public class CannonScript : MonoBehaviour
         //find the vector pointing from our position to the target
         _direction = (Target.position - transform.position).normalized;
         float angleView = Vector3.Angle(_direction, transform.forward);
-        if (readyToFire && angleView <= accuracy)
-        {
-            readyToFire = false;
-            GameObject bullet = Instantiate(projectile, firePoint.position, Quaternion.identity);
-            Invoke("resetFire", fireRate);
-        }
+        CheckFire(angleView);
         //create the rotation we need to be in to look at the target
         _lookRotation = Quaternion.LookRotation(_direction);
 
