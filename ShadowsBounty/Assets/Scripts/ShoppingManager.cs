@@ -21,10 +21,14 @@ public class ShoppingManager : MonoBehaviour
 
     int Bounty;
 
+    DataJSON data;
+
     // Start is called before the first frame update
     private void Start()
     {
-        Bounty = PlayerPrefs.GetInt("score");
+        data = DataJSON.Load();
+        //Bounty = PlayerPrefs.GetInt("score");
+        Bounty = data.bounty;
         Debug.Log(Bounty);
         //Instance = PersistentManagerScript.Instance;
         //BountyTxt.text = Instance.Bounty.ToString();
@@ -54,11 +58,12 @@ public class ShoppingManager : MonoBehaviour
 
     public void NextGame()
     {
-        PlayerPrefs.SetInt("score", Bounty);
+        //PlayerPrefs.SetInt("score", Bounty);
+        DataJSON.Save(data);
         SceneManager.LoadScene("TreasureTesting");
     }
 
-    public void Shopping(int cost)
+    public void Shopping(int cost, int index)
     {
         if (cost > Bounty)
         {
@@ -70,6 +75,7 @@ public class ShoppingManager : MonoBehaviour
             Bounty -= cost;
             M_Object.text = Bounty.ToString();
             Message_Object.text = BuySuccessTxt;
+            data.itemNum[index]++;
         }
     }
 
