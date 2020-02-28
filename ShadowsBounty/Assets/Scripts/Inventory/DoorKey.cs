@@ -9,7 +9,7 @@ public class DoorKey : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             this.gameObject.SetActive(false);
-            other.gameObject.GetComponent<Inventory>().getKey();
+            other.gameObject.GetComponent<Inventory>().GetKey();
           
 
         }

@@ -8,28 +8,45 @@ public class Inventory : MonoBehaviour
     // Start is called before the first frame update
     public bool hasKey;
 
+    //wait to do
     Dictionary<string, int> itemList;
+
+    DataJSON data;
+
+    int score;
 
     void Start()
     {
         hasKey = false;
-
-
-        itemList = new Dictionary<string, int>();
-        DataJSON data = new DataJSON(100);
-        //data.bounty = PlayerPrefs.GetInt("score");
-        List<int> list = new List<int>();
-        list.Add(0);
-        list.Add(2);
-        string json = JsonUtility.ToJson(data);
-        Debug.Log(Application.dataPath);
-        DataJSON.Save(json);
-        //DataJSON list2 = JsonUtility.FromJson<DataJSON>(DataJSON.Load());
+        data = DataJSON.Load();
+        score = data.bounty;
     }
 
-    public void getKey()
+    public void GetKey()
     {
         hasKey = true;
+    }
+
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public void AddScore(int point)
+    {
+        score += point;
+    }
+
+    //wait to do
+    public void UseItem()
+    {
+        //todo
+    }
+
+    public void SceneOver()
+    {
+        data.bounty = score;
+        DataJSON.Save(data);
     }
 
 }

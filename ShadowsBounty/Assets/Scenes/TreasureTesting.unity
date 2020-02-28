@@ -687,8 +687,9 @@ GameObject:
   m_Component:
   - component: {fileID: 770862230}
   - component: {fileID: 770862229}
+  - component: {fileID: 770862231}
   m_Layer: 0
-  m_Name: Timer
+  m_Name: HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -707,7 +708,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CountDown_text: {fileID: 1563599095}
-  roundTime: 100
+  roundTime: 10
 --- !u!4 &770862230
 Transform:
   m_ObjectHideFlags: 0
@@ -722,6 +723,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &770862231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770862228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da8aa355c4e35414d938a73a3e1ca52b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  score: 0
+  Bounty: {fileID: 608842517}
 --- !u!1 &1167845923
 GameObject:
   m_ObjectHideFlags: 0
@@ -1445,9 +1460,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1598250300}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73d434b17799ce3418e890d50db5abae, type: 3}
+  m_Script: {fileID: 11500000, guid: ecca17d7928a5bb4eadcb0e2c5a69a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasKey: 0
 --- !u!4 &1598250302
 Transform:
   m_ObjectHideFlags: 0
@@ -2025,7 +2041,15 @@ MonoBehaviour:
   orientation: {fileID: 2085447919982175305}
   head: {fileID: 2085447920709978772}
   moveSpeed: 7000
-  maxSpeed: 20
+  crouchMaxSpeed: 10
+  crouchBaseSpeed: 10
+  walkMaxSpeed: 18
+  walkBaseSpeed: 18
+  sprintMaxSpeed: 33
+  sprintBaseSpeed: 33
+  slideMaxSpeed: 33
+  slideBaseSpeed: 33
+  wallrunMaxSpeed: 35
   grounded: 0
   whatIsGround:
     serializedVersion: 2
@@ -2039,10 +2063,12 @@ MonoBehaviour:
   slideForce: 400
   slideCounterMovement: 0.2
   jumpForce: 550
+  ledgeClearCheck: {fileID: 0}
   verticalCheckDistance: 1.25
   horizontalCheckDistance: 1
-  upwardForce: 100
-  forwardForce: 100
+  upwardMantleForce: 5000
+  forwardMantleForce: 750
+  counterMantleForce: 5000
   wallLayer:
     serializedVersion: 2
     m_Bits: 8704
@@ -2055,9 +2081,10 @@ MonoBehaviour:
   stopWallrunThresholdS: 12
   stopVerticalMovementThreshold: 1
   wallrunSpeedBoost: 2
-  wallrunMaxSpeed: 35
   resistanceFactor: 100
   _movementState: 0
+  _maxSpeed: 0
+  _currentSpeed: 0
   _meanSurfaceImpactNormal: {x: 0, y: 0, z: 0}
   _isWallRight: 0
   _wallrunTime: 0
@@ -2188,7 +2215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e99ccc46879c3a545bf99dcdd0b82a49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bounty: {fileID: 608842517}
 --- !u!114 &2085447921976108656
 MonoBehaviour:
   m_ObjectHideFlags: 0
