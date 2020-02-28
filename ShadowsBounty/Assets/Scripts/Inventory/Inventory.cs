@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Inventory : MonoBehaviour
 {
@@ -15,8 +16,11 @@ public class Inventory : MonoBehaviour
 
     int score;
 
+    int selectItemIndex;
+
     void Start()
     {
+        selectItemIndex = -1;
         hasKey = false;
         data = DataJSON.Load();
         score = data.bounty;
@@ -40,7 +44,26 @@ public class Inventory : MonoBehaviour
     //wait to do
     public void UseItem()
     {
-        //todo
+        string itemName = "item" + selectItemIndex.ToString();
+        CoolDown cd = GameObject.Find(itemName).GetComponent<CoolDown>();
+        if (cd.IsReady())
+        {
+            cd.Use();
+            selectItemIndex = -1;
+        }
+        
+        /*switch (caseSwitch)
+        {
+            case 1:
+                Console.WriteLine("Case 1");
+                break;
+            case 2:
+                Console.WriteLine("Case 2");
+                break;
+            default:
+                Console.WriteLine("Default case");
+                break;
+        }*/
     }
 
     public void SceneOver()
@@ -49,4 +72,16 @@ public class Inventory : MonoBehaviour
         DataJSON.Save(data);
     }
 
+    private void Update()
+    {
+        if ( Input.GetKeyDown(KeyCode.Q) && selectItemIndex != -1 )
+        {
+            UseItem();
+        }
+    }
+
+    public void setSelectItemIndex(int index)
+    {
+        selectItemIndex = index;
+    }
 }
