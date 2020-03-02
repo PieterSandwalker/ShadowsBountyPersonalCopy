@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class NavAI : MonoBehaviour
 {
     public Transform goal;
-    public float engageRadius = 15.0f;
+    public float engageRadius = 45.0f;
     public string patrolTag = "PatrolPoint";
     public string playerTag = "Player";
     public GameObject[] objs;
@@ -14,6 +14,7 @@ public class NavAI : MonoBehaviour
     public int index = 0;
     private int numberOfPoints;
     private bool playerDetected = false;
+    public Vector3 HitLocation;
 
     void Start()
     {
@@ -52,10 +53,38 @@ public class NavAI : MonoBehaviour
             if (distance < engageRadius && distance < minimumDistance)
             {
                 minimumDistance = distance;
-                playerDetected = true;
-                NavMeshAgent agent = GetComponent<NavMeshAgent>();
-                agent.destination = player.transform.position;
-                goal = player.transform;
+
+
+                // Bit shift the index of the layer (13) to get a bit mask
+                int layerMask = 1 << 13;
+
+                // This would cast rays only against colliders in layer 8.
+                // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+                layerMask = ~layerMask;
+
+                RaycastHit hit;
+                Vector3 direction = (player.transform.position - transform.position).normalized;
+                // Does the ray intersect any objects excluding the player layer
+                if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity, layerMask))
+                {
+                    Debug.DrawRay(transform.position, direction * hit.distance, Color.yellow);
+                    Debug.Log("Did Hit" + hit.collider.gameObject.tag);
+                    HitLocation = hit.point;
+                    if (hit.collider.gameObject.tag == "Player")
+                    {
+
+                        minimumDistance = distance;
+                        playerDetected = true;
+                        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+                        agent.destination = player.transform.position;
+                        goal = player.transform;
+                    }
+                }
+                else
+                {
+                    Debug.DrawRay(transform.position, direction * 1000, Color.white);
+                    Debug.Log("Did not Hit");
+                }
             }
         }
     }
