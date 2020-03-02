@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerJoined : Bolt.EntityBehaviour<ICubeState>
+public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
 {
     public Camera entityCamera;
     private string username;
