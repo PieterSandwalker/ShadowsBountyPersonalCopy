@@ -2,34 +2,86 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Inventory : MonoBehaviour
 {
     // Start is called before the first frame update
     public bool hasKey;
 
+    //wait to do
     Dictionary<string, int> itemList;
+
+    DataJSON data;
+
+    int score;
+
+    int selectItemIndex;
 
     void Start()
     {
+        selectItemIndex = -1;
         hasKey = false;
-
-
-        itemList = new Dictionary<string, int>();
-        DataJSON data = new DataJSON(100);
-        //data.bounty = PlayerPrefs.GetInt("score");
-        List<int> list = new List<int>();
-        list.Add(0);
-        list.Add(2);
-        string json = JsonUtility.ToJson(data);
-        Debug.Log(Application.dataPath);
-        DataJSON.Save(json);
-        //DataJSON list2 = JsonUtility.FromJson<DataJSON>(DataJSON.Load());
+        data = DataJSON.Load();
+        score = data.bounty;
     }
 
-    public void getKey()
+    public void GetKey()
     {
         hasKey = true;
     }
 
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public void AddScore(int point)
+    {
+        score += point;
+    }
+
+    //wait to do
+    public void UseItem()
+    {
+        string itemName = "item" + selectItemIndex.ToString();
+        CoolDown cd = GameObject.Find(itemName).GetComponent<CoolDown>();
+        if (cd.IsReady())
+        {
+            cd.Use();
+            selectItemIndex = -1;
+        }
+        
+        /*switch (caseSwitch)
+        {
+            case 1:
+                Console.WriteLine("Case 1");
+                break;
+            case 2:
+                Console.WriteLine("Case 2");
+                break;
+            default:
+                Console.WriteLine("Default case");
+                break;
+        }*/
+    }
+
+    public void SceneOver()
+    {
+        data.bounty = score;
+        DataJSON.Save(data);
+    }
+
+    private void Update()
+    {
+        if ( Input.GetKeyDown(KeyCode.Q) && selectItemIndex != -1 )
+        {
+            UseItem();
+        }
+    }
+
+    public void setSelectItemIndex(int index)
+    {
+        selectItemIndex = index;
+    }
 }
