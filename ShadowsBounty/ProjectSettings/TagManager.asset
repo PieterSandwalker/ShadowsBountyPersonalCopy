@@ -17,6 +17,7 @@ TagManager:
   - PatrolPointSet5
   - PatrolPointSet6
   - PatrolPointSet7
+  - PatrolPointSet8
   layers:
   - Default
   - TransparentFX

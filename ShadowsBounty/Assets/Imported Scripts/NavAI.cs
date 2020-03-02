@@ -68,7 +68,7 @@ public class NavAI : MonoBehaviour
                 if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity, layerMask))
                 {
                     Debug.DrawRay(transform.position, direction * hit.distance, Color.yellow);
-                    Debug.Log("Did Hit" + hit.collider.gameObject.tag);
+                    Debug.Log("Did Hit " + hit.collider.gameObject.tag);
                     HitLocation = hit.point;
                     if (hit.collider.gameObject.tag == "Player")
                     {
