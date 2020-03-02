@@ -9,6 +9,8 @@ public class DataJSON
 
     public int bounty;
     public List<int> itemNum;
+    public List<int> magicNum;
+    public List<int> trapNum;
 
     public DataJSON()
     {
@@ -20,6 +22,27 @@ public class DataJSON
         this.bounty = bounty;
         itemNum = new List<int>
         {
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        };
+        magicNum = new List<int>
+        {
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        };
+        trapNum = new List<int>
+        {
+            0,
+            0,
+            0,
             0,
             0,
             0

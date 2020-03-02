@@ -8,6 +8,11 @@ TagManager:
   - Ledge
   - Treasure
   - Key
+  - PatrolPoint
+  - Guard
+  - PatrolPointSet1
+  - PatrolPointSet2
+  - PatrolPointSet3
   layers:
   - Default
   - TransparentFX

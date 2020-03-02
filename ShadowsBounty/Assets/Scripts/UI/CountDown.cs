@@ -16,11 +16,12 @@ public class CountDown : MonoBehaviour
     bool done = false;
     int roundNumber;
     string roundString;
-
+    Inventory inventory;
 
     // Start is called before the first frame update
     void Start()
     {
+        inventory = GameObject.Find("InventorySystem").GetComponent<Inventory>();
         timer = roundTime;
         CountDown_text.text = ConvertTime();
         roundNumber = PlayerPrefs.GetInt("round");
@@ -66,12 +67,24 @@ public class CountDown : MonoBehaviour
         roundNumber++;
         if (roundNumber > 3)
         {
-            SceneManager.LoadScene("GameOverMenu");
+            SceneOver(false);
         } 
         else
         {
             PlayerPrefs.SetInt("round", roundNumber);
+            SceneOver(true);
+        }
+    }
+
+    private void SceneOver(bool isShopping)
+    {
+        inventory.SceneOver();
+        if (isShopping)
+        {
             SceneManager.LoadScene("ShoppingMenu");
+        } else
+        {
+            SceneManager.LoadScene("GameOverMenu");
         }
     }
         
