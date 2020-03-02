@@ -12,10 +12,13 @@ public class RankSystem : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerScore_3;
     [SerializeField] TextMeshProUGUI playerScore_4;
 
+    DataJSON data;
+
     // Start is called before the first frame update
     void Start()
     {
-        playerScore_1.text = PlayerPrefs.GetInt("score").ToString();
+        data = DataJSON.Load();
+        playerScore_1.text = data.bounty.ToString();
         playerScore_2.text = PlayerPrefs.GetInt("score").ToString();
         playerScore_3.text = PlayerPrefs.GetInt("score").ToString();
         playerScore_4.text = PlayerPrefs.GetInt("score").ToString();
