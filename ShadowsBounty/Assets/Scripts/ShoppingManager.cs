@@ -23,6 +23,8 @@ public class ShoppingManager : MonoBehaviour
 
     DataJSON data;
 
+    public List<int> magicPrice, itemPrice, trapPrice;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -59,12 +61,31 @@ public class ShoppingManager : MonoBehaviour
     public void NextGame()
     {
         //PlayerPrefs.SetInt("score", Bounty);
+        data.bounty = Bounty;
         DataJSON.Save(data);
         SceneManager.LoadScene("TreasureTesting");
     }
 
-    public void Shopping(int cost, int index)
+    public void ShoppingMagic(int index)
     {
+        int cost = magicPrice[index];
+        if (cost > Bounty)
+        {
+            Debug.Log("not enough bounty");
+            Message_Object.text = BuyFailTxt;
+        }
+        else
+        {
+            Bounty -= cost;
+            M_Object.text = Bounty.ToString();
+            Message_Object.text = BuySuccessTxt;
+            data.magicNum[index]++;
+        }
+    }
+    
+    public void ShoppingItem(int index)
+    {
+        int cost = itemPrice[index];
         if (cost > Bounty)
         {
             Debug.Log("not enough bounty");
@@ -76,6 +97,23 @@ public class ShoppingManager : MonoBehaviour
             M_Object.text = Bounty.ToString();
             Message_Object.text = BuySuccessTxt;
             data.itemNum[index]++;
+        }
+    }
+    
+    public void ShoppingTrape(int index)
+    {
+        int cost = trapPrice[index];
+        if (cost > Bounty)
+        {
+            Debug.Log("not enough bounty");
+            Message_Object.text = BuyFailTxt;
+        }
+        else
+        {
+            Bounty -= cost;
+            M_Object.text = Bounty.ToString();
+            Message_Object.text = BuySuccessTxt;
+            data.trapNum[index]++;
         }
     }
 
