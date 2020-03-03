@@ -9,16 +9,19 @@ public class teleport : MonoBehaviour
 
     Camera cam;
 
+    bool ready;
+
     void Start()
     {
+        ready = false;
         cam = GetComponent<Camera>();
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.T))
+        if ( Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.T) || ready )
         {
             //   RaycastHit hit;
-
+            ready = true;
             Ray ray = cam.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) { 
@@ -39,7 +42,7 @@ public class teleport : MonoBehaviour
         else
             print("I'm looking at nothing!");
         }
-        if (Input.GetKeyUp(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             // print(pos);
             pos.y = pos.y + 2.0F;

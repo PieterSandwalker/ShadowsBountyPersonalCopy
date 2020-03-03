@@ -11,20 +11,23 @@ public class SkillManager : MonoBehaviour
 
     bool useOnce;
     bool disable;
+    bool ready;
 
     void Start()
     {
         cam = GameObject.Find("Camera01").GetComponent<Camera>();
         useOnce = false;
         disable = false;
+        ready = false;
         //cam = Camera.current;
     }
     void Update()   
     {
         if (!useOnce)
         {
-            if (Input.GetKeyDown(KeyCode.E) || Input.GetKey(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKey(KeyCode.E) || ready)
             {
+                ready = true;
                 //   RaycastHit hit;
                 Ray ray = cam.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
                 RaycastHit hit;
@@ -36,32 +39,35 @@ public class SkillManager : MonoBehaviour
                     }
                     else
                     {
-                       // Debug.Log("here");
+                        // Debug.Log("here");
                         pos = hit.point;
                         GameObject tg = GameObject.Find("TeleportTarget");
                         tg.transform.position = pos;
-                        if (Input.GetMouseButtonDown(0))
-                        //if (Input.GetKeyDown(KeyCode.R))
+                        if (Input.GetKeyDown(KeyCode.R))
                         {
-                             print(1);
+                            print(1);
                             pos.y = pos.y + 2.0F;
                             GameObject.Find("Collector").transform.position = pos;
                             useOnce = true;
+                            GameObject.Find("TeleportTarget").transform.position = new Vector3(0, -5, 0);
                         }
                     }
 
                 }
                 else
+                {
                     print("I'm looking at nothing!");
-            } else if (Input.GetKeyUp(KeyCode.E))
-            {
-                GameObject.Find("TeleportTarget").transform.position = new Vector3(0,-5,0);
+                }
+                /* else if (Input.GetKeyDown(KeyCode.R))
+                {
+                    GameObject.Find("TeleportTarget").transform.position = new Vector3(0,-5,0);
+                }*/
             }
-
-        } else if (!disable)
-        {
-            GameObject.Find("skillButtom").SetActive(false);
-            disable = true;
+            else if (disable)
+            {
+                GameObject.Find("skillButtom").SetActive(false);
+                disable = true;
+            }
         }
     }
 }
