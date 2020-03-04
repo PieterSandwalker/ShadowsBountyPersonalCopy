@@ -8,6 +8,7 @@ public class DataJSON
 {
 
     public int bounty;
+    public int playerRole;
     public List<int> itemNum;
     public List<int> magicNum;
     public List<int> trapNum;
@@ -20,6 +21,7 @@ public class DataJSON
     public DataJSON(int bounty)
     {
         this.bounty = bounty;
+        this.playerRole = 0;
         itemNum = new List<int>
         {
             0,
