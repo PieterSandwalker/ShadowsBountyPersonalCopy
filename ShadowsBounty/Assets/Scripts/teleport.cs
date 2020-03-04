@@ -18,7 +18,7 @@ public class teleport : MonoBehaviour
     }
     void Update()
     {
-        if ( Input.GetKeyDown(KeyCode.T) || Input.GetKey(KeyCode.T) || ready )
+        if ( Input.GetKeyDown(KeyCode.T) || ready )
         {
             //   RaycastHit hit;
             ready = true;
