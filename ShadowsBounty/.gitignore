@@ -65,3 +65,8 @@ crashlytics-build.properties
 # Compiled libraries and associated meta for photon bolt
 /[Aa]ssets/Photon/PhotonBolt/assemblies/bolt.user.dll
 /[Aa]ssets/Photon/PhotonBolt/assemblies/bolt.user.dll.meta
+
+# Directory for data files generated at runtime
+/[Aa]ssets/Data/data.txt
+/[Aa]ssets/Data/data.txt.meta
+/[Aa]ssets/Data.meta
