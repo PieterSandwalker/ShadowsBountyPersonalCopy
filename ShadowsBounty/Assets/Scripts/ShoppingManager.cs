@@ -63,7 +63,8 @@ public class ShoppingManager : MonoBehaviour
         //PlayerPrefs.SetInt("score", Bounty);
         data.bounty = Bounty;
         DataJSON.Save(data);
-        SceneManager.LoadScene("TreasureTesting");
+        //SceneManager.LoadScene("TreasureTesting");
+        SceneManager.LoadScene("CastleAIMerge");
     }
 
     public void ShoppingMagic(int index)

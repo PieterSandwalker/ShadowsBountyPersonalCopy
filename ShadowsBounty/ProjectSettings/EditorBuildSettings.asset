@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 87bfee367244ca0489a41f4d86012cc0
+  - enabled: 1
+    path: Assets/Scenes/ShoppingMenu.unity
+    guid: 0607782f8ad38a0488e6cedff084f357
+  - enabled: 1
     path: Assets/Scenes/MultiplayerMenu.unity
     guid: 700e9b0d90746c14a85923ab17afc5db
   - enabled: 1
@@ -14,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MultiplayerTest.unity
     guid: b3213378b38ba284fa5e5d74730349ea
+  - enabled: 1
+    path: Assets/Scenes/GameOverMenu.unity
+    guid: 29f01ce7e08b13d4e93c243f68f40ada
+  - enabled: 1
+    path: Assets/Scenes/CastleAIMerge.unity
+    guid: 7afbbd52cf5d09d4880a821b28c00b94
   m_configObjects: {}
