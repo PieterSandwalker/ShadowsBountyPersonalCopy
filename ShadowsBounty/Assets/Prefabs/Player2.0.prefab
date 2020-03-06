@@ -338,10 +338,10 @@ MonoBehaviour:
   _maxSpeed: 0
   _sliding: 0
   _wallrunning: 0
-  slideForce: 400
+  slideForce: 475
   slideCounterMovement: 0.2
   deferSlide: 0
-  jumpForce: 550
+  jumpForce: 600
   ledgeClearCheck: {fileID: 3190457275980752052}
   verticalCheckDistance: 1.25
   horizontalCheckDistance: 2
@@ -353,8 +353,8 @@ MonoBehaviour:
   wallContactCheckRadius: 0.51
   wallrunRaycastLength: 1
   impactNormalYThreshold: 0.0001
-  hWallBoostForce: 16
-  vWallBoostForce: 500
+  hWallBoostForce: 24
+  vWallBoostForce: 750
   xWallJumpForceMult: 2
   yWallJumpForceMult: 1
   zWallJumpForceMult: 0
