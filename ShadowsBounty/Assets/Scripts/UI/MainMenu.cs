@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
         //Debug.Log(data);
         //PlayerPrefs.SetInt("score", 100);
         PlayerPrefs.SetInt("round", 1);
-        SceneManager.LoadScene("ShoppingMenu");
+        SceneManager.LoadScene("MultiplayerMenu");
     }
 
     public void QuiteGame()
