@@ -10,7 +10,7 @@ public class NavAI : MonoBehaviour
     public string patrolTag = "PatrolPoint";
     public string playerTag = "Player";
     public float radiusOfSatisfaction = 5.0f;
-    public GameObject[] objs;
+    public GameObject[] patrolPoints;
     public GameObject[] players;
     public int index = 0;
     private int numberOfPoints;
@@ -19,84 +19,164 @@ public class NavAI : MonoBehaviour
 
     void Start()
     {
-        objs = GameObject.FindGameObjectsWithTag(patrolTag);
-        players = GameObject.FindGameObjectsWithTag(playerTag);
-        numberOfPoints = objs.Length;
-        goal.position = objs[index].transform.position;
+        patrolPoints = GameObject.FindGameObjectsWithTag(patrolTag);
+        numberOfPoints = patrolPoints.Length;
+        goal.position = patrolPoints[index].transform.position;
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.destination = goal.position;
+        CheckForPlayers();
     }
+    void CheckForPlayers()
+    {
+        players = GameObject.FindGameObjectsWithTag(playerTag);
+    }
+    void Update()
+    {
+        CheckForPlayers();
+        RunDecisionTree();
+    }
+    bool RunDecisionTree()
+    {
+        if (PlayerNearby()) return true;
+        if (NeedsMet()) return true;
+        if (Patrol()) return true;
+        return false;
+    }
+    bool PlayerNearby()
+    {
+        float minimumDistance = float.MaxValue;
+        playerDetected = false;
+        bool seen = false;
+        bool heard = false;
+        foreach (var player in players)
+        {
+            float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
+            if (distance < engageRadius && distance < minimumDistance)
+            {
+                //make it so the minimum distance doesnt get set if a player isnt detected
+                if (PlayerSeen(player))
+                {
+                    minimumDistance = distance;
+                    seen = true;
+                }
+                if (!seen && PlayerHeard(player))
+                {
+                    heard = true;
+                }
+            }
+        }
+        if (heard || seen) return true;
+        return false;
+    }
+    bool PlayerHeard(GameObject player)
+    {
+        if (Investigate(player)) return true;
+        return false;
+    }
+    bool PlayerSeen(GameObject player)
+    {
 
+        // Bit shift the index of the layer (13) to get a bit mask
+        int layerMask = 1 << 13;
+
+        // This would cast rays only against colliders in layer 8.
+        // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+        layerMask = ~layerMask;
+
+        RaycastHit hit;
+        Vector3 direction = (player.transform.position - transform.position).normalized;
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity, layerMask))
+        {
+            Debug.DrawRay(transform.position, direction * hit.distance, Color.yellow);
+            Debug.Log("Did Hit " + hit.collider.gameObject.tag);
+            HitLocation = hit.point;
+            if (hit.collider.gameObject.tag == "Player")
+            {
+                playerDetected = true;
+                if (Pursue(player)) return true;
+            }
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, direction * 1000, Color.white);
+            Debug.Log("Did not Hit");
+        }
+        return false;
+    }
+    bool Investigate(GameObject player)
+    {
+        return false;
+    }
+    bool Pursue(GameObject player)
+    {
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        agent.destination = player.transform.position + rb.velocity;
+        goal.position = player.transform.position + rb.velocity;
+        return true;
+    }
+    bool NeedsMet()
+    {
+        if (Food()) return true;
+        if (Water()) return true;
+        if (Rest()) return true;
+        return false;
+    }
+    bool Food()
+    {
+        return false;
+    }
+    bool Water()
+    {
+        return false;
+    }
+    bool Rest()
+    {
+        return false;
+    }
     // Update is called once per frame
-    void detectBorderPointProximity()
+    bool Patrol()
     {
         if (Vector3.Distance(gameObject.transform.position, goal.transform.position) < radiusOfSatisfaction)
         {
             NavMeshAgent agent = GetComponent<NavMeshAgent>();
             index++;
             if (index >= numberOfPoints) index = 0;
-            agent.destination = objs[index].transform.position;
-            goal.position = objs[index].transform.position;
-            Patrol();
+            agent.destination = patrolPoints[index].transform.position;
+            goal.position = patrolPoints[index].transform.position;
+            return true;
         }
+        return false;
+        //if (patrolPoints.Length > 1) return PatrolSet();
+        //else return Scan();
     }
-    void Patrol()
+    bool PatrolSet()
+    {
+        if (Vector3.Distance(gameObject.transform.position, goal.transform.position) < radiusOfSatisfaction) return Rotate();
+        else return Move();
+    }
+    bool Move()
+    {
+        return true;
+    }
+    bool Rotate()
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
-        goal.position = objs[index].transform.position;
-        agent.destination = goal.position;
+        index++;
+        if (index >= numberOfPoints) index = 0;
+        agent.destination = patrolPoints[index].transform.position;
+        goal.position = patrolPoints[index].transform.position;
+        return true;
     }
-    void detectPlayer()
+    bool Scan()
     {
-        float minimumDistance = float.MaxValue;
-        playerDetected = false;
-        foreach (var player in players) {
-            float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
-            if (distance < engageRadius && distance < minimumDistance)
-            {
-                minimumDistance = distance;
-
-
-                // Bit shift the index of the layer (13) to get a bit mask
-                int layerMask = 1 << 13;
-
-                // This would cast rays only against colliders in layer 8.
-                // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
-                layerMask = ~layerMask;
-
-                RaycastHit hit;
-                Vector3 direction = (player.transform.position - transform.position).normalized;
-                // Does the ray intersect any objects excluding the player layer
-                if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity, layerMask))
-                {
-                    Debug.DrawRay(transform.position, direction * hit.distance, Color.yellow);
-                    Debug.Log("Did Hit " + hit.collider.gameObject.tag);
-                    HitLocation = hit.point;
-                    if (hit.collider.gameObject.tag == "Player")
-                    {
-
-                        minimumDistance = distance;
-                        playerDetected = true;
-                        NavMeshAgent agent = GetComponent<NavMeshAgent>();
-                        agent.destination = player.transform.position;
-                        goal.position = player.transform.position;
-                    }
-                }
-                else
-                {
-                    Debug.DrawRay(transform.position, direction * 1000, Color.white);
-                    Debug.Log("Did not Hit");
-                }
-            }
-        }
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        index++;
+        if (index >= numberOfPoints) index = 0;
+        agent.destination = patrolPoints[index].transform.position;
+        goal.position = patrolPoints[index].transform.position;
+        return true;
     }
-    void Update()
-    {
-        detectPlayer();
-        if (!playerDetected)
-        {
-            //Patrol();
-            detectBorderPointProximity();
-        }
-    }
+
 }
