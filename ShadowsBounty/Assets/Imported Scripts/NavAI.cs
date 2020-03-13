@@ -16,6 +16,7 @@ public class NavAI : MonoBehaviour
     private int numberOfPoints;
     private bool playerDetected = false;
     public Vector3 HitLocation;
+    public bool ranged = false;
 
     void Start()
     {
@@ -106,10 +107,14 @@ public class NavAI : MonoBehaviour
     }
     bool Investigate(GameObject player)
     {
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.destination = player.transform.position;
+        goal.position = player.transform.position;
         return false;
     }
     bool Pursue(GameObject player)
     {
+        float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         Rigidbody rb = player.GetComponent<Rigidbody>();
         agent.destination = player.transform.position + rb.velocity;
@@ -138,18 +143,8 @@ public class NavAI : MonoBehaviour
     // Update is called once per frame
     bool Patrol()
     {
-        if (Vector3.Distance(gameObject.transform.position, goal.transform.position) < radiusOfSatisfaction)
-        {
-            NavMeshAgent agent = GetComponent<NavMeshAgent>();
-            index++;
-            if (index >= numberOfPoints) index = 0;
-            agent.destination = patrolPoints[index].transform.position;
-            goal.position = patrolPoints[index].transform.position;
-            return true;
-        }
-        return false;
-        //if (patrolPoints.Length > 1) return PatrolSet();
-        //else return Scan();
+        if (patrolPoints.Length > 1) return PatrolSet();
+        else return Scan();
     }
     bool PatrolSet()
     {
@@ -171,11 +166,12 @@ public class NavAI : MonoBehaviour
     }
     bool Scan()
     {
-        NavMeshAgent agent = GetComponent<NavMeshAgent>();
-        index++;
-        if (index >= numberOfPoints) index = 0;
-        agent.destination = patrolPoints[index].transform.position;
-        goal.position = patrolPoints[index].transform.position;
+        if (Vector3.Distance(gameObject.transform.position, goal.transform.position) < radiusOfSatisfaction)
+        {
+            NavMeshAgent agent = GetComponent<NavMeshAgent>();
+            agent.destination = patrolPoints[0].transform.position;
+            goal.position = patrolPoints[0].transform.position;
+        }
         return true;
     }
 
