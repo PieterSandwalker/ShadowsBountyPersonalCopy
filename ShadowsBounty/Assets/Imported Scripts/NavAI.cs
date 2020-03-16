@@ -5,16 +5,18 @@ using UnityEngine.AI;
 
 public class NavAI : MonoBehaviour
 {
-    public Transform goal;
-    public float engageRadius = 200.0f;
-    public string patrolTag = "PatrolPoint";
-    public string playerTag = "Player";
-    public float radiusOfSatisfaction = 5.0f;
     public GameObject[] patrolPoints;
     public GameObject[] players;
+    public Transform goal;
+    public float radiusOfSatisfaction = 5.0f;
+    public float pursuitROS = 20.0f;
+    public string patrolTag = "PatrolPoint";
+    public string playerTag = "Player";
+    public float engageRadius = 100.0f;
+    public float satisfactoryDetectionLevel = 50.0f;
+    private bool playerDetected = false;
     public int index = 0;
     private int numberOfPoints;
-    private bool playerDetected = false;
     public Vector3 HitLocation;
     public bool ranged = false;
 
@@ -71,7 +73,11 @@ public class NavAI : MonoBehaviour
     }
     bool PlayerHeard(GameObject player)
     {
-        if (Investigate(player)) return true;
+        PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
+        if (detectionlevel.audibleFactor > satisfactoryDetectionLevel)
+        {
+            if (Investigate(player)) return true;
+        }
         return false;
     }
     bool PlayerSeen(GameObject player)
@@ -94,8 +100,12 @@ public class NavAI : MonoBehaviour
             HitLocation = hit.point;
             if (hit.collider.gameObject.tag == "Player")
             {
-                playerDetected = true;
-                if (Pursue(player)) return true;
+                PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
+                if (detectionlevel.visibiityFactor > satisfactoryDetectionLevel)
+                {
+                    playerDetected = true;
+                    if (Pursue(player)) return true;
+                }
             }
         }
         else
@@ -115,10 +125,18 @@ public class NavAI : MonoBehaviour
     bool Pursue(GameObject player)
     {
         float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
-        NavMeshAgent agent = GetComponent<NavMeshAgent>();
-        Rigidbody rb = player.GetComponent<Rigidbody>();
-        agent.destination = player.transform.position + rb.velocity;
-        goal.position = player.transform.position + rb.velocity;
+        if (distance > pursuitROS)
+        {
+            NavMeshAgent agent = GetComponent<NavMeshAgent>();
+            Rigidbody rb = player.GetComponent<Rigidbody>();
+            agent.destination = player.transform.position + rb.velocity;
+            goal.position = player.transform.position + rb.velocity;
+        } else
+        {
+            NavMeshAgent agent = GetComponent<NavMeshAgent>();
+            agent.destination = player.transform.position;
+            goal.position = player.transform.position;
+        }
         return true;
     }
     bool NeedsMet()
@@ -166,6 +184,7 @@ public class NavAI : MonoBehaviour
     }
     bool Scan()
     {
+        //move raycast
         if (Vector3.Distance(gameObject.transform.position, goal.transform.position) < radiusOfSatisfaction)
         {
             NavMeshAgent agent = GetComponent<NavMeshAgent>();
