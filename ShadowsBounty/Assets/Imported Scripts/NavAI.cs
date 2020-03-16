@@ -5,21 +5,28 @@ using UnityEngine.AI;
 
 public class NavAI : MonoBehaviour
 {
+    #region SceneData
     public GameObject[] patrolPoints;
     public GameObject[] players;
+    #endregion
+    #region NavigationTargeting
     public Transform goal;
     public float radiusOfSatisfaction = 5.0f;
     public float pursuitROS = 20.0f;
     public string patrolTag = "PatrolPoint";
     public string playerTag = "Player";
+    #endregion
+    #region PlayerTargeting
     public float engageRadius = 100.0f;
     public float satisfactoryDetectionLevel = 50.0f;
     private bool playerDetected = false;
     public int index = 0;
-    private int numberOfPoints;
     public Vector3 HitLocation;
     public bool ranged = false;
-
+    #endregion
+    /*
+     * On scene load, load all of necessary scene data into AI for use
+     */
     void Start()
     {
         patrolPoints = GameObject.FindGameObjectsWithTag(patrolTag);
@@ -29,26 +36,39 @@ public class NavAI : MonoBehaviour
         agent.destination = goal.position;
         CheckForPlayers();
     }
+    /*
+     * update the players list to contain the players in the scene
+     */
     void CheckForPlayers()
     {
         players = GameObject.FindGameObjectsWithTag(playerTag);
     }
+    /*
+     * updates each frame. Change what decision is being made based on environment
+     */
     void Update()
     {
         CheckForPlayers();
         RunDecisionTree();
     }
+    #region DecisionTree
+    /*
+     * Moderately bootlegged decision tree. this relies on an if tree rather than actual data nodes
+     * the returns short-circuit the tree, but currently the player pursuit functions in an unintended fashion
+     * leading to guards to bob when near the player
+     */
     bool RunDecisionTree()
     {
-        if (PlayerNearby()) return true;
-        if (NeedsMet()) return true;
-        if (Patrol()) return true;
+        if (PlayerNearby()) return true; //scan for players
+        if (NeedsMet()) return true; //check insistance values
+        if (Patrol()) return true; //do patrol route/behavior
         return false;
     }
+    #region PlayerDetection
     bool PlayerNearby()
     {
-        float minimumDistance = float.MaxValue;
-        playerDetected = false;
+        float minimumDistance = float.MaxValue; //use this to find the closest target
+        playerDetected = false; //might change to an int
         bool seen = false;
         bool heard = false;
         foreach (var player in players)
@@ -62,7 +82,7 @@ public class NavAI : MonoBehaviour
                     minimumDistance = distance;
                     seen = true;
                 }
-                if (!seen && PlayerHeard(player))
+                if (!seen && PlayerHeard(player)) //only take heard players into account if none are seen
                 {
                     heard = true;
                 }
@@ -76,7 +96,7 @@ public class NavAI : MonoBehaviour
         PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
         if (detectionlevel.audibleFactor > satisfactoryDetectionLevel)
         {
-            if (Investigate(player)) return true;
+            if (Investigate(player.transform)) return true;
         }
         return false;
     }
@@ -115,12 +135,12 @@ public class NavAI : MonoBehaviour
         }
         return false;
     }
-    bool Investigate(GameObject player)
+    bool Investigate(Transform location)
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
-        agent.destination = player.transform.position;
-        goal.position = player.transform.position;
-        return false;
+        agent.destination = location.position;
+        goal.position = location.position;
+        return true;
     }
     bool Pursue(GameObject player)
     {
@@ -139,6 +159,8 @@ public class NavAI : MonoBehaviour
         }
         return true;
     }
+    #endregion PlayerDetection
+    #region Needs
     bool NeedsMet()
     {
         if (Food()) return true;
@@ -158,6 +180,8 @@ public class NavAI : MonoBehaviour
     {
         return false;
     }
+    #endregion Needs
+    #region Patrol
     // Update is called once per frame
     bool Patrol()
     {
@@ -193,5 +217,6 @@ public class NavAI : MonoBehaviour
         }
         return true;
     }
-
+    #endregion Patrol
+    #endregion DecisionTree
 }
