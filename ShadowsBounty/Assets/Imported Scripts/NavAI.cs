@@ -24,6 +24,14 @@ public class NavAI : MonoBehaviour
     public Vector3 HitLocation;
     public bool ranged = false;
     #endregion
+    #region Insistence
+    public float food = 0.0f;
+    public float water = 0.0f;
+    public float rest = 0.0f;
+    public bool resting = false;
+    public bool eating = false;
+    public bool drinking = false;
+    #endregion Insistence
     /*
      * On scene load, load all of necessary scene data into AI for use
      */
@@ -100,7 +108,7 @@ public class NavAI : MonoBehaviour
     {
         
         PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
-        if (detectionlevel.audibleFactor > satisfactoryDetectionLevel)
+        if (detectionlevel.AudibleFactor > satisfactoryDetectionLevel)
         {
             if (Investigate(player.transform)) return true;
         }
@@ -131,7 +139,7 @@ public class NavAI : MonoBehaviour
             if (hit.collider.gameObject.tag == "Player")
             {
                 PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
-                if (detectionlevel.visibiityFactor > satisfactoryDetectionLevel)
+                if (detectionlevel.VisibiityFactor > satisfactoryDetectionLevel)
                 {
                     playerDetected = true;
                     if (Pursue(player)) return true;
@@ -180,6 +188,9 @@ public class NavAI : MonoBehaviour
     #region Needs
     bool NeedsMet()
     {
+        food++;
+        water++;
+        rest++;
         if (Food()) return true;
         if (Water()) return true;
         if (Rest()) return true;

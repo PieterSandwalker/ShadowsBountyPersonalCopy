@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class PlayerDetectionStats : MonoBehaviour
 {
-    public float audibleFactor = 0.0f;
-    public float visibiityFactor = 55.0f;
+    private float audibleFactor = 0.0f;
+    private float visibiityFactor = 55.0f;
     public int detected = 0;
+
+    public float VisibiityFactor { get => visibiityFactor; set => visibiityFactor = value; }
+    public float AudibleFactor { get => audibleFactor; set => audibleFactor = value; }
+
     // Start is called before the first frame update
     void Start()
     {
