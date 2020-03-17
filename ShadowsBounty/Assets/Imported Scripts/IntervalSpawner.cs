@@ -13,7 +13,7 @@ public class IntervalSpawner : MonoBehaviour
     void Start()
     {
         // Instantiate at position (0, 10, 0) and zero rotation.
-        Instantiate(projectile, new Vector3(orientation.position.x, orientation.position.y + 2, orientation.position.z), Quaternion.identity);
+        Instantiate(projectile, new Vector3(orientation.position.x+1, orientation.position.y + 2, orientation.position.z+1), Quaternion.identity);
     }
 
     void resetFire()
@@ -25,7 +25,7 @@ public class IntervalSpawner : MonoBehaviour
     {
         if (fire)
         {
-            Instantiate(projectile, new Vector3(orientation.position.x, orientation.position.y + 2, orientation.position.z), Quaternion.identity);
+            Instantiate(projectile, new Vector3(orientation.position.x+1, orientation.position.y + 2, orientation.position.z+1), Quaternion.identity);
             fire = false;
             Invoke("resetFire", spawnRate);
         }

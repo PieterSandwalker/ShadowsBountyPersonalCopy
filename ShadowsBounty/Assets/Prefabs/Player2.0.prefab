@@ -201,6 +201,7 @@ GameObject:
   - component: {fileID: 3944086162130510272}
   - component: {fileID: 4641891042989781627}
   - component: {fileID: 1745603825679556360}
+  - component: {fileID: 3325236243110453700}
   - component: {fileID: -9201800643972578632}
   - component: {fileID: 2283330987471068045}
   - component: {fileID: 1934818993822377782}
@@ -360,6 +361,21 @@ MonoBehaviour:
   zWallJumpForceMult: 0
   _meanSurfaceImpactNormal: {x: 0, y: 0, z: 0}
   _isWallRight: 0
+--- !u!114 &3325236243110453700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6992880450184572464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a503f17a6689e1419c966575981aff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audibleFactor: 1
+  visibiityFactor: 1
+  detected: 0
 --- !u!114 &-9201800643972578632
 MonoBehaviour:
   m_ObjectHideFlags: 0
