@@ -30,7 +30,6 @@ public class NavAI : MonoBehaviour
     void Start()
     {
         patrolPoints = GameObject.FindGameObjectsWithTag(patrolTag);
-        numberOfPoints = patrolPoints.Length;
         goal.position = patrolPoints[index].transform.position;
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.destination = goal.position;
@@ -65,6 +64,9 @@ public class NavAI : MonoBehaviour
         return false;
     }
     #region PlayerDetection
+    /*
+     * are there players near me?
+     */
     bool PlayerNearby()
     {
         float minimumDistance = float.MaxValue; //use this to find the closest target
@@ -88,11 +90,15 @@ public class NavAI : MonoBehaviour
                 }
             }
         }
-        if (heard || seen) return true;
+        if (heard || seen) return true; //short circuit if player found
         return false;
     }
+    /*
+     * Can I hear any players?
+     */
     bool PlayerHeard(GameObject player)
     {
+        
         PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
         if (detectionlevel.audibleFactor > satisfactoryDetectionLevel)
         {
@@ -100,6 +106,10 @@ public class NavAI : MonoBehaviour
         }
         return false;
     }
+    /*
+     * Can I see any players?
+     * need to implement angle based targeting
+     */
     bool PlayerSeen(GameObject player)
     {
 
@@ -135,6 +145,9 @@ public class NavAI : MonoBehaviour
         }
         return false;
     }
+    /*
+     * Check out a particular area, usually where a player is heard
+     */
     bool Investigate(Transform location)
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
@@ -142,6 +155,10 @@ public class NavAI : MonoBehaviour
         goal.position = location.position;
         return true;
     }
+    /*
+     * Based on player movement, predict and pursue
+     * Need to change dynamically based on distance
+     */
     bool Pursue(GameObject player)
     {
         float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
@@ -201,7 +218,7 @@ public class NavAI : MonoBehaviour
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         index++;
-        if (index >= numberOfPoints) index = 0;
+        if (index >= patrolPoints.Length) index = 0;
         agent.destination = patrolPoints[index].transform.position;
         goal.position = patrolPoints[index].transform.position;
         return true;
