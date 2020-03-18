@@ -9,7 +9,7 @@ public class PlayerMovement2 : MonoBehaviour {
     public Transform head;
     
     //Other
-    private Rigidbody rb;
+    public Rigidbody rb;
 
     //Rotation and look
     private float xRotation;
