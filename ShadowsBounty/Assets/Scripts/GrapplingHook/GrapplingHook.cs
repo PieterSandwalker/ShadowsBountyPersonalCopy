@@ -2,17 +2,18 @@ using System;
 using System.Diagnostics;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /* BUGS */
 //Grappling hook model shrinks when you crouch
-    //Solution: May need to make the player an empty object with the capsule as a component so that only the capsule's size changes
-    //Another hackier solution: check if the player is crouching, double the scale of the gun. If they uncrouch, halve it again
+//Solution: May need to make the player an empty object with the capsule as a component so that only the capsule's size changes
+//Another hackier solution: check if the player is crouching, double the scale of the gun. If they uncrouch, halve it again
 
 /* TODO */
 //Add crosshair with script to tell when you're aiming at something you can grapple to
 //Possibly add a sphere on the location where you are grappling to
 
-public class GrapplingHook : MonoBehaviour {
+public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHookActions {
     [Header("Grappling")]
     public GrapplingRope grapplingRope;
     public PlayerMovement2 player; //Change to PlayerMovement2, reference rigid body thru player.rb
@@ -42,23 +43,56 @@ public class GrapplingHook : MonoBehaviour {
     private Vector3 _modelScale;
     private Vector3 _crouchScale = new Vector3(1f, 0.5f, 1f);
 
-    bool lmbPressed = false;
+    //Control binding object for new input system
+    private GrapplingHookControls ghControls;
+    bool fireButtonHeld, fireButtonPressed, fireButtonReleased;
+
+    private void Awake()
+    {
+        ghControls = new GrapplingHookControls();
+        ghControls.GrapplingHook.SetCallbacks(this);
+    }
 
     private void Start()
     {
         _modelScale = transform.localScale;
     }
 
+    //TODO: Refactor to use new input system
     private void MyInput()
     {
-        if (Input.GetMouseButtonDown(0)) lmbPressed = true;
-        else if (Input.GetMouseButtonUp(0)) lmbPressed = false;
+        if (Input.GetMouseButtonDown(0)) fireButtonHeld = true;
+        else if (Input.GetMouseButtonUp(0)) fireButtonHeld = false;
+    }
+
+    //Callback function for input system
+    public void OnFireGrapplingHook(InputAction.CallbackContext ctx)
+    {
+        fireButtonHeld = ctx.performed; //Tells us whether or not is held
+        if (ctx.started) //True if this is the first frame we fire the event
+        {
+            fireButtonPressed = true;
+            fireButtonReleased = false;
+        }
+        else if (ctx.canceled) //True if this is this is the frame the button stops being helds
+        {
+            fireButtonReleased = true;
+            fireButtonPressed = false;
+        }
+    }
+
+    private void OnEnable()
+    {
+        ghControls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        ghControls.Disable();
     }
 
     private void Update()
     {
-        MyInput();
-
         //Bandaid fix for scaling bug with grappling gun model. Doesn't work completely. To avoid scaling issues completely would need to restructure player prefab so that the grappling gun wasn't a child of the player capsule
         //Good enough. Scaling weirdness is barely noticeable in first person view.
         if (player.transform.localScale.Equals(_crouchScale))
@@ -75,10 +109,13 @@ public class GrapplingHook : MonoBehaviour {
         {
             transform.localScale = _modelScale;
         }
+
+        if (fireButtonPressed) UnityEngine.Debug.LogWarning("Fire");
+        if (fireButtonReleased) UnityEngine.Debug.LogWarning("Release");
     }
 
     private void FixedUpdate() {
-        if (lmbPressed && grapplingRope.Grappling) { //Check if grapple input button is being pressed
+        if (fireButtonHeld && grapplingRope.Grappling) { //Check if grapple input button is being pressed
             grappleHolder.rotation = Quaternion.Lerp(grappleHolder.rotation, Quaternion.LookRotation(-(grappleHolder.position - _hit)), rotationSmooth * Time.fixedDeltaTime); //Orient the grappling hook towards its hit location
 
             //TODO: Use playerOrientation to get transform info for player
@@ -100,18 +137,20 @@ public class GrapplingHook : MonoBehaviour {
 
         var hitInfo = new RaycastHit();
 
-        if (Input.GetMouseButtonDown(0) && RaycastAll(out hitInfo)) { //Only call the frame that grapple input button is initially pressed
+        if (fireButtonPressed/*Input.GetMouseButtonDown(0)*/ && RaycastAll(out hitInfo)) { //Only call the frame that grapple input button is initially pressed
             grapplingRope.Grapple(grappleTip.position, hitInfo.point);    
             _hit = hitInfo.point;
+            fireButtonPressed = false;
         }
 
         //Release grapple
-        if (Input.GetMouseButtonUp(0)) { //Only call the frame that grapple input button is released
+        if (fireButtonReleased/*Input.GetMouseButtonUp(0)*/) { //Only call the frame that grapple input button is released
             grapplingRope.UnGrapple();
+            fireButtonReleased = false;
         }
 
         //Init start position for grapple
-        if (lmbPressed && grapplingRope.Grappling) { //Check if grapple input button is being pressed
+        if (fireButtonHeld && grapplingRope.Grappling) { //Check if grapple input button is being pressed
             grapplingRope.UpdateStart(grappleTip.position);
         }
 

@@ -1,7 +1,14 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerMovement2 : MonoBehaviour {
+public class PlayerMovement2 : MonoBehaviour, PlayerButtonInput.IPlayerControlsActions {
+
+    //Input
+    [Header("Data")]
+    [SerializeField]
+    private InputData inputData;
+    private PlayerButtonInput buttonInput;
 
     //Assingables
     public Transform playerCam;
@@ -16,6 +23,8 @@ public class PlayerMovement2 : MonoBehaviour {
     private float zRotation;
     private float sensitivity = 50f;
     private float sensMultiplier = 1f;
+    private float yaw; //mouseX before
+    private float pitch; //mouseY before
     
     //Movement
     public float movementForce = 4500;
@@ -117,6 +126,8 @@ public class PlayerMovement2 : MonoBehaviour {
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
+        buttonInput = new PlayerButtonInput();
+        buttonInput.PlayerControls.SetCallbacks(this);
     }
     
     void Start() {
@@ -137,18 +148,68 @@ public class PlayerMovement2 : MonoBehaviour {
         Look();
     }
 
-    //TODO: Refactor this into separate class
+    //TODO: Refactor to work with new input system
     //Get user input.
     private void MyInput() {
-        x = Input.GetAxisRaw("Horizontal");
-        y = Input.GetAxisRaw("Vertical");
-        jumping = Input.GetButton("Jump");
-        crouching = Input.GetKey(crouchKey);
-        sprinting = Input.GetKey(sprintKey);
+
+        /* New input system (for mouse + keyboard and gamepad) */
+        Vector2 look = inputData.LookAction.ReadValue<Vector2>();
+
+        yaw = look.x * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+        pitch = look.y * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+
+        Vector2 movement = inputData.MovementAction.ReadValue<Vector2>();
+        x = movement.x;
+        y = movement.y;
+
+        /* Legacy input system */
+
+        //Basic movement
+        //x = Input.GetAxisRaw("Horizontal");
+        //y = Input.GetAxisRaw("Vertical");
+
+        //Camera control
+        //yaw = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+        //pitch = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
+
+        //Get the current pressed state of various keys (jump, sprint, crouch)
+        //jumping = Input.GetButton("Jump");
+        //crouching = Input.GetKey(crouchKey);
+        //sprinting = Input.GetKey(sprintKey);
 
         //Crouching
-        if (Input.GetKeyDown(crouchKey)) StartCrouch();
-        if (Input.GetKeyUp(crouchKey)) StopCrouch();
+        //if (Input.GetKeyDown(crouchKey)) StartCrouch();
+        //if (Input.GetKeyUp(crouchKey)) StopCrouch();
+    }
+
+    /* Automatically called for the input system */
+    private void OnEnable()
+    {
+        buttonInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        buttonInput.Disable();
+    }
+
+    /* Callback functions that must be implemented for the input interface */
+    public void OnJump(InputAction.CallbackContext ctx)
+    {
+        //ctx.performed = true means the button was pressed. So when the button was pressed we can set the booleans to true. When it's false we set them to false.
+        jumping = ctx.performed;
+    }
+
+    public void OnSprint(InputAction.CallbackContext ctx)
+    {
+        sprinting = ctx.performed;
+    }
+
+    public void OnCrouch(InputAction.CallbackContext ctx)
+    {
+        crouching = ctx.performed;
+        if (ctx.started) StartCrouch();
+        else if (ctx.canceled) StopCrouch();
     }
 
     private void StartCrouch() {
@@ -302,15 +363,12 @@ public class PlayerMovement2 : MonoBehaviour {
     
     private float desiredX;
     private void Look() {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime * sensMultiplier;
-
         //Find current look rotation
         Vector3 rot = playerCam.transform.localRotation.eulerAngles;
-        desiredX = rot.y + mouseX;
+        desiredX = rot.y + yaw;
         
         //Rotate, and also make sure we dont over- or under-rotate.
-        xRotation -= mouseY;
+        xRotation -= pitch;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         //Handle tilting the camera left/right when entering wallrun, resetting back to neutral when out of wallrun

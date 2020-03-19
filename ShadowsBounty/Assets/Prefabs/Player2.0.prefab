@@ -512,6 +512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d17b40523149be54dad3bec2495f0d49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputData: {fileID: 11400000, guid: c1582730f34313a428838aa16e9a8e49, type: 2}
   playerCam: {fileID: 28153827519677981}
   orientation: {fileID: 374224371394168228}
   head: {fileID: 7461126057596483551}
