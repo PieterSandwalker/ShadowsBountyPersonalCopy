@@ -1,0 +1,44 @@
+{
+    "name": "GrapplingHookControls",
+    "maps": [
+        {
+            "name": "GrapplingHook",
+            "id": "31e60f6a-80cf-4d02-aa04-723bcbfb32da",
+            "actions": [
+                {
+                    "name": "FireGrapplingHook",
+                    "type": "Button",
+                    "id": "5072f9b5-861d-4f9c-ae56-23020c5293a9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ff833b6c-7eba-4ba3-a7f1-d8fd8ec8d97f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireGrapplingHook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "375cd059-2ffd-4370-8bd6-3f0530e8d808",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireGrapplingHook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

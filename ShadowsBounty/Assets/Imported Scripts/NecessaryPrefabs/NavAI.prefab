@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 461875933215268407}
   - component: {fileID: 461875933215268406}
   - component: {fileID: 461875933215268405}
+  - component: {fileID: -8353255146625102972}
+  - component: {fileID: 8782893027260672566}
   m_Layer: 0
   m_Name: NavAI
   m_TagString: Guard
@@ -106,13 +108,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ed59d5eef67a0a49bdd6e8334ff57f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  patrolPoints: []
+  players: []
   goal: {fileID: 0}
-  engageRadius: 15
+  radiusOfSatisfaction: 5
+  pursuitROS: 20
   patrolTag: PatrolPoint
   playerTag: Player
-  objs: []
-  players: []
+  engageRadius: 15
+  satisfactoryDetectionLevel: 50
   index: 0
+  HitLocation: {x: 0, y: 0, z: 0}
+  ranged: 0
+  food: 0
+  water: 0
+  rest: 0
+  resting: 0
+  eating: 0
+  drinking: 0
 --- !u!195 &461875933215268405
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -135,3 +148,44 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-8353255146625102972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461875933215268404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneGuid: 
+  _serializerGuid: 155bfcc9-c0b6-4da4-b6fd-791ac99be4a6
+  _prefabId: 1
+  _updateRate: 1
+  _autoFreezeProxyFrames: 0
+  _clientPredicted: 1
+  _allowInstantiateOnClient: 0
+  _persistThroughSceneLoads: 0
+  _sceneObjectDestroyOnDetach: 1
+  _sceneObjectAutoAttach: 1
+  _alwaysProxy: 0
+  _detachOnDisable: 1
+  _allowFirstReplicationWhenFrozen: 0
+  _autoRemoveChildEntities: 0
+  _entityBehaviourQueryOption: 0
+  _entityPriorityCalculatorQueryOption: 0
+  _entityReplicationFilterQueryOption: 0
+--- !u!114 &8782893027260672566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461875933215268404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a27617174c0b47a4f877804cc9b8b812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
