@@ -16,12 +16,13 @@ public class CountDown : MonoBehaviour
     bool done = false;
     int roundNumber;
     string roundString;
+    public GameObject inventoryObj;
     Inventory inventory;
 
     // Start is called before the first frame update
     void Start()
     {
-        inventory = GameObject.Find("InventorySystem").GetComponent<Inventory>();
+        inventory = inventoryObj.GetComponent<Inventory>();
         timer = roundTime;
         CountDown_text.text = ConvertTime();
         roundNumber = PlayerPrefs.GetInt("round");

@@ -9,12 +9,14 @@ public class ButtonThroughKeySelection : MonoBehaviour
 
     public int itemIndex;
 
+    public GameObject inventoryObj;
     Inventory inventory;
 
     // Start is called before the first frame update
     void Start()
     {
-        inventory = GameObject.Find("InventorySystem").GetComponent<Inventory>();
+        inventory = inventoryObj.GetComponent<Inventory>();
+        //GameObject.Find("InventorySystem").GetComponent<Inventory>();
     }
 
     // Update is called once per frame
@@ -23,7 +25,7 @@ public class ButtonThroughKeySelection : MonoBehaviour
         if (Input.GetKeyDown(key))
         {
             EventSystem.current.SetSelectedGameObject(this.gameObject);
-            inventory.setSelectItemIndex(itemIndex);
+            inventory.SetSelectItemIndex(itemIndex);
         }
     }
 }

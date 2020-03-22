@@ -80,7 +80,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void setSelectItemIndex(int index)
+    public void SetSelectItemIndex(int index)
     {
         selectItemIndex = index;
     }

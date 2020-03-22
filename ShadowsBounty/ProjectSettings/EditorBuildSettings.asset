@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CastleAIMerge.unity
     guid: 7afbbd52cf5d09d4880a821b28c00b94
+  - enabled: 1
+    path: Assets/Scenes/CastleAIMerge 2.unity
+    guid: 7e90a82b2c5180a49ab9b65ca99d5000
   m_configObjects: {}
