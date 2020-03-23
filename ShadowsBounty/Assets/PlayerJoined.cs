@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
 {
     public Camera entityCamera;
+    public GameObject HUD;
     private string username;
 
     private void Update()
@@ -12,6 +13,10 @@ public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
         if(entity.IsOwner && entityCamera.gameObject.activeInHierarchy == false)
         {
             entityCamera.gameObject.SetActive(true);
+        }
+        if (entity.IsOwner && HUD.gameObject.activeInHierarchy == false)
+        {
+            HUD.gameObject.SetActive(true);
         }
     }
 }
