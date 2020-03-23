@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
 {
     public Camera entityCamera;
-    public GameObject HUD;
+    public Canvas HUD;
     private string username;
 
     private void Update()
