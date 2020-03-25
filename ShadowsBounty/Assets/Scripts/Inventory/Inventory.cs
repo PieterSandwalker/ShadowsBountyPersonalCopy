@@ -137,12 +137,19 @@ public class Inventory : MonoBehaviour
                     break;
                 case 1:
                     //second item slot
-                    if (itemListCheck[1] == 0)
-                        currentItem = grapplingGun;
-                    else if (itemListCheck[1] == 1)
-                        currentItem = teleportObj;
-                    else
+                    if (slot2.GetComponent<CoolDown>().IsReady()) 
+                    {
+                        if (itemListCheck[1] == 0)
+                            currentItem = grapplingGun;
+                        else if (itemListCheck[1] == 1)
+                            currentItem = teleportObj;
+                        else
+                            currentItem = null;
+                    } else
+                    {
                         currentItem = null;
+                    }
+                    
                     break;
                 case 2:
                     //third item slot

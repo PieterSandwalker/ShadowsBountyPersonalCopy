@@ -68,7 +68,7 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
         if (Input.GetMouseButtonDown(0)) fireButtonHeld = true;
         else if (Input.GetMouseButtonUp(0))
         {
-            cd.GetComponent<CoolDown>().Use();
+           
             fireButtonHeld = false;
         }
     }
@@ -138,7 +138,6 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
             player.rb.velocity += pushForce * Time.fixedDeltaTime * playerOrientation.forward;
         }
         else {
-            //reset grapple holder position
             grappleHolder.localRotation = Quaternion.Lerp(grappleHolder.localRotation, Quaternion.Euler(0, 0, 0), rotationSmooth * Time.fixedDeltaTime);
 
 
@@ -160,6 +159,8 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
         //Release grapple
         if (fireButtonReleased/*Input.GetMouseButtonUp(0)*/) { //Only call the frame that grapple input button is released
             grapplingRope.UnGrapple();
+            cd.GetComponent<CoolDown>().Use();
+            print(cd.GetComponent<CoolDown>().coolDown);
             fireButtonReleased = false;
         }
 
