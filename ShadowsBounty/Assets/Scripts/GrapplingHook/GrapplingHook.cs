@@ -160,7 +160,6 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
         if (fireButtonReleased/*Input.GetMouseButtonUp(0)*/) { //Only call the frame that grapple input button is released
             grapplingRope.UnGrapple();
             cd.GetComponent<CoolDown>().Use();
-            print(cd.GetComponent<CoolDown>().coolDown);
             fireButtonReleased = false;
         }
 

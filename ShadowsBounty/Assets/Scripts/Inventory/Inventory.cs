@@ -50,6 +50,7 @@ public class Inventory : MonoBehaviour
         itemListCheck = data.itemNum;
         //default disable all item
         grapplingGun.SetActive(false);
+        teleportObj.SetActive(false);
     }
 
     public void GetKey()
@@ -137,22 +138,41 @@ public class Inventory : MonoBehaviour
                     break;
                 case 1:
                     //second item slot
-                    if (slot2.GetComponent<CoolDown>().IsReady()) 
+                    if (slot2.GetComponent<CoolDown>().IsReady())
                     {
-                        if (itemListCheck[1] == 0)
-                            currentItem = grapplingGun;
+                        if (itemListCheck[1] == 0) { 
+                        //grapplingGun.SetActive(false);
+                        teleportObj.SetActive(false);
+                        currentItem = grapplingGun;
+                        }
                         else if (itemListCheck[1] == 1)
                             currentItem = teleportObj;
                         else
                             currentItem = null;
                     } else
                     {
+                        grapplingGun.SetActive(false);
                         currentItem = null;
                     }
                     
                     break;
                 case 2:
                     //third item slot
+                    //test only 
+                    if (slot3.GetComponent<CoolDown>().IsReady())
+                    { 
+                        if (itemListCheck[2] == 0) { 
+                            grapplingGun.SetActive(false);
+                            teleportObj.SetActive(false);
+                            currentItem = teleportObj; }
+                        else
+
+                            currentItem = null;
+                    } else
+                    {
+                        teleportObj.SetActive(false);
+                        currentItem = null;
+                    }
                     break;
                 case 3:
                     //fourth item slot
@@ -166,10 +186,9 @@ public class Inventory : MonoBehaviour
 
 
             //active current one
-            if (currentItem != null) currentItem.SetActive(true);
-            else //disable all
+            if (currentItem != null)
             {
-                grapplingGun.SetActive(false);
+                currentItem.SetActive(true);
             }
         }
         //use scroll to change item selecting
