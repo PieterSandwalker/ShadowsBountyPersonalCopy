@@ -18,7 +18,8 @@ public class NavAI : MonoBehaviour
     #endregion
     #region PlayerTargeting
     public float engageRadius = 100.0f;
-    public float satisfactoryDetectionLevel = 50.0f;
+    public float satisfactoryDetectionLevelVisual = 50.0f;
+    public float satisfactoryDetectionLevelAudio = 50.0f;
     private bool playerDetected = false;
     public int index = 0;
     public Vector3 HitLocation;
@@ -108,7 +109,7 @@ public class NavAI : MonoBehaviour
     {
         
         PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
-        if (detectionlevel.AudibleFactor > satisfactoryDetectionLevel)
+        if (detectionlevel.AudibleFactor > satisfactoryDetectionLevelAudio)
         {
             if (Investigate(player.transform)) return true;
         }
@@ -139,7 +140,7 @@ public class NavAI : MonoBehaviour
             if (hit.collider.gameObject.tag == "Player")
             {
                 PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
-                if (detectionlevel.VisibiityFactor > satisfactoryDetectionLevel)
+                if (detectionlevel.VisibiityFactor > satisfactoryDetectionLevelVisual)
                 {
                     playerDetected = true;
                     if (Pursue(player)) return true;
