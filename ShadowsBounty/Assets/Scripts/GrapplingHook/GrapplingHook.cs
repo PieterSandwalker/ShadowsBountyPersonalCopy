@@ -14,6 +14,10 @@ using UnityEngine.InputSystem;
 //Possibly add a sphere on the location where you are grappling to
 
 public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHookActions {
+    //used to tell inventory that the item is used
+    [Header("Using check")]
+    public GameObject cd;
+
     [Header("Grappling")]
     public GrapplingRope grapplingRope;
     public PlayerMovement2 player; //Change to PlayerMovement2, reference rigid body thru player.rb
@@ -62,7 +66,11 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
     private void MyInput()
     {
         if (Input.GetMouseButtonDown(0)) fireButtonHeld = true;
-        else if (Input.GetMouseButtonUp(0)) fireButtonHeld = false;
+        else if (Input.GetMouseButtonUp(0))
+        {
+            cd.GetComponent<CoolDown>().Use();
+            fireButtonHeld = false;
+        }
     }
 
     //Callback function for input system
@@ -91,8 +99,11 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
         ghControls.Disable();
     }
 
+    //make it only run via the cd is ready
     private void Update()
     {
+        
+        
         //Bandaid fix for scaling bug with grappling gun model. Doesn't work completely. To avoid scaling issues completely would need to restructure player prefab so that the grappling gun wasn't a child of the player capsule
         //Good enough. Scaling weirdness is barely noticeable in first person view.
         if (player.transform.localScale.Equals(_crouchScale))
@@ -127,7 +138,10 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
             player.rb.velocity += pushForce * Time.fixedDeltaTime * playerOrientation.forward;
         }
         else {
+            //reset grapple holder position
             grappleHolder.localRotation = Quaternion.Lerp(grappleHolder.localRotation, Quaternion.Euler(0, 0, 0), rotationSmooth * Time.fixedDeltaTime);
+
+
         }
     }
 

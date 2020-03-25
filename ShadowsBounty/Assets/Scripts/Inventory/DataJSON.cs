@@ -27,8 +27,6 @@ public class DataJSON
             0,
             0,
             0,
-            0,
-            0,
             0
         };
         magicNum = new List<int>

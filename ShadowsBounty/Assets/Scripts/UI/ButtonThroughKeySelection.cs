@@ -10,6 +10,7 @@ public class ButtonThroughKeySelection : MonoBehaviour
     public int itemIndex;
 
     public GameObject inventoryObj;
+
     Inventory inventory;
 
     // Start is called before the first frame update
@@ -22,10 +23,12 @@ public class ButtonThroughKeySelection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CoolDown cd = this.GetComponent<CoolDown>();
+        //inventory 
         if (Input.GetKeyDown(key))
         {
             EventSystem.current.SetSelectedGameObject(this.gameObject);
             inventory.SetSelectItemIndex(itemIndex);
-        }
+        } 
     }
 }
