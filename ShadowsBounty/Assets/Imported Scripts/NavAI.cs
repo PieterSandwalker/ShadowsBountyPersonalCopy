@@ -12,6 +12,9 @@ public class NavAI : MonoBehaviour
     #region NavigationTargeting
     public Transform goal;
     public float radiusOfSatisfaction = 5.0f;
+    public float patrolSpeed = 5.0f;
+    public float investigateSpeed = 7.0f;
+    public float pursuitSpeed = 10.0f;
     public float pursuitROS = 20.0f;
     public string patrolTag = "PatrolPoint";
     public string playerTag = "Player";
@@ -29,6 +32,7 @@ public class NavAI : MonoBehaviour
     public float food = 0.0f;
     public float water = 0.0f;
     public float rest = 0.0f;
+    public float patrol = 0.0f;
     public bool resting = false;
     public bool eating = false;
     public bool drinking = false;
@@ -160,6 +164,7 @@ public class NavAI : MonoBehaviour
     bool Investigate(Transform location)
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = investigateSpeed;
         agent.destination = location.position;
         goal.position = location.position;
         return true;
@@ -171,15 +176,15 @@ public class NavAI : MonoBehaviour
     bool Pursue(GameObject player)
     {
         float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = pursuitSpeed;
         if (distance > pursuitROS)
         {
-            NavMeshAgent agent = GetComponent<NavMeshAgent>();
             Rigidbody rb = player.GetComponent<Rigidbody>();
             agent.destination = player.transform.position + rb.velocity;
             goal.position = player.transform.position + rb.velocity;
         } else
         {
-            NavMeshAgent agent = GetComponent<NavMeshAgent>();
             agent.destination = player.transform.position;
             goal.position = player.transform.position;
         }
@@ -229,6 +234,7 @@ public class NavAI : MonoBehaviour
     bool Rotate()
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = patrolSpeed;
         index++;
         if (index >= patrolPoints.Length) index = 0;
         agent.destination = patrolPoints[index].transform.position;
