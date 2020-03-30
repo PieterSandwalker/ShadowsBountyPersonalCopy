@@ -8,7 +8,8 @@ public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
     public Canvas HUD;
     private string username;
 
-    private void Update()
+    private void Start()
+        //usually with update()
     {
         if(entity.IsOwner && entityCamera.gameObject.activeInHierarchy == false)
         {
