@@ -7,12 +7,13 @@ public class HUD : MonoBehaviour
 {
     public int score;
     [SerializeField] public TextMeshProUGUI Bounty;
+    public GameObject inventoryObj;
     Inventory inventory;
 
     // Start is called before the first frame update
     void Start()
     {
-        inventory = GameObject.Find("InventorySystem").GetComponent<Inventory>();
+        inventory = inventoryObj.GetComponent<Inventory>();
         score = inventory.GetScore();
         Bounty.text = score.ToString();
     }
