@@ -27,8 +27,6 @@ public class DataJSON
             0,
             0,
             0,
-            0,
-            0,
             0
         };
         magicNum = new List<int>
@@ -56,7 +54,8 @@ public class DataJSON
     */
     public static void Save(string json)
     {
-        File.WriteAllText(Application.dataPath + "/Data/data.txt", json);
+        //File.WriteAllText(Application.dataPath + "/Data/data.txt", json);
+        File.WriteAllText(Application.dataPath + "/data.txt", json);
     }
 
     /**
@@ -73,9 +72,10 @@ public class DataJSON
      */
     public static DataJSON Load()
     {
-        if (File.Exists(Application.dataPath + "/Data/data.txt"))
+        //File.Exists(Application.dataPath + "/Data/data.txt"
+        if (File.Exists(Application.dataPath + "/data.txt"))
         {
-            string saveStr = File.ReadAllText(Application.dataPath + "/Data/data.txt");
+            string saveStr = File.ReadAllText(Application.dataPath + "/data.txt");
             DataJSON data = JsonUtility.FromJson<DataJSON>(saveStr);
             return data;
         }

@@ -173,6 +173,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasKey: 0
+  grapplingGun: {fileID: 0}
+  smokingBomb: {fileID: 0}
+  teleportObj: {fileID: 0}
+  slot1: {fileID: 0}
+  slot2: {fileID: 0}
+  slot3: {fileID: 0}
+  slot4: {fileID: 0}
 --- !u!114 &224856182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,6 +333,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8caa5376de04d344a34c772c35bfd4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  cam: {fileID: 0}
 --- !u!1 &252672684
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,6 +523,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8caa5376de04d344a34c772c35bfd4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  cam: {fileID: 0}
 --- !u!1 &646335847
 GameObject:
   m_ObjectHideFlags: 0
@@ -664,6 +675,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8caa5376de04d344a34c772c35bfd4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  cam: {fileID: 0}
 --- !u!1 &1176283674
 GameObject:
   m_ObjectHideFlags: 0
