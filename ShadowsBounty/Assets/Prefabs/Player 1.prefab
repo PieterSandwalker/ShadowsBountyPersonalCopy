@@ -298,6 +298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityCamera: {fileID: 7341447645855555901}
+  HUD: {fileID: 0}
 --- !u!1 &6836130298834604635
 GameObject:
   m_ObjectHideFlags: 0

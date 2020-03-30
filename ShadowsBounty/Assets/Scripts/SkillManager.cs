@@ -14,7 +14,7 @@ public class SkillManager : MonoBehaviour
 
     void Start()
     {
-        cam = GameObject.Find("Camera01").GetComponent<Camera>();
+        cam = GameObject.Find("Camera").GetComponent<Camera>();
         useOnce = false;
         ready = false;
         //cam = Camera.current;
@@ -42,7 +42,15 @@ public class SkillManager : MonoBehaviour
                         GameObject tg = GameObject.Find("TeleportTarget");
                         tg.transform.position = pos;
                     }
-
+                    if (Input.GetKeyDown(KeyCode.R))
+                    {
+                        print(1);
+                        pos.y = pos.y + 2.0F;
+                        GameObject.Find("Player2.0").transform.position = pos;
+                        useOnce = true;
+                        GameObject.Find("TeleportTarget").transform.position = new Vector3(0, -5, 0);
+                        GameObject.Find("skillButtom").SetActive(false);
+                    }
                 }
                 else
                 {
@@ -54,15 +62,7 @@ public class SkillManager : MonoBehaviour
                     GameObject.Find("TeleportTarget").transform.position = new Vector3(0,-5,0);
                 }*/
             }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                print(1);
-                pos.y = pos.y + 2.0F;
-                GameObject.Find("Collector").transform.position = pos;
-                useOnce = true;
-                GameObject.Find("TeleportTarget").transform.position = new Vector3(0, -5, 0);
-                GameObject.Find("skillButtom").SetActive(false);
-            }
+            
         }
     }
 }

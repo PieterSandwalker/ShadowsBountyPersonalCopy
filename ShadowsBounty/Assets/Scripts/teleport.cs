@@ -4,51 +4,23 @@ using UnityEngine;
 
 public class teleport : MonoBehaviour
 {
-    Vector3 pos;
-    // Update is called once per frame
+    [Header("Player")]
+    public GameObject player;
+    public GameObject cam;
+    public GameObject cd;
 
-    Camera cam;
 
-    bool ready;
-
-    void Start()
+    private void Update()
     {
-        ready = false;
-        cam = GetComponent<Camera>();
-    }
-    void Update()
-    {
-        if ( Input.GetKeyDown(KeyCode.T) || ready )
-        {
-            //   RaycastHit hit;
-            ready = true;
-            Ray ray = cam.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
+        if (Input.GetMouseButtonDown(0))
+        {           
+            Ray ray = cam.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit)) { 
-                print("I'm looking at " + hit.transform.name);
-                if (hit.transform.name == "TeleportTarget")
-                {
-                }
-                else
-                {
-                    pos = hit.point;
-                    GameObject tg = GameObject.Find("TeleportTarget");
-                    //tg.active = true;
-                   // if (pos.y <= 1.5F  ) pos.y = 1.5F;
-                    tg.transform.position = pos;
-                }
-                
-            }
-        else
-            print("I'm looking at nothing!");
+            Physics.Raycast(ray, out hit);
+            player.transform.position = hit.point;
+            cd.GetComponent<CoolDown>().Use();
         }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            // print(pos);
-            pos.y = pos.y + 2.0F;
-            GameObject.Find("Collector").transform.position = pos;
-        }
-
+            
     }
 }
 
