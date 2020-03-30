@@ -18,6 +18,11 @@ public class Inventory : MonoBehaviour
 
     int selectItemIndex;
 
+    [Header("Shoping menu")]
+    public GameObject shopmenu;
+    public GameObject UI;
+    public GameObject movementControl;
+
     //used to reference items. Thus, each item will be a prefab
     [Header("GameobjectPrep")]
     public GameObject grapplingGun;
@@ -127,6 +132,26 @@ public class Inventory : MonoBehaviour
                     SetSelectItemIndex(3);
                 }
 
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                    if (shopmenu.activeSelf) {
+                    shopmenu.SetActive(false);
+                   /* UI.SetActive(true);
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.lockState = CursorLockMode.Confined;
+                    Cursor.visible = true;
+                    movementControl.GetComponent<PlayerMovement2>().enabled = false;*/
+                }
+                    else {
+                    shopmenu.SetActive(true);
+                   /* Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                    UI.SetActive(true);
+                    movementControl.GetComponent<PlayerMovement2>().enabled = true;
+                */}
+                return;
             }
 
             //load item/spell into currentItem
