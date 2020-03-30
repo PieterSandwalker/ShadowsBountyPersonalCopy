@@ -18,6 +18,10 @@ TagManager:
   - PatrolPointSet6
   - PatrolPointSet7
   - PatrolPointSet8
+  - WaterStation
+  - MessHall
+  - Light
+  - SkyLight
   layers:
   - Default
   - TransparentFX
