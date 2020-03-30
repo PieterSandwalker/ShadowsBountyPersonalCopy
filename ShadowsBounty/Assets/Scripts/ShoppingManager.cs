@@ -64,7 +64,7 @@ public class ShoppingManager : MonoBehaviour
         data.bounty = Bounty;
         DataJSON.Save(data);
         //SceneManager.LoadScene("TreasureTesting");
-        SceneManager.LoadScene("CastleAIMerge");
+        SceneManager.LoadScene("CastleAIMerge 1");
     }
 
     public void ShoppingMagic(int index)
