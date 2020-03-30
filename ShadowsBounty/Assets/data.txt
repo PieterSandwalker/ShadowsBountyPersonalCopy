@@ -1,1 +1,0 @@
-{"bounty":100,"playerRole":0,"itemNum":[0,0,0,0],"magicNum":[0,0,0,0,0,0],"trapNum":[0,0,0,0,0,0]}

@@ -4,7 +4,7 @@ using UnityEngine;
 using Bolt.Matchmaking;
 using TMPro;
 
-public class NetworkedTimer : Bolt.EntityBehaviour<IPlayerMoveState>
+public class NetworkedTimer : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI CountDown_text;
     bool startTimer = false;
