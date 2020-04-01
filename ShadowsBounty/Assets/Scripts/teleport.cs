@@ -17,7 +17,9 @@ public class teleport : MonoBehaviour
             Ray ray = cam.GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
             RaycastHit hit;
             Physics.Raycast(ray, out hit);
-            player.transform.position = hit.point;
+            Vector3 temp = hit.point;
+            temp.y = temp.y + 5;
+            player.transform.position = temp;
             cd.GetComponent<CoolDown>().Use();
         }
             

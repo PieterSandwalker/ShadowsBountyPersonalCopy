@@ -18,6 +18,11 @@ public class Inventory : MonoBehaviour
 
     int selectItemIndex;
 
+    [Header("Shoping menu")]
+    public GameObject shopmenu;
+    public GameObject UI;
+    public GameObject movementControl;
+
     //used to reference items. Thus, each item will be a prefab
     [Header("GameobjectPrep")]
     public GameObject grapplingGun;
@@ -46,12 +51,13 @@ public class Inventory : MonoBehaviour
         hasKey = false;
         data = DataJSON.Load();
         score = data.bounty;
-
         itemListCheck = data.itemNum;
         //default disable all item
         grapplingGun.SetActive(false);
         teleportObj.SetActive(false);
     }
+
+
 
     public void GetKey()
     {
@@ -129,12 +135,26 @@ public class Inventory : MonoBehaviour
 
             }
 
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                if (shopmenu.activeSelf)
+                {
+                    shopmenu.SetActive(false);
+                }
+                else
+                {
+                    shopmenu.SetActive(true);
+          
+                }
+                return;
+            }
             //load item/spell into currentItem
             //specific asigned item can be varied
             switch (selectItemIndex)
             {
                 case 0:
                     //first item slot
+                    currentItem = null;
                     break;
                 case 1:
                     //second item slot
@@ -142,8 +162,10 @@ public class Inventory : MonoBehaviour
                     {
                         if (itemListCheck[1] == 0) { 
                         //grapplingGun.SetActive(false);
-                        teleportObj.SetActive(false);
-                        currentItem = grapplingGun;
+                            teleportObj.SetActive(false);
+                            //grapplingGun.SetActive(true);
+                            currentItem = grapplingGun;
+                        
                         }
                         else if (itemListCheck[1] == 1)
                             currentItem = teleportObj;
@@ -176,7 +198,9 @@ public class Inventory : MonoBehaviour
                     break;
                 case 3:
                     //fourth item slot
+                    currentItem = null;
                     break;
+                
                 //for -1 situation
                 default:
                     currentItem = null;
@@ -189,6 +213,10 @@ public class Inventory : MonoBehaviour
             if (currentItem != null)
             {
                 currentItem.SetActive(true);
+            } else
+            {
+                grapplingGun.SetActive(false);
+                teleportObj.SetActive(false);
             }
         }
         //use scroll to change item selecting
