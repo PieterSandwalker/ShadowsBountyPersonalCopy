@@ -27,6 +27,7 @@ public class PlayerDetectionStats : MonoBehaviour
     private Vector3 crouchScale = new Vector3(1, 0.5f, 1);
     public float skyLightWeight = 100.0f;
 
+    public float speedUnitWeight = 1.0f;
     public float visibilityWeight = 1.0f;
     public float audibilityWeight = 1.0f;
     public float VisibilityFactor { get => visibilityFactor; set => visibilityFactor = value; }
@@ -110,10 +111,11 @@ public class PlayerDetectionStats : MonoBehaviour
     void UpdateAudibility()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb.velocity.magnitude <= noMovementThreshold) audibleFactor = zeroNoticibility;
-        else if (rb.velocity.magnitude <= minimalMovementThreshold) audibleFactor = minimalNoticibility;
-        else if (rb.velocity.magnitude <= overtMovementThreshold) audibleFactor = overtNoticibility;
-        else audibleFactor = obnoxiousNoticibility;
+        //if (rb.velocity.magnitude <= noMovementThreshold) audibleFactor = zeroNoticibility;
+        //else if (rb.velocity.magnitude <= minimalMovementThreshold) audibleFactor = minimalNoticibility;
+        //else if (rb.velocity.magnitude <= overtMovementThreshold) audibleFactor = overtNoticibility;
+        //else audibleFactor = obnoxiousNoticibility;
+        audibleFactor = rb.velocity.magnitude * speedUnitWeight;
         audibleFactor *= audibilityWeight;
 
     }

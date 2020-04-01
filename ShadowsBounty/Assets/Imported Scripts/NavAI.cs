@@ -17,6 +17,8 @@ public class NavAI : MonoBehaviour
     public float patrolSpeed = 5.0f;
     public float investigateSpeed = 7.0f;
     public float pursuitSpeed = 10.0f;
+    public float patrolAngularSpeed = 120.0f;
+    public float pursuitAngularSpeed = 240.0f;
     public float pursuitROS = 20.0f;
     public string patrolTag = "PatrolPoint";
     public string waterTag = "WaterStation";
@@ -29,7 +31,7 @@ public class NavAI : MonoBehaviour
     public float satisfactoryDetectionLevelAudio = 10.0f;
     private bool playerDetected = false;
     public float visionAngle = 60.0f; //degrees
-    public float distanceWeightRatio = 30.0f; 
+    public float distanceWeightRatio = 10.0f; 
     public int index = 0;
     public Vector3 HitLocation;
     public bool ranged = false;
@@ -132,6 +134,7 @@ public class NavAI : MonoBehaviour
         PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
         if (detectionlevel.AudibleFactor/distance > satisfactoryDetectionLevelAudio)
         {
+            Debug.Log("Player Heard: " + detectionlevel.AudibleFactor / distance);
             if (Investigate(player.transform)) return true;
         }
         return false;
