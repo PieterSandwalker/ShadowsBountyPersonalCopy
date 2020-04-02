@@ -22,6 +22,8 @@ public class Inventory : MonoBehaviour
     public GameObject shopmenu;
     public GameObject UI;
     public GameObject movementControl;
+    public GameObject ShoppingManager;
+    public GameObject HUD;
 
     //used to reference items. Thus, each item will be a prefab
     [Header("GameobjectPrep")]
@@ -44,7 +46,6 @@ public class Inventory : MonoBehaviour
     //the item order: race skill, teleport/grip gun = moving, temp boost, smoking bomb/others
     //int[] itemListAvailable = { 0,0,0,0 }; 
 
-     
     void Start()
     {
         selectItemIndex = -1;
@@ -72,6 +73,8 @@ public class Inventory : MonoBehaviour
     public void AddScore(int point)
     {
         score += point;
+        data.bounty = score;
+        DataJSON.Save(data);
     }
 
     //wait to do
@@ -140,11 +143,15 @@ public class Inventory : MonoBehaviour
                 if (shopmenu.activeSelf)
                 {
                     shopmenu.SetActive(false);
+                    ShoppingManager.GetComponent<ShoppingManager>().FinishShopping();
+                    data = DataJSON.Load();
+                    score = data.bounty;
+                    HUD.GetComponent<HUD>().updateScore(score);
                 }
                 else
                 {
                     shopmenu.SetActive(true);
-          
+                    ShoppingManager.GetComponent<ShoppingManager>().StartShopping();
                 }
                 return;
             }

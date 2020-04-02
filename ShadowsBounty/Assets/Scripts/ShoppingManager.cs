@@ -28,10 +28,7 @@ public class ShoppingManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        data = DataJSON.Load();
-        //Bounty = PlayerPrefs.GetInt("score");
-        Bounty = data.bounty;
-        Debug.Log(Bounty);
+        StartShopping();
         //Instance = PersistentManagerScript.Instance;
         //BountyTxt.text = Instance.Bounty.ToString();
         //Instance.SetupBounty();
@@ -44,7 +41,7 @@ public class ShoppingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        /*if (Input.GetKeyDown(KeyCode.A))
         {
             //PersistentManagerScript.Instance.AddBounty(100);
             //BountyTxt.text = Instance.Bounty.ToString();
@@ -54,7 +51,7 @@ public class ShoppingManager : MonoBehaviour
             PlayerPrefs.SetInt("score", Bounty);
             M_Object.text = Bounty.ToString();
             Message_Object.text = OpeningTxt;
-        }
+        }*/
 
     }
 
@@ -65,6 +62,21 @@ public class ShoppingManager : MonoBehaviour
         DataJSON.Save(data);
         //SceneManager.LoadScene("TreasureTesting");
         SceneManager.LoadScene("CastleAIMerge 1");
+    }
+    public void FinishShopping()
+    {
+        //PlayerPrefs.SetInt("score", Bounty);
+        data.bounty = Bounty;
+        DataJSON.Save(data);
+    }
+
+    public void StartShopping()
+    {
+        data = DataJSON.Load();
+        Debug.Log(data.bounty);
+        //Bounty = PlayerPrefs.GetInt("score");
+        Bounty = data.bounty;
+        M_Object.text = Bounty.ToString();
     }
 
     public void ShoppingMagic(int index)

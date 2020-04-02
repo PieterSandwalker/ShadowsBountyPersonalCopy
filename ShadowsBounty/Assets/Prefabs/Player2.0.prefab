@@ -119,12 +119,11 @@ RectTransform:
   - {fileID: 7914907891995058195}
   - {fileID: 7794708370843353111}
   - {fileID: 9030925147868611698}
-  - {fileID: 3582566038875436295}
   - {fileID: 703505203348956836}
   - {fileID: 8114843507015168150}
   - {fileID: 3112808109881067428}
   m_Father: {fileID: 312732223320795371}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -566,7 +565,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2024162129571841877
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3126,10 +3125,10 @@ RectTransform:
   m_GameObject: {fileID: 1208788974199929221}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 5389588325368126181}
-  m_RootOrder: 3
+  m_Father: {fileID: 312732223320795371}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5275,7 +5274,7 @@ RectTransform:
   - {fileID: 4284815092493219631}
   - {fileID: 434805954774216278}
   m_Father: {fileID: 5389588325368126181}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7860,7 +7859,7 @@ RectTransform:
   - {fileID: 6308135793743767625}
   - {fileID: 2024162129571841877}
   m_Father: {fileID: 5389588325368126181}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8169,7 +8168,7 @@ RectTransform:
   - {fileID: 9146177297504220270}
   - {fileID: 5348847650350215217}
   m_Father: {fileID: 5389588325368126181}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -9045,6 +9044,8 @@ MonoBehaviour:
   shopmenu: {fileID: 66165016218937367}
   UI: {fileID: 5174192186916435029}
   movementControl: {fileID: 6992880450184572464}
+  ShoppingManager: {fileID: 1208788974199929221}
+  HUD: {fileID: 2383524316681918438}
   grapplingGun: {fileID: 5512069137855824354}
   smokingBomb: {fileID: 0}
   teleportObj: {fileID: 5323677283078853279}
@@ -10666,6 +10667,7 @@ Transform:
   - {fileID: 8334894748934526052}
   - {fileID: 9156251763238968779}
   - {fileID: 4856745444552134401}
+  - {fileID: 3582566038875436295}
   - {fileID: 5389588325368126181}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -10834,6 +10836,7 @@ MonoBehaviour:
   crouchNoticibility: 2
   slideNoticibility: 4
   skyLightWeight: 100
+  speedUnitWeight: 1
   visibilityWeight: 1
   audibilityWeight: 1
 --- !u!114 &-9201800643972578632
