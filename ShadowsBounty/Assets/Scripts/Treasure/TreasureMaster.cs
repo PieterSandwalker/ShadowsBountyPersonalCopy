@@ -23,7 +23,7 @@ public class TreasureMaster : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             this.gameObject.SetActive(false);
-            HUD hud = other.gameObject.transform.GetChild(5).GetComponent<HUD>();
+            HUD hud = other.gameObject.transform.GetChild(4).GetComponent<HUD>();
             hud.AddScore(value);
             //other.gameObject.GetComponent<TreasureCollider>().addScore(value);
             //Debug.Log(other.gameObject.GetComponent<TreasureCollider>().getScore());
