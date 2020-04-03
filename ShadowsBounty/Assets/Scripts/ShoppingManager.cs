@@ -53,6 +53,7 @@ public class ShoppingManager : MonoBehaviour
             Message_Object.text = OpeningTxt;
         }*/
 
+
     }
 
     public void NextGame()
