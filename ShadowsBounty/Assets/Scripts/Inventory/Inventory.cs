@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Inventory : MonoBehaviour
+public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
 {
     // Start is called before the first frame update
     public bool hasKey;
@@ -111,7 +111,7 @@ public class Inventory : MonoBehaviour
                 }
                 
             }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha2))
             {
                 if (slot2.GetComponent<CoolDown>().IsReady())
                 {
@@ -119,7 +119,7 @@ public class Inventory : MonoBehaviour
                 }
 
             }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
+            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha3))
             {
                 {
                     if (slot3.GetComponent<CoolDown>().IsReady())
@@ -129,7 +129,7 @@ public class Inventory : MonoBehaviour
 
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Alpha4))
+            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha4))
             {
                 if (slot4.GetComponent<CoolDown>().IsReady())
                 {
@@ -138,9 +138,9 @@ public class Inventory : MonoBehaviour
 
             }
 
-            if (Input.GetKeyDown(KeyCode.M))
+            if (entity.IsOwner && Input.GetKeyDown(KeyCode.M))
             {
-                if (shopmenu.activeSelf)
+                if (shopmenu.gameObject.activeInHierarchy)
                 {
                     shopmenu.SetActive(false);
                     ShoppingManager.GetComponent<ShoppingManager>().FinishShopping();
