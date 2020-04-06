@@ -30,6 +30,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
     public GameObject grapplingGun;
     public GameObject smokingBomb;
     public GameObject teleportObj;
+    public GameObject SpeedBooster;
 
 
     [Header("CD")]
@@ -54,8 +55,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
         score = data.bounty;
         itemListCheck = data.itemNum;
         //default disable all item
-        grapplingGun.SetActive(false);
-        teleportObj.SetActive(false);
+        setFalse();
     }
 
 
@@ -161,16 +161,34 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
             {
                 case 0:
                     //first item slot
-                    currentItem = null;
+                    if (slot1.GetComponent<CoolDown>().IsReady())
+                    {
+                        if (itemListCheck[2] == 0)
+                        {
+                            grapplingGun.SetActive(false);
+                            teleportObj.SetActive(false);
+                            smokingBomb.SetActive(false);
+
+                            currentItem = SpeedBooster;
+                        }
+                        else
+
+                            currentItem = null;
+                    }
+                    else
+                    {
+                        SpeedBooster.SetActive(false);
+                        currentItem = null;
+                    }
+                    
                     break;
                 case 1:
                     //second item slot
                     if (slot2.GetComponent<CoolDown>().IsReady())
                     {
-                        if (itemListCheck[1] == 0) { 
-                        //grapplingGun.SetActive(false);
-                            teleportObj.SetActive(false);
-                            //grapplingGun.SetActive(true);
+                        if (itemListCheck[1] == 0) {
+                            //grapplingGun.SetActive(false);
+                            setFalse();
                             currentItem = grapplingGun;
                         
                         }
@@ -190,9 +208,8 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     //test only 
                     if (slot3.GetComponent<CoolDown>().IsReady())
                     { 
-                        if (itemListCheck[2] == 0) { 
-                            grapplingGun.SetActive(false);
-                            teleportObj.SetActive(false);
+                        if (itemListCheck[2] == 0) {
+                            setFalse();
                             currentItem = teleportObj; }
                         else
 
@@ -205,9 +222,24 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     break;
                 case 3:
                     //fourth item slot
-                    currentItem = null;
+                    if (slot4.GetComponent<CoolDown>().IsReady())
+                    {
+                        if (itemListCheck[3] == 0)
+                        {
+                            setFalse();
+                            currentItem = smokingBomb;
+                        }
+                        else
+
+                            currentItem = null;
+                    }
+                    else
+                    {
+                        smokingBomb.SetActive(false);
+                        currentItem = null;
+                    }
                     break;
-                
+
                 //for -1 situation
                 default:
                     currentItem = null;
@@ -222,8 +254,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                 currentItem.SetActive(true);
             } else
             {
-                grapplingGun.SetActive(false);
-                teleportObj.SetActive(false);
+                setFalse();
             }
         }
         //use scroll to change item selecting
@@ -243,4 +274,13 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
     {
         selectItemIndex = index;
     }
+
+    private void setFalse()
+    {
+        grapplingGun.SetActive(false);
+        teleportObj.SetActive(false);
+        smokingBomb.SetActive(false);
+        SpeedBooster.SetActive(false);
+    }
 }
+
