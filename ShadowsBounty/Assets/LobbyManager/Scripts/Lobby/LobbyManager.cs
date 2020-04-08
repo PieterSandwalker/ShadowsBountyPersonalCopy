@@ -1,7 +1,7 @@
 using System.Collections;
 using Bolt.Matchmaking;
 using Bolt.Samples.Photon.Lobby.Utilities;
-using Bolt.Samples.Photon.Simple;
+//using Bolt.Samples.Photon.Simple;
 using UdpKit;
 using UdpKit.Platform;
 using UnityEngine;
@@ -159,27 +159,27 @@ namespace Bolt.Samples.Photon.Lobby
 
         public override void BoltStartBegin()
         {
-            BoltNetwork.RegisterTokenClass<RoomProtocolToken>();
-            BoltNetwork.RegisterTokenClass<ServerAcceptToken>();
-            BoltNetwork.RegisterTokenClass<ServerConnectToken>();
+            //BoltNetwork.RegisterTokenClass<RoomProtocolToken>();
+            //BoltNetwork.RegisterTokenClass<ServerAcceptToken>();
+            //BoltNetwork.RegisterTokenClass<ServerConnectToken>();
         }
 
         public override void BoltStartDone()
         {
             if (BoltNetwork.IsServer)
             {
-                var token = new RoomProtocolToken()
+                //var token = new RoomProtocolToken()
                 {
-                    ArbitraryData = "My DATA",
+                    //ArbitraryData = "My DATA",
                 };
 
                 BoltLog.Info("Starting Server");
 
                 // Start Photon Room
-                BoltMatchmaking.CreateSession(
-                    sessionID: matchName,
-                    token: token
-                );
+               // BoltMatchmaking.CreateSession(
+                    //sessionID: matchName,
+                   // token: token
+                //);
             }
             else if (BoltNetwork.IsClient)
             {
