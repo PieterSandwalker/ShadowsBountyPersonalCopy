@@ -6,6 +6,7 @@ public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
 {
     public Camera entityCamera;
     public Canvas HUD;
+    public Canvas teamSelect;
     private string username;
 
     private void Update()
@@ -17,6 +18,18 @@ public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
         if (entity.IsOwner && HUD.gameObject.activeInHierarchy == false)
         {
             HUD.gameObject.SetActive(true);
+        }
+        if (entity.IsOwner && teamSelect.gameObject.activeInHierarchy == false)
+        {
+            teamSelect.gameObject.SetActive(true);
+        }
+    }
+
+    public void closeTeam()
+    {
+        if (entity.IsOwner)
+        {
+            teamSelect.gameObject.SetActive(false);
         }
     }
 }

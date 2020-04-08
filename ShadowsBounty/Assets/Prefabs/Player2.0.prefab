@@ -3568,7 +3568,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10, y: -226}
+  m_AnchoredPosition: {x: 8, y: -193}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6436416455230717304
@@ -3650,9 +3650,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5449184529320039198}
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: -9201800643972578632}
+        m_MethodName: closeTeam
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9429,7 +9429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2937589495014623059
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12593,6 +12593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityCamera: {fileID: 2923635263592626068}
   HUD: {fileID: 1174530349961607329}
+  teamSelect: {fileID: 6541595706627679942}
 --- !u!114 &2283330987471068045
 MonoBehaviour:
   m_ObjectHideFlags: 0
