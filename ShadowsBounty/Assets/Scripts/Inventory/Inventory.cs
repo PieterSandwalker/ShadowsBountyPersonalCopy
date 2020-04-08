@@ -53,7 +53,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
         hasKey = false;
         data = DataJSON.Load();
         score = data.bounty;
-        itemListCheck = data.itemNum;
+        itemListCheck = data.item;
         //default disable all item
         setFalse();
     }
@@ -103,7 +103,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
         //check any input forimprove performance
         if (Input.anyKey) {
             //update selection
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha1))
             {
                 if (slot1.GetComponent<CoolDown>().IsReady())
                 {
@@ -147,6 +147,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     data = DataJSON.Load();
                     score = data.bounty;
                     HUD.GetComponent<HUD>().updateScore(score);
+                    itemListCheck = data.item;
                 }
                 else
                 {
@@ -163,7 +164,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     //first item slot
                     if (slot1.GetComponent<CoolDown>().IsReady())
                     {
-                        if (itemListCheck[2] == 0)
+                        if (itemListCheck[0] == 0)
                         {
                             grapplingGun.SetActive(false);
                             teleportObj.SetActive(false);
@@ -186,7 +187,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     //second item slot
                     if (slot2.GetComponent<CoolDown>().IsReady())
                     {
-                        if (itemListCheck[1] == 0) {
+                        if (itemListCheck[1] != 0) {
                             //grapplingGun.SetActive(false);
                             setFalse();
                             currentItem = grapplingGun;
@@ -207,8 +208,8 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     //third item slot
                     //test only 
                     if (slot3.GetComponent<CoolDown>().IsReady())
-                    { 
-                        if (itemListCheck[2] == 0) {
+                    {
+                        if (itemListCheck[2] != 0) {
                             setFalse();
                             currentItem = teleportObj; }
                         else
@@ -224,7 +225,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     //fourth item slot
                     if (slot4.GetComponent<CoolDown>().IsReady())
                     {
-                        if (itemListCheck[3] == 0)
+                        if (itemListCheck[3] != 0)
                         {
                             setFalse();
                             currentItem = smokingBomb;

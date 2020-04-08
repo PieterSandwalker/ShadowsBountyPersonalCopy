@@ -23,7 +23,8 @@ public class ShoppingManager : MonoBehaviour
 
     DataJSON data;
 
-    public List<int> magicPrice, itemPrice, trapPrice;
+    //public List<int> magicPrice, itemPrice, trapPrice;
+    public List<int> statusPrice, itemPrice;
 
     // Start is called before the first frame update
     private void Start()
@@ -80,9 +81,9 @@ public class ShoppingManager : MonoBehaviour
         M_Object.text = Bounty.ToString();
     }
 
-    public void ShoppingMagic(int index)
+    public void ShoppingStatus(int index)
     {
-        int cost = magicPrice[index];
+        int cost = statusPrice[index];
         if (cost > Bounty)
         {
             Debug.Log("not enough bounty");
@@ -93,7 +94,7 @@ public class ShoppingManager : MonoBehaviour
             Bounty -= cost;
             M_Object.text = Bounty.ToString();
             Message_Object.text = BuySuccessTxt;
-            data.magicNum[index]++;
+            data.status[index]++;
         }
     }
     
@@ -110,11 +111,11 @@ public class ShoppingManager : MonoBehaviour
             Bounty -= cost;
             M_Object.text = Bounty.ToString();
             Message_Object.text = BuySuccessTxt;
-            data.itemNum[index]++;
+            data.item[index]++;
         }
     }
     
-    public void ShoppingTrape(int index)
+    /*public void ShoppingTrape(int index)
     {
         int cost = trapPrice[index];
         if (cost > Bounty)
@@ -129,7 +130,7 @@ public class ShoppingManager : MonoBehaviour
             Message_Object.text = BuySuccessTxt;
             data.trapNum[index]++;
         }
-    }
+    }*/
 
 
 }
