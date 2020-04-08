@@ -56,7 +56,7 @@ public class teamManager : Bolt.EntityBehaviour<IPlayerMoveState>
             Cursor.visible = false;
             UI.SetActive(true);
             Player.GetComponent<PlayerMovement2>().enabled = true;
-            finishSelect = true;
+            this.gameObject.GetComponent<teamManager>().enabled = false;
         }
 /*        if (finishSelect)
         {
