@@ -99,7 +99,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
 
     private void Update()
     {
-        
+        //clear item after they be used
         //check any input forimprove performance
         if (Input.anyKey) {
             //update selection
@@ -164,7 +164,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     //first item slot
                     if (slot1.GetComponent<CoolDown>().IsReady())
                     {
-                        if (itemListCheck[0] == 0)
+                        if (itemListCheck[0] != 0)
                         {
                             grapplingGun.SetActive(false);
                             teleportObj.SetActive(false);
@@ -187,14 +187,15 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
                     //second item slot
                     if (slot2.GetComponent<CoolDown>().IsReady())
                     {
+
                         if (itemListCheck[1] != 0) {
                             //grapplingGun.SetActive(false);
-                            setFalse();
+                            teleportObj.SetActive(false);
+                            smokingBomb.SetActive(false);
+                            SpeedBooster.SetActive(false);
                             currentItem = grapplingGun;
                         
                         }
-                        else if (itemListCheck[1] == 1)
-                            currentItem = teleportObj;
                         else
                             currentItem = null;
                     } else
