@@ -28,7 +28,7 @@ public class teamManager : Bolt.EntityBehaviour<IPlayerMoveState>
             Cursor.lockState = CursorLockMode.None;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            teamUI.SetActive(true);
+            //teamUI.SetActive(true);
         }
         //disable other UI and movement
         //UI.SetActive(false);
@@ -81,6 +81,7 @@ public class teamManager : Bolt.EntityBehaviour<IPlayerMoveState>
     public void Close()
     {
         if (entity.IsOwner) {
+            teamUI.gameObject.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             UI.SetActive(true);
