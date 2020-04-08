@@ -41,20 +41,27 @@ public class teamManager : Bolt.EntityBehaviour<IPlayerMoveState>
     // Update is called once per frame
     void Update()   
     {
-        if(UI.activeSelf) {
+        if(teamUI.activeSelf) {
             Player.GetComponent<PlayerMovement2>().enabled = false;
             Cursor.lockState = CursorLockMode.None;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            if (!finishSelect )
+            if (!finishSelect && UI.activeSelf)
             {
                 UI.SetActive(false);
             }
+        } else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            UI.SetActive(true);
+            Player.GetComponent<PlayerMovement2>().enabled = true;
+            finishSelect = true;
         }
-        if (finishSelect)
+/*        if (finishSelect)
         {
             this.gameObject.GetComponent<teamManager>().enabled = false;
-        }
+        }*/
     }
 
     /*
