@@ -19,17 +19,5 @@ public class PlayerJoined : Bolt.EntityBehaviour<IPlayerMoveState>
         {
             HUD.gameObject.SetActive(true);
         }
-        if (entity.IsOwner && teamSelect.gameObject.activeInHierarchy == false)
-        {
-            teamSelect.gameObject.SetActive(true);
-        }
-    }
-
-    public void closeTeam()
-    {
-        if (entity.IsOwner)
-        {
-            teamSelect.gameObject.SetActive(false);
-        }
     }
 }
