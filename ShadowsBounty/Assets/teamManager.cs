@@ -46,10 +46,7 @@ public class teamManager : Bolt.EntityBehaviour<IPlayerMoveState>
             Cursor.lockState = CursorLockMode.None;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
-            if (!finishSelect && UI.activeSelf)
-            {
-                UI.SetActive(false);
-            }
+            UI.SetActive(false);
         } else
         {
             Cursor.lockState = CursorLockMode.Locked;
