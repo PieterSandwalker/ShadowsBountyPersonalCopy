@@ -3,6 +3,7 @@ using Bolt.Matchmaking;
 using System.Collections;
 using System;
 using UdpKit;
+using Bolt.Photon;
 
 public class Menu : Bolt.GlobalEventListener
 {
@@ -30,7 +31,6 @@ public class Menu : Bolt.GlobalEventListener
         if (BoltNetwork.IsServer)
         {
             string matchName = Guid.NewGuid().ToString();
-
             BoltMatchmaking.CreateSession(
                 sessionID: matchName,
                 sceneToLoad: "CastleAIMerge"
@@ -42,6 +42,7 @@ public class Menu : Bolt.GlobalEventListener
     {
         Debug.LogFormat("Session list updated: {0} total sessions", sessionList.Count);
 
+        
         foreach (var session in sessionList)
         {
             UdpSession photonSession = session.Value as UdpSession;
