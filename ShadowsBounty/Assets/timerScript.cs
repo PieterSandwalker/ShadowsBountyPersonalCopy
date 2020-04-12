@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class timerScript : MonoBehaviour
+public class timerScript : Bolt.EntityBehaviour<ITimerState>
 {
     [SerializeField] TextMeshProUGUI CountDown_text;
 
@@ -16,28 +16,34 @@ public class timerScript : MonoBehaviour
     string roundString;
 
 
+    public override void Attached()
+    {
+        state.SecondsLeft = roundTime;
+        state.Round = 1;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         timer = roundTime;
         CountDown_text.text = ConvertTime();
         roundNumber = PlayerPrefs.GetInt("round");
-        roundString = "Round" + roundNumber.ToString() + " ";
+        roundString = "Round" + state.Round.ToString() + " ";
     }
 
     private void Update()
     {
-        if (timer >= 0.0f && canCount)
+        if (state.SecondsLeft >= 0.0f && canCount)
         {
-            timer -= Time.deltaTime;
+            state.SecondsLeft -= Time.deltaTime;
             CountDown_text.text = ConvertTime();
         }
-        else if (timer <= 0.0f && !done)
+        else if (state.SecondsLeft <= 0.0f && !done)
         {
             canCount = false;
             done = true;
             CountDown_text.text = roundString + "0:00";
-            timer = 0.0f;
+            state.SecondsLeft = 0.0f;
         }
         else if (done)
         {
@@ -47,8 +53,8 @@ public class timerScript : MonoBehaviour
 
     private string ConvertTime()
     {
-        int minute = (int)timer / 60;
-        int second = (int)timer % 60;
+        int minute = (int)state.SecondsLeft / 60;
+        int second = (int)state.SecondsLeft % 60;
         if (second < 10)
         {
             return roundString + minute.ToString() + ":0" + second.ToString();
@@ -62,8 +68,9 @@ public class timerScript : MonoBehaviour
         Cursor.visible = true;
         //PlayerPrefs.SetInt("score", score);
         //Debug.Log(PlayerPrefs.GetInt("score"));
+        state.Round++;
         roundNumber++;
-        if (roundNumber > 3)
+        if (state.Round > 3)
         {
             SceneOver(false);
         }
