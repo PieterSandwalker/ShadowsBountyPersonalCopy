@@ -1806,8 +1806,8 @@ GameObject:
   - component: {fileID: 2283330987471068045}
   - component: {fileID: 1934818993822377782}
   - component: {fileID: 4373918689041727567}
+  - component: {fileID: -5704660975908462541}
   - component: {fileID: 9028710449776410880}
-  - component: {fileID: 6402195530112341435}
   m_Layer: 0
   m_Name: Player2.0
   m_TagString: Player
@@ -1982,28 +1982,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a503f17a6689e1419c966575981aff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audibleFactor: 0
-  visibilityFactor: 0
   detected: 0
-  lightPoints: []
-  skyLight: {fileID: 0}
-  lightTag: Light
-  skylightTag: SkyLight
-  lightBalance: 100
-  noMovementThreshold: 2
-  minimalMovementThreshold: 7
-  overtMovementThreshold: 12
-  zeroNoticibility: 0
-  minimalNoticibility: 10
-  overtNoticibility: 30
-  obnoxiousNoticibility: 50
-  standNoticibility: 7
-  crouchNoticibility: 2
-  slideNoticibility: 4
-  skyLightWeight: 100
-  speedUnitWeight: 1
-  visibilityWeight: 1
-  audibilityWeight: 1
 --- !u!114 &-9201800643972578632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2155,6 +2134,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-5704660975908462541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6992880450184572464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdfb1a951fe8edc4081646794550afde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CountDown_text: {fileID: 0}
+  timer: 60
 --- !u!114 &9028710449776410880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2180,20 +2173,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4e8b16ebd46fdf6419763ee95764764d, type: 3}
   grassAudioClips: []
   woodAudioClips: []
---- !u!114 &6402195530112341435
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6992880450184572464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdfb1a951fe8edc4081646794550afde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CountDown_text: {fileID: 0}
-  timer: 60
 --- !u!1 &7114023682430707448
 GameObject:
   m_ObjectHideFlags: 0
@@ -2634,15 +2613,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ac4a98e0f8cebf46b7a263fa2dcc469, type: 3}
---- !u!4 &8618805719475523216 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 9078592238129540373, guid: 6ac4a98e0f8cebf46b7a263fa2dcc469,
-    type: 3}
-  m_PrefabInstance: {fileID: 748025976015152005}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5323677283078853279 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4863894061949301018, guid: 6ac4a98e0f8cebf46b7a263fa2dcc469,
+    type: 3}
+  m_PrefabInstance: {fileID: 748025976015152005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8618805719475523216 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9078592238129540373, guid: 6ac4a98e0f8cebf46b7a263fa2dcc469,
     type: 3}
   m_PrefabInstance: {fileID: 748025976015152005}
   m_PrefabAsset: {fileID: 0}
