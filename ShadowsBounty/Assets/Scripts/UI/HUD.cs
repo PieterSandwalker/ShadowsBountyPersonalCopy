@@ -31,4 +31,10 @@ public class HUD : MonoBehaviour
         inventory.AddScore(point);
         Bounty.text = score.ToString();
     }
+
+    public void updateScore(int score)
+    {
+        this.score = score;
+        Bounty.text = score.ToString();
+    }
 }

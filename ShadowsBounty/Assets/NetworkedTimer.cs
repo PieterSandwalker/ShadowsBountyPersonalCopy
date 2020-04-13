@@ -22,9 +22,13 @@ public class NetworkedTimer : MonoBehaviour
             startTimer = true;
             
             var session = BoltMatchmaking.CurrentSession;
-            var photonsession = session as UdpKit.Platform.Photon.PhotonSession;
+            if (session != null)
+            {
+                var photonsession = session as UdpKit.Platform.Photon.PhotonSession;
 
-            photonsession.Properties.Add("StartTime", startTime);
+                photonsession.Properties.Add("StartTime", startTime);
+            }
+            
         }
         else
         {
