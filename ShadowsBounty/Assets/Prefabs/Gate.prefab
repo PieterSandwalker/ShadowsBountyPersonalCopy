@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 73473729152537986}
   m_Layer: 0
   m_Name: Point Light (3)
-  m_TagString: Untagged
+  m_TagString: Light
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 4516103057604775708}
   m_Layer: 0
   m_Name: Point Light (1)
-  m_TagString: Untagged
+  m_TagString: Light
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4047,7 +4047,7 @@ GameObject:
   - component: {fileID: 9194907612944096205}
   m_Layer: 0
   m_Name: Point Light (2)
-  m_TagString: Untagged
+  m_TagString: Light
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4138,7 +4138,7 @@ GameObject:
   - component: {fileID: 5375530078297874605}
   m_Layer: 0
   m_Name: Point Light
-  m_TagString: Untagged
+  m_TagString: Light
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
