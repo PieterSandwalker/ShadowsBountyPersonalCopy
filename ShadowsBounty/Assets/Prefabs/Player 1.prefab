@@ -258,7 +258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneGuid: 
   _serializerGuid: 3e4df923-c8c9-42da-af37-4916bd4b1e51
-  _prefabId: 3
+  _prefabId: 15
   _updateRate: 1
   _autoFreezeProxyFrames: 0
   _clientPredicted: 1
@@ -299,6 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityCamera: {fileID: 7341447645855555901}
   HUD: {fileID: 0}
+  teamSelect: {fileID: 0}
 --- !u!1 &6836130298834604635
 GameObject:
   m_ObjectHideFlags: 0
