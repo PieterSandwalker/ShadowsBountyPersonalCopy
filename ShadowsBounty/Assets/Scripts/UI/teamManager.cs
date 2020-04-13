@@ -91,7 +91,7 @@ public class teamManager : Bolt.EntityBehaviour<IPlayerMoveState>
     public void Close()
     {
         if (entity.IsOwner) {
-            teamUI.gameObject.SetActive(false);
+            //teamUI.gameObject.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             UI.SetActive(true);
