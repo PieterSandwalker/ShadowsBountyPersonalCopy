@@ -109,20 +109,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patrolPoints: []
+  waterLocations: []
+  foodLocations: []
   players: []
   goal: {fileID: 0}
   radiusOfSatisfaction: 5
+  patrolSpeed: 5
+  investigateSpeed: 7
+  pursuitSpeed: 10
+  patrolAngularSpeed: 120
+  pursuitAngularSpeed: 240
   pursuitROS: 20
   patrolTag: PatrolPoint
+  waterTag: WaterStation
+  foodTag: MessHall
   playerTag: Player
   engageRadius: 15
-  satisfactoryDetectionLevel: 50
+  satisfactoryDetectionLevelVisual: 10
+  satisfactoryDetectionLevelAudio: 10
+  visionAngle: 60
+  distanceWeightRatio: 10
   index: 0
   HitLocation: {x: 0, y: 0, z: 0}
   ranged: 0
   food: 0
   water: 0
   rest: 0
+  patrol: 0
+  foodRecoverySpeed: 2
+  waterRecoverySpeed: 2
+  restRecoverySpeed: 3
+  foodRequirement: 500
+  waterRequirement: 300
+  restRequirement: 600
+  patrolRequirement: 300
   resting: 0
   eating: 0
   drinking: 0
