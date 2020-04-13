@@ -105,7 +105,7 @@ PrefabInstance:
     - target: {fileID: 461875933215268406, guid: 5e85da6ff61726841a8f82389578ce0f,
         type: 3}
       propertyPath: patrolTag
-      value: PatrolPointSet10
+      value: PatrolPointSet8
       objectReference: {fileID: 0}
     - target: {fileID: 461875933215268406, guid: 5e85da6ff61726841a8f82389578ce0f,
         type: 3}
