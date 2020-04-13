@@ -22,6 +22,10 @@ TagManager:
   - MessHall
   - Light
   - SkyLight
+  - PatrolPointSet9
+  - PatrolPointSet10
+  - PatrolPointSet11
+  - PatrolPointSet12
   layers:
   - Default
   - TransparentFX
