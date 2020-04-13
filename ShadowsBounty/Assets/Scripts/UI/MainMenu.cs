@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        data = new DataJSON(100);
+        data = new DataJSON(500);
         DataJSON.Save(data);
         //Debug.Log(data);
         //PlayerPrefs.SetInt("score", 100);
