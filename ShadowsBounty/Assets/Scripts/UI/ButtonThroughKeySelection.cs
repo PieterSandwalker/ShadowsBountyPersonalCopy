@@ -16,14 +16,15 @@ public class ButtonThroughKeySelection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inventory = inventoryObj.GetComponent<Inventory>();
+        inventory = this.transform.parent.transform.parent.transform.parent.gameObject.GetComponent<Inventory>();
+        //inventory = inventoryObj.GetComponent<Inventory>();
         //GameObject.Find("InventorySystem").GetComponent<Inventory>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CoolDown cd = this.GetComponent<CoolDown>();
+        //CoolDown cd = this.GetComponent<CoolDown>();
         //inventory 
         if (Input.GetKeyDown(key))
         {

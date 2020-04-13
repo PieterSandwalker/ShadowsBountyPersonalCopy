@@ -161,6 +161,7 @@ public class GrapplingHook : MonoBehaviour, GrapplingHookControls.IGrapplingHook
             grapplingRope.UnGrapple();
             cd.GetComponent<CoolDown>().Use();
             fireButtonReleased = false;
+            this.gameObject.SetActive(false);
         }
 
         //Init start position for grapple
