@@ -33,7 +33,7 @@ public class Menu : Bolt.GlobalEventListener
             string matchName = Guid.NewGuid().ToString();
             BoltMatchmaking.CreateSession(
                 sessionID: matchName,
-                sceneToLoad: "MountainCity"
+                sceneToLoad: "Castle"
             );
         }
     }

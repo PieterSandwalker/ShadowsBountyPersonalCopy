@@ -74,7 +74,7 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
         roundNumber++;
         PlayerPrefs.SetInt("round", roundNumber);
 
-            BoltNetwork.LoadScene("Castle");
+            BoltNetwork.LoadScene("MountainCity");
 
         
     }
