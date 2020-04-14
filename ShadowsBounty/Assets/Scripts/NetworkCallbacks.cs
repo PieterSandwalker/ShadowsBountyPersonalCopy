@@ -45,7 +45,7 @@ public class NetworkCallbacks : Bolt.GlobalEventListener
         //guard spawns for set 8
         var aiSpawn28 = new Vector3(-254, 39, 127);
         //guard spawns for set 9
-        var aiSpawn29 = new Vector3(-429, 39, -50);
+        var aiSpawn29 = new Vector3(-429, 39, 50);
         //guard spawns for set 10
         var aiSpawn30 = new Vector3(-409, 85, 161);
         //guard spawns for set 11
