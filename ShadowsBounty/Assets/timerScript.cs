@@ -33,8 +33,7 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
 
     private void Update()
     {
-        if (entity.IsOwner)
-        {
+
             if (state.SecondsLeft >= 0.0f && canCount)
             {
                 state.SecondsLeft -= Time.deltaTime;
@@ -51,7 +50,7 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
             {
                 RoundOver();
             }
-        }
+        
     }
 
     private string ConvertTime()
@@ -74,10 +73,9 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
         state.Round++;
         roundNumber++;
         PlayerPrefs.SetInt("round", roundNumber);
-        if(entity.IsOwner)
-        {
+
             BoltNetwork.LoadScene("Castle");
-        }
+
         
     }
 
