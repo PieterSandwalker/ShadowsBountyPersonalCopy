@@ -21,7 +21,20 @@ public class ClientCalback : Bolt.GlobalEventListener
         spawnPositions[9] = new Vector3(-238, 20, -78);
         var random = Random.Range(0, 10);
         // instantiate Player
-        BoltNetwork.Instantiate(BoltPrefabs.Player2_0, spawnPositions[random], Quaternion.identity);
-  
+        
+        foreach (BoltEntity entity in BoltNetwork.Entities)
+        {
+
+            IPlayerMoveState state;
+            if (entity.TryFindState<IPlayerMoveState>(out state) && entity.IsOwner)
+            {
+                GameObject emptyobj = new GameObject();
+                Transform newtransform = emptyobj.transform;
+                newtransform.position = spawnPositions[random];
+                newtransform.rotation = Quaternion.identity;
+                Debug.Log("we ran this");
+                entity.gameObject.transform.position = spawnPositions[random];
+            }
+        }
     }
 }

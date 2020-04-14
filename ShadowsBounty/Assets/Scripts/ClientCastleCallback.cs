@@ -16,6 +16,5 @@ public class ClientCastleCallback : Bolt.GlobalEventListener
         var random = Random.Range(0, 4);
         // instantiate Player
         BoltNetwork.Instantiate(BoltPrefabs.Player2_0, spawnPositions[random], Quaternion.identity);
-
     }
 }
