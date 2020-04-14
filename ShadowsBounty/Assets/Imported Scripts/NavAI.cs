@@ -91,10 +91,16 @@ public class NavAI : MonoBehaviour
         if (collision.gameObject.tag == playerTag)
         {
             //respawn player and remove treasure count
-
+            Vector3 baseVector;
             GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag(respawnTag);
-            int randomIndex = Random.Range(0, spawnPoints.Length);
-            Vector3 baseVector = spawnPoints[randomIndex].transform.position;
+            if (spawnPoints.Length >= 2)
+            {
+                int randomIndex = Random.Range(0, spawnPoints.Length - 1);
+                baseVector = spawnPoints[randomIndex].transform.position;
+            } else
+            {
+                baseVector = spawnPoints[0].transform.position;
+            }
             collision.gameObject.transform.position = new Vector3(baseVector.x, baseVector.y, baseVector.z);
             HUD playerHUD = collision.gameObject.GetComponentInChildren(typeof(HUD)) as HUD;
             playerHUD.AddScore(-100);
