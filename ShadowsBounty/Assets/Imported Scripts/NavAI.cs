@@ -23,6 +23,7 @@ public class NavAI : MonoBehaviour
     public string patrolTag = "PatrolPoint";
     public string waterTag = "WaterStation";
     public string foodTag = "MessHall";
+    public string respawnTag = "RespawnPoint";
     public string playerTag = "Player";
     #endregion
     #region PlayerTargeting
@@ -35,6 +36,7 @@ public class NavAI : MonoBehaviour
     public int index = 0;
     public Vector3 HitLocation;
     public bool ranged = false;
+    private bool hasAttacked = false;
     #endregion
     #region Insistence
     public float food = 0.0f;
@@ -81,7 +83,25 @@ public class NavAI : MonoBehaviour
     void Update()
     {
         CheckForPlayers();
-        RunDecisionTree();
+        if (!hasAttacked)
+            RunDecisionTree();
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == playerTag)
+        {
+            //respawn player and remove treasure count
+
+            GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag(respawnTag);
+            int randomIndex = Random.Range(0, spawnPoints.Length);
+            Vector3 baseVector = spawnPoints[randomIndex].transform.position;
+            collision.gameObject.transform.position = new Vector3(baseVector.x, baseVector.y, baseVector.z);
+            HUD playerHUD = collision.gameObject.GetComponentInChildren(typeof(HUD)) as HUD;
+            playerHUD.AddScore(-100);
+
+
+        }
+
     }
     #region DecisionTree
     /*
