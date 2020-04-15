@@ -33,22 +33,24 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
 
     private void Update()
     {
-        if (state.SecondsLeft >= 0.0f && canCount)
-        {
-            state.SecondsLeft -= Time.deltaTime;
-            CountDown_text.text = ConvertTime();
-        }
-        else if (state.SecondsLeft <= 0.0f && !done)
-        {
-            canCount = false;
-            done = true;
-            CountDown_text.text = roundString + "0:00";
-            state.SecondsLeft = 0.0f;
-        }
-        else if (done)
-        {
-            RoundOver();
-        }
+
+            if (state.SecondsLeft >= 0.0f && canCount)
+            {
+                state.SecondsLeft -= Time.deltaTime;
+                CountDown_text.text = ConvertTime();
+            }
+            else if (state.SecondsLeft <= 0.0f && !done)
+            {
+                canCount = false;
+                done = true;
+                CountDown_text.text = roundString + "0:00";
+                state.SecondsLeft = 0.0f;
+            }
+            else if (done)
+            {
+                RoundOver();
+            }
+        
     }
 
     private string ConvertTime()
@@ -70,20 +72,11 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
         //Debug.Log(PlayerPrefs.GetInt("score"));
         state.Round++;
         roundNumber++;
-        if (state.Round > 3)
-        {
-            SceneOver(false);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("round", roundNumber);
-            SceneOver(true);
-        }
-    }
+        PlayerPrefs.SetInt("round", roundNumber);
 
-    private void SceneOver(bool isShopping)
-    {
-       
+            BoltNetwork.LoadScene("MountainCity");
+
+        
     }
 
 }
