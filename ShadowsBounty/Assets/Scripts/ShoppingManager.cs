@@ -19,6 +19,10 @@ public class ShoppingManager : MonoBehaviour
 
     const string BuyFailTxt = "I can count, don't fool me";
 
+    public List<GameObject> itemButtons;
+
+    public List<GameObject> statusButtons;
+
     int Bounty;
 
     DataJSON data;
@@ -40,9 +44,9 @@ public class ShoppingManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
-        /*if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A))
         {
             //PersistentManagerScript.Instance.AddBounty(100);
             //BountyTxt.text = Instance.Bounty.ToString();
@@ -52,10 +56,10 @@ public class ShoppingManager : MonoBehaviour
             PlayerPrefs.SetInt("score", Bounty);
             M_Object.text = Bounty.ToString();
             Message_Object.text = OpeningTxt;
-        }*/
+        }
 
 
-    }
+    }*/
 
     public void NextGame()
     {
@@ -112,6 +116,7 @@ public class ShoppingManager : MonoBehaviour
             M_Object.text = Bounty.ToString();
             Message_Object.text = BuySuccessTxt;
             data.item[index]++;
+            itemButtons[index].SetActive(false);
         }
     }
     
