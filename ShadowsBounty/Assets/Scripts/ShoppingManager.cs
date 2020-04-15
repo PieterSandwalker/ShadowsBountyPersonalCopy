@@ -13,11 +13,11 @@ public class ShoppingManager : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI Message_Object;
 
-    const string OpeningTxt = "Buying some magic?";
+    const string OpeningTxt = "Need some magic or tools?";
 
-    const string BuySuccessTxt = "Good Choose";
+    const string BuySuccessTxt = "Good choice.";
 
-    const string BuyFailTxt = "I can count, don't fool me";
+    const string BuyFailTxt = "I can count, don't try to fool me!";
 
     public List<GameObject> itemButtons;
 
