@@ -12,7 +12,7 @@ public class CastleServerCallback : Bolt.GlobalEventListener
         var aiSpawn1 = new Vector3(-78, 0, -93);
 
         //guard spawns for set 2
-        var aiSpawn6 = new Vector3(-46, 0, 4);
+        var aiSpawn6 = new Vector3(46, 0, 4);
 
         //guard spawns for set 3
         var aiSpawn9 = new Vector3(-15, 0, -13);
