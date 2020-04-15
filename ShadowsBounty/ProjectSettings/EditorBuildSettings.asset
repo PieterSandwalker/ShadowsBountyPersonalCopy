@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/CastleAIMerge.unity
     guid: 7afbbd52cf5d09d4880a821b28c00b94
   - enabled: 1
+    path: Assets/Scenes/Noah/MountainCity.unity
+    guid: 687e8b1a4abfd0b4f95cef7fc87562f9
+  - enabled: 1
     path: Assets/Scenes/Castle.unity
     guid: 42abb437424dfaa498193371654c8723
   - enabled: 0
