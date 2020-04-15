@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CountDown_text: {fileID: 8452765470466704392}
-  roundTime: 300
+  roundTime: 150
 --- !u!1 &2104344673652237082
 GameObject:
   m_ObjectHideFlags: 0
