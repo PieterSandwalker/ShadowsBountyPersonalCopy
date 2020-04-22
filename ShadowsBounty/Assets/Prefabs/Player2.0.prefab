@@ -1467,6 +1467,51 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &459142688237251448
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8862234779005716066}
+  - component: {fileID: 3531338783224605210}
+  m_Layer: 0
+  m_Name: SmokeBuff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8862234779005716066
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459142688237251448}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.04334998, y: 0, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 312732223320795371}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3531338783224605210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459142688237251448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848c5d81935eb5441af08367baf8eb9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 6992880450184572464}
+  type: 1
 --- !u!1 &591203703532899163
 GameObject:
   m_ObjectHideFlags: 0
@@ -2922,7 +2967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 2197441315948768263}
-  coolDown: 0
+  coolDown: 10
 --- !u!1 &918566073883510274
 GameObject:
   m_ObjectHideFlags: 0
@@ -4227,7 +4272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 427604970957136104}
-  coolDown: 0
+  coolDown: 10
 --- !u!1 &1703782291168420059
 GameObject:
   m_ObjectHideFlags: 0
@@ -4559,6 +4604,51 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &1777052343332667149
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2800017638025649369}
+  - component: {fileID: 7626403298323072862}
+  m_Layer: 0
+  m_Name: bufferManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2800017638025649369
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777052343332667149}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.04334998, y: 0, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 312732223320795371}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7626403298323072862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777052343332667149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848c5d81935eb5441af08367baf8eb9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 6992880450184572464}
+  type: 0
 --- !u!1 &1883247343685105961
 GameObject:
   m_ObjectHideFlags: 0
@@ -4707,7 +4797,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 3841186205143622856}
-  coolDown: 0
+  coolDown: 10
 --- !u!1 &1934321801405386565
 GameObject:
   m_ObjectHideFlags: 0
@@ -4999,6 +5089,7 @@ MonoBehaviour:
   cd: {fileID: 1699708861921714495}
   smokeSample: {fileID: 3385530107831791348, guid: d24f1c860565d6d4780494f0839990f4,
     type: 3}
+  buffSystem: {fileID: 459142688237251448}
 --- !u!1 &2058882670314503405
 GameObject:
   m_ObjectHideFlags: 0
@@ -8349,6 +8440,7 @@ MonoBehaviour:
   cd: {fileID: 755968412941861192}
   duration: 0
   speedScale: 0
+  buffSystem: {fileID: 1777052343332667149}
 --- !u!1 &4538564350260156576
 GameObject:
   m_ObjectHideFlags: 0
@@ -9061,7 +9153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 3021471834392839944}
-  coolDown: 0
+  coolDown: 10
 --- !u!1 &5363258736612782984
 GameObject:
   m_ObjectHideFlags: 0
@@ -12265,6 +12357,8 @@ Transform:
   - {fileID: 5389588325368126181}
   - {fileID: 203811584792952789}
   - {fileID: 2937589495014623059}
+  - {fileID: 2800017638025649369}
+  - {fileID: 8862234779005716066}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
