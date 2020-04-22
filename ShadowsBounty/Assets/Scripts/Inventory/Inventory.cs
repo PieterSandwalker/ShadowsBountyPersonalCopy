@@ -52,7 +52,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
         selectItemIndex = -1;
         hasKey = false;
         data = DataJSON.Load();
-        score = 200;
+        score = data.bounty;
         itemListCheck = data.item;
         //default disable all item
         setFalse();
