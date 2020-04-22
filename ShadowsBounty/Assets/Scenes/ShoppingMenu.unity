@@ -6213,9 +6213,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   M_Object: {fileID: 564912324}
   Message_Object: {fileID: 487488047}
-  magicPrice: 320000006400000096000000140000001e00000046000000
+  itemButtons: []
+  statusButtons: []
+  statusPrice: 
   itemPrice: 320000006400000096000000140000001e00000046000000
-  trapPrice: 320000006400000096000000140000001e00000046000000
 --- !u!1 &1040256007
 GameObject:
   m_ObjectHideFlags: 0
