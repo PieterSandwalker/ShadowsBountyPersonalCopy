@@ -9,6 +9,7 @@ public class speedBooster : MonoBehaviour
     public GameObject cd; // used to count cd\
     public float duration;
     public float speedScale;
+    public GameObject buffSystem;
 
 
     private void Start()
@@ -21,7 +22,7 @@ public class speedBooster : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             cd.GetComponent<CoolDown>().Use();
-
+            buffSystem.GetComponent<buffManager>().Use();
 
 
         }

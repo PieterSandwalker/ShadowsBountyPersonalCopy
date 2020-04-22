@@ -66,8 +66,8 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
 
     private void RoundOver()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
         //PlayerPrefs.SetInt("score", score);
         //Debug.Log(PlayerPrefs.GetInt("score"));
         state.Round++;
