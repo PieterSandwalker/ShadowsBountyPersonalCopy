@@ -77,6 +77,13 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
         DataJSON.Save(data);
     }
 
+    public void setScore(int point)
+    {
+        score = point;
+        data.bounty = score;
+        DataJSON.Save(data);
+    }
+
     //wait to do
     public void UseItem()
     {
