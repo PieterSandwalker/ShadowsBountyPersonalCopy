@@ -60,7 +60,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 2000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -13018,7 +13018,7 @@ MonoBehaviour:
   slideForce: 475
   slideCounterMovement: 0.2
   deferSlide: 0
-  jumpForce: 600
+  jumpForce: 750
   ledgeClearCheck: {fileID: 3190457275980752052}
   verticalCheckDistance: 1.25
   horizontalCheckDistance: 2
@@ -13031,7 +13031,7 @@ MonoBehaviour:
   wallrunRaycastLength: 1
   impactNormalYThreshold: 0.0001
   hWallBoostForce: 24
-  vWallBoostForce: 750
+  vWallBoostForce: 1000
   xWallJumpForceMult: 2
   yWallJumpForceMult: 1
   zWallJumpForceMult: 0
