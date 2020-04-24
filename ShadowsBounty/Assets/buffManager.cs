@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class buffManager : MonoBehaviour
 {
@@ -10,6 +8,8 @@ public class buffManager : MonoBehaviour
     float duration;
     float timer;
     bool trigger;
+    PlayerDetectionStats detectionStats;
+    PlayerMovement2 playerMovement;
    
 
     // Start is called before the first frame update
@@ -18,6 +18,8 @@ public class buffManager : MonoBehaviour
         timer = 0;
         trigger = false;
         duration = 5;
+        playerMovement = Player.GetComponent<PlayerMovement2>();
+        detectionStats = Player.GetComponent<PlayerDetectionStats>();
     }
 
     // Update is called once per frame
@@ -29,12 +31,12 @@ public class buffManager : MonoBehaviour
             {
                 timer -= Time.deltaTime;
                 if (type == 0)
-                    Player.GetComponent<PlayerMovement2>().sprintMaxSpeed = 25;
+                    playerMovement.sprintMaxSpeed = 25;
                 else if (type == 1)
                 {
 
-                    Player.GetComponent<PlayerDetectionStats>().visibilityWeight = 0.2f;
-                    Player.GetComponent<PlayerDetectionStats>().audibilityWeight = 0.2f;
+                    detectionStats.visibilityWeight = 0f;
+                    detectionStats.audibilityWeight = 0f;
                 }
 
             }
@@ -44,10 +46,10 @@ public class buffManager : MonoBehaviour
                 trigger = false;
                 //reset
 
-                Player.GetComponent<PlayerMovement2>().sprintMaxSpeed = 15;
+                playerMovement.sprintMaxSpeed = 15;
 
-                Player.GetComponent<PlayerDetectionStats>().visibilityWeight = 1f;
-                Player.GetComponent<PlayerDetectionStats>().audibilityWeight = 1f;
+                detectionStats.visibilityWeight = 1f;
+                detectionStats.audibilityWeight = 1f;
             }
         }
     }
