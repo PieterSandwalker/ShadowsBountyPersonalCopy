@@ -1,0 +1,44 @@
+{
+    "name": "ItemControls",
+    "maps": [
+        {
+            "name": "Item",
+            "id": "fc2f44f8-6812-4cf0-86d6-67248f4bef1d",
+            "actions": [
+                {
+                    "name": "Use",
+                    "type": "Button",
+                    "id": "ae5f07fb-8751-4e02-acb1-96e29cd4fe64",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "04fa9a67-d0fc-48d1-b76b-f5ee6083cc8f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "173a17eb-3f1d-47e0-826f-db52974b9f7e",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
