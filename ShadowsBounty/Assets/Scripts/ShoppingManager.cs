@@ -13,7 +13,7 @@ public class ShoppingManager : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI Message_Object;
 
-    const string OpeningTxt = "Buying some item?";
+    const string OpeningTxt = "Buying some items?";
 
     const string BuySuccessTxt = "Good choice.";
 
