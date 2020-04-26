@@ -2968,7 +2968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 2197441315948768263}
-  coolDown: 0
+  coolDown: 5
 --- !u!1 &918566073883510274
 GameObject:
   m_ObjectHideFlags: 0
@@ -4274,7 +4274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 427604970957136104}
-  coolDown: 0
+  coolDown: 5
 --- !u!1 &1703782291168420059
 GameObject:
   m_ObjectHideFlags: 0
@@ -4800,7 +4800,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 3841186205143622856}
-  coolDown: 0
+  coolDown: 5
 --- !u!1 &1934321801405386565
 GameObject:
   m_ObjectHideFlags: 0
@@ -13213,7 +13213,7 @@ MonoBehaviour:
   _maxSpeed: 0
   _sliding: 0
   _wallrunning: 0
-  slideForce: 550
+  slideForce: 475
   slideCounterMovement: 0.2
   deferSlide: 0
   jumpForce: 750
@@ -13228,7 +13228,7 @@ MonoBehaviour:
   wallContactCheckRadius: 0.51
   wallrunRaycastLength: 1
   impactNormalYThreshold: 0.0001
-  hWallBoostForce: 24
+  hWallBoostForce: 28
   vWallBoostForce: 1000
   xWallJumpForceMult: 2
   yWallJumpForceMult: 1
@@ -17802,11 +17802,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 28153827519677981}
     m_Modifications:
-    - target: {fileID: 2929084696139159880, guid: 6ac4a98e0f8cebf46b7a263fa2dcc469,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4863894061949301018, guid: 6ac4a98e0f8cebf46b7a263fa2dcc469,
         type: 3}
       propertyPath: m_Name
@@ -18007,11 +18002,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SmokeBomb
-      objectReference: {fileID: 0}
-    - target: {fileID: 3102506426016640695, guid: c69c374e6208e18469ef5ca64ff0f23d,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3110558187699010447, guid: c69c374e6208e18469ef5ca64ff0f23d,
         type: 3}
@@ -18390,11 +18380,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 0.12569
-      objectReference: {fileID: 0}
-    - target: {fileID: 9070048585867653898, guid: 3be3d2bedc5da864aab984d44344ab9c,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3be3d2bedc5da864aab984d44344ab9c, type: 3}
