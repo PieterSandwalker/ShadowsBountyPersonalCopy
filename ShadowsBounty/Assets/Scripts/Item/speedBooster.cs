@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine.InputSystem;
 using UnityEngine;
 
-public class speedBooster : MonoBehaviour
+public class speedBooster : MonoBehaviour, ItemControls.IItemActions
 {
     [Header("Player")]
     public GameObject player; // used to buff
@@ -11,21 +10,39 @@ public class speedBooster : MonoBehaviour
     public float speedScale;
     public GameObject buffSystem;
 
+    /* Variables for input system */
+    private ItemControls iControls;
+    bool itemUsed;
 
-    private void Start()
+    private void Awake()
     {
-        
+        iControls = new ItemControls();
+        iControls.Item.SetCallbacks(this); // Bind callbacks
     }
+
+    private void OnEnable()
+    {
+        iControls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        iControls.Disable();
+    }
+
+    public void OnUse(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) itemUsed = true; // Button pressed
+        else if (ctx.canceled) itemUsed = false; // Button released
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (itemUsed)
         {
             cd.GetComponent<CoolDown>().Use();
             buffSystem.GetComponent<buffManager>().Use();
-
-
         }
     }
-
 }

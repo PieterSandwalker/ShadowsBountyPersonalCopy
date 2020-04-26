@@ -1,10 +1,8 @@
-﻿using System.Collections;
+﻿using UnityEngine.InputSystem;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
+public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryControls.IInventoryActions
 {
     // Start is called before the first frame update
     public bool hasKey;
@@ -47,6 +45,10 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
     //the item order: race skill, teleport/grip gun = moving, temp boost, smoking bomb/others
     //int[] itemListAvailable = { 0,0,0,0 }; 
 
+    /* Variables for tracking input */
+    private InventoryControls iControls;
+    bool itemOneSelected, itemTwoSelected, itemThreeSelected, itemFourSelected, menuOpened;
+
     void Start()
     {
         selectItemIndex = -1;
@@ -58,7 +60,55 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
         setFalse();
     }
 
+    /* Begin new code added for input bindings */
+    private void Awake()
+    {
+        iControls = new InventoryControls();
+        iControls.Inventory.SetCallbacks(this); // Bind callbacks
+    }
 
+    private void OnEnable()
+    {
+        iControls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        iControls.Disable();
+    }
+
+    // Declare callbacks for input system to use
+
+    public void OnItem1(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) itemOneSelected = true; // If the button is pressed
+        else if (ctx.canceled) itemOneSelected = false; // If the button is released
+    }
+
+    public void OnItem2(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) itemTwoSelected = true; // If the button is pressed
+        else if (ctx.canceled) itemTwoSelected = false; // If the button is released
+    }
+
+    public void OnItem3(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) itemThreeSelected = true; // If the button is pressed
+        else if (ctx.canceled) itemThreeSelected = false; // If the button is released
+    }
+
+    public void OnItem4(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) itemFourSelected = true; // If the button is pressed
+        else if (ctx.canceled) itemFourSelected = false; // If the button is released
+    }
+
+    public void OnShopMenu(InputAction.CallbackContext ctx)
+    {
+        if (ctx.started) menuOpened = true; // If the button is pressed
+        else if (ctx.canceled) menuOpened = false; // If the button is released
+    }
+    /* End new code added for input bindings */
 
     public void GetKey()
     {
@@ -94,8 +144,6 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
             ;
             selectItemIndex = -1;
         }
-        
-
     }
 
     public void SceneOver()
@@ -106,47 +154,46 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>
 
     private void Update()
     {
+
         //clear item after they be used
         //check any input forimprove performance
-        if (Input.anyKey) {
+        if (/*Input.anyKey*/ true) {
+
             //update selection
-            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha1))
+            if (entity.IsOwner && /*Input.GetKeyDown(KeyCode.Alpha1)*/ itemOneSelected)
             {
                 if (slot1.GetComponent<CoolDown>().IsReady())
                 {
                     SetSelectItemIndex(0);
                 }
-                
             }
-            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha2))
+            if (entity.IsOwner && /*Input.GetKeyDown(KeyCode.Alpha2)*/ itemTwoSelected)
             {
                 if (slot2.GetComponent<CoolDown>().IsReady())
                 {
                     SetSelectItemIndex(1);
                 }
-
             }
-            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha3))
+            if (entity.IsOwner && /*Input.GetKeyDown(KeyCode.Alpha3)*/ itemThreeSelected)
             {
                 {
                     if (slot3.GetComponent<CoolDown>().IsReady())
                     {
                         SetSelectItemIndex(2);
                     }
-
                 }
             }
-            if (entity.IsOwner && Input.GetKeyDown(KeyCode.Alpha4))
+            if (entity.IsOwner && /*Input.GetKeyDown(KeyCode.Alpha4)*/ itemFourSelected)
             {
                 if (slot4.GetComponent<CoolDown>().IsReady())
                 {
                     SetSelectItemIndex(3);
                 }
-
             }
 
-            if (entity.IsOwner && Input.GetKeyDown(KeyCode.M))
+            if (entity.IsOwner && /*Input.GetKeyDown(KeyCode.M)*/ menuOpened)
             {
+                menuOpened = false;
                 if (shopmenu.gameObject.activeInHierarchy)
                 {
                     shopmenu.SetActive(false);
