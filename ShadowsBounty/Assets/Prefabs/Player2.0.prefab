@@ -60,7 +60,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 2000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -2968,7 +2968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 2197441315948768263}
-  coolDown: 10
+  coolDown: 5
 --- !u!1 &918566073883510274
 GameObject:
   m_ObjectHideFlags: 0
@@ -4274,7 +4274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 427604970957136104}
-  coolDown: 10
+  coolDown: 5
 --- !u!1 &1703782291168420059
 GameObject:
   m_ObjectHideFlags: 0
@@ -4800,7 +4800,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 3841186205143622856}
-  coolDown: 10
+  coolDown: 5
 --- !u!1 &1934321801405386565
 GameObject:
   m_ObjectHideFlags: 0
@@ -9546,7 +9546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoolDown_text: {fileID: 3021471834392839944}
-  coolDown: 10
+  coolDown: 0
 --- !u!1 &5363258736612782984
 GameObject:
   m_ObjectHideFlags: 0
@@ -13216,7 +13216,7 @@ MonoBehaviour:
   slideForce: 475
   slideCounterMovement: 0.2
   deferSlide: 0
-  jumpForce: 600
+  jumpForce: 750
   ledgeClearCheck: {fileID: 3190457275980752052}
   verticalCheckDistance: 1.25
   horizontalCheckDistance: 2
@@ -13228,8 +13228,8 @@ MonoBehaviour:
   wallContactCheckRadius: 0.51
   wallrunRaycastLength: 1
   impactNormalYThreshold: 0.0001
-  hWallBoostForce: 24
-  vWallBoostForce: 750
+  hWallBoostForce: 28
+  vWallBoostForce: 1000
   xWallJumpForceMult: 2
   yWallJumpForceMult: 1
   zWallJumpForceMult: 0
