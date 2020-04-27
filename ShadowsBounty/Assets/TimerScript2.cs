@@ -19,7 +19,7 @@ public class TimerScript2 : Bolt.EntityBehaviour<ITimerState>
     public override void Attached()
     {
         state.SecondsLeft = roundTime;
-        state.Round = 1;
+        state.Round = PlayerPrefs.GetInt("round");
     }
 
     // Start is called before the first frame update
