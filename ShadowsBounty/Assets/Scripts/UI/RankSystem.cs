@@ -12,6 +12,16 @@ public class RankSystem : Bolt.GlobalEventListener
     [SerializeField] TextMeshProUGUI playerScore_3;
     [SerializeField] TextMeshProUGUI playerScore_4;
 
+    public Image thief;
+    public Image royal;
+    public Image magic;
+    public Image mafia;
+    private Image[] images;
+    public Image score1;
+    public Image score2;
+    public Image score3;
+    public Image score4;
+
     DataJSON data;
 
     // Start is called before the first frame update
@@ -22,7 +32,16 @@ public class RankSystem : Bolt.GlobalEventListener
         playerScore_2.text = PlayerPrefs.GetInt("score").ToString();
         playerScore_3.text = PlayerPrefs.GetInt("score").ToString();
         playerScore_4.text = PlayerPrefs.GetInt("score").ToString();
+        images = new Image[4];
+        images[0] = mafia;
+        images[1] = thief;
+        images[2] = royal;
+        images[3] = magic;
+
     }
+
+
+
 
     private void Update()
     {
@@ -61,6 +80,26 @@ public class RankSystem : Bolt.GlobalEventListener
         playerScore_2.text = secondScore.ToString();
         playerScore_3.text = thirdScore.ToString();
         playerScore_4.text = forthScore.ToString();
+        if (firstEmblem != -1)
+        {
+            score1.sprite = images[(int) firstEmblem - 1].sprite;
+        }
+
+        if (secondEmblem != -1)
+        {
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
+        }
+
+        if (thirdEmblem != -1)
+        {
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
+        }
+
+        if (forthEmblem != -1)
+        {
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
+        }
+
 
     }
 
