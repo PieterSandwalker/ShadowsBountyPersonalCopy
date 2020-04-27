@@ -496,7 +496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CountDown_text: {fileID: 8452765470466704392}
   scoreboard: {fileID: 6563650629408175588}
-  roundTime: 10
+  roundTime: 60
 --- !u!114 &3441865515169425687
 MonoBehaviour:
   m_ObjectHideFlags: 0
