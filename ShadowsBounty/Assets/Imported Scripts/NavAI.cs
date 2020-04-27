@@ -158,7 +158,7 @@ public class NavAI : MonoBehaviour
     {
         distance /= distanceWeightRatio;
         PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
-        if (detectionlevel.AudibleFactor/distance > satisfactoryDetectionLevelAudio)
+        if (detectionlevel.state.AudibilityLevel/ distance > satisfactoryDetectionLevelAudio)
         {
             Debug.Log("Player Heard: " + detectionlevel.AudibleFactor / distance);
             if (Investigate(player.transform)) return true;
@@ -191,8 +191,8 @@ public class NavAI : MonoBehaviour
             {
                 distance /= distanceWeightRatio;
                 PlayerDetectionStats detectionlevel = player.GetComponent<PlayerDetectionStats>();
-                Debug.Log("DetectionValue: " + detectionlevel.VisibilityFactor / distance);
-                if (detectionlevel.VisibilityFactor / distance > satisfactoryDetectionLevelVisual)
+                Debug.Log("DetectionValue: " + detectionlevel.state.VisibilityLevel / distance);
+                if (detectionlevel.state.VisibilityLevel / distance > satisfactoryDetectionLevelVisual)
                 {
                     playerDetected = true;
                     if (Pursue(player)) return true;
@@ -229,6 +229,7 @@ public class NavAI : MonoBehaviour
         float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.speed = pursuitSpeed;
+        agent.angularSpeed = pursuitAngularSpeed;
         if (distance > pursuitROS)
         {
             Rigidbody rb = player.GetComponent<Rigidbody>();
@@ -382,6 +383,7 @@ public class NavAI : MonoBehaviour
                 water = 0;
                 NavMeshAgent agent = GetComponent<NavMeshAgent>();
                 agent.speed = patrolSpeed;
+                agent.angularSpeed = patrolAngularSpeed;
                 if (index >= patrolPoints.Length) index = 0;
                 agent.destination = patrolPoints[index].transform.position;
                 goal.position = patrolPoints[index].transform.position;
