@@ -34,9 +34,10 @@ public class RankSystem : Bolt.GlobalEventListener
         playerScore_4.text = PlayerPrefs.GetInt("score").ToString();
         images = new Image[4];
         images[0] = mafia;
-        images[1] = thief;
+        images[1] = magic;
         images[2] = royal;
-        images[3] = magic;
+        images[3] = thief;
+        
 
     }
 
