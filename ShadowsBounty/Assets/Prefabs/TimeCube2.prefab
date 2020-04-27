@@ -397,8 +397,9 @@ GameObject:
   - component: {fileID: 5820535242331532337}
   - component: {fileID: 8979683304922103157}
   - component: {fileID: 4401470567526637066}
+  - component: {fileID: 3135823882287677799}
+  - component: {fileID: 3441865515169425687}
   - component: {fileID: 2808298451649838011}
-  - component: {fileID: 3028612351663127958}
   m_Layer: 0
   m_Name: TimeCube2
   m_TagString: Untagged
@@ -418,7 +419,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3854746971643607095}
-  - {fileID: 4961082692608335283}
   - {fileID: 8182764334804906510}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -482,6 +482,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3135823882287677799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699857650579744453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcba4920bbd382549a7e37fcb7d3a192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CountDown_text: {fileID: 8452765470466704392}
+  scoreboard: {fileID: 6563650629408175588}
+  roundTime: 10
+--- !u!114 &3441865515169425687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699857650579744453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c9011cc11670da499658dd6f13b2160, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScore_1: {fileID: 3840009345676844749}
+  playerScore_2: {fileID: 8510110069536737811}
+  playerScore_3: {fileID: 5016224750443258420}
+  playerScore_4: {fileID: 6417243256145935477}
 --- !u!114 &2808298451649838011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -511,20 +542,6 @@ MonoBehaviour:
   _entityBehaviourQueryOption: 0
   _entityPriorityCalculatorQueryOption: 0
   _entityReplicationFilterQueryOption: 0
---- !u!114 &3028612351663127958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1699857650579744453}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50d204c582d7cac4a9b7f60e91bd9e7b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CountDown_text: {fileID: 8452765470466704392}
-  roundTime: 150
 --- !u!1 &1854466550289418194
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,53 +816,6 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &2295371688798952824
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4961082692608335283}
-  - component: {fileID: 4842039529327461903}
-  m_Layer: 0
-  m_Name: RankSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &4961082692608335283
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2295371688798952824}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 370.516, y: 207.28714, z: -198.48904}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2583631635206932995}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4842039529327461903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2295371688798952824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c9011cc11670da499658dd6f13b2160, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerScore_1: {fileID: 3840009345676844749}
-  playerScore_2: {fileID: 8510110069536737811}
-  playerScore_3: {fileID: 5016224750443258420}
-  playerScore_4: {fileID: 6417243256145935477}
 --- !u!1 &2327841075934981157
 GameObject:
   m_ObjectHideFlags: 0
@@ -1708,7 +1678,7 @@ RectTransform:
   - {fileID: 5614617008706800068}
   - {fileID: 9199480845035693460}
   m_Father: {fileID: 2583631635206932995}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3124,7 +3094,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4842039529327461903}
+      - m_Target: {fileID: 0}
         m_MethodName: BackMainMenu
         m_Mode: 1
         m_Arguments:
