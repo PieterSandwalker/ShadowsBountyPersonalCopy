@@ -37,6 +37,11 @@ public class NavAI : MonoBehaviour
     public Vector3 HitLocation;
     public bool ranged = false;
     private bool hasAttacked = false;
+    public AudioClip investigateSound;
+    private bool investigateSoundPlayable = true;
+    public AudioClip PursuitSound;
+    private bool pursuitSoundPlayable = true;
+    public AudioSource audio;
     #endregion
     #region Insistence
     public float food = 0.0f;
@@ -68,6 +73,7 @@ public class NavAI : MonoBehaviour
         goal.position = patrolPoints[index].transform.position;
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.destination = goal.position;
+        audio = GetComponent<AudioSource>();
         CheckForPlayers();
     }
     /*
@@ -211,6 +217,12 @@ public class NavAI : MonoBehaviour
      */
     bool Investigate(Transform location)
     {
+        if (investigateSoundPlayable)
+        {
+            audio.PlayOneShot(investigateSound);
+            investigateSoundPlayable = false;
+            Invoke("resetSounds", 5.0f);
+        }
         patrol++; //add to need to keep watch.
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.speed = investigateSpeed;
@@ -225,6 +237,12 @@ public class NavAI : MonoBehaviour
      */
     bool Pursue(GameObject player)
     {
+        if (pursuitSoundPlayable)
+        {
+            audio.PlayOneShot(PursuitSound);
+            pursuitSoundPlayable = false;
+            Invoke("resetSounds", 5.0f);
+        }
         rest++; //increment this to exemplify tiring out after a chase
         float distance = Vector3.Distance(gameObject.transform.position, player.transform.position);
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
@@ -427,4 +445,11 @@ public class NavAI : MonoBehaviour
     }
     #endregion Patrol
     #endregion DecisionTree
+    #region Helpers
+    void resetSounds()
+    {
+        pursuitSoundPlayable = true;
+        investigateSoundPlayable = true;
+    }
+    #endregion Helpers
 }
