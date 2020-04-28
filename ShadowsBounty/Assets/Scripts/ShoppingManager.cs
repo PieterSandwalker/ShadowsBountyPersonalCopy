@@ -95,10 +95,13 @@ public class ShoppingManager : Bolt.EntityBehaviour<IPlayerMoveState>
         }
         else
         {
-            state.Score -= cost;
-            M_Object.text = state.Score.ToString();
-            Message_Object.text = BuySuccessTxt;
-            data.status[index]++;
+            if (entity.IsOwner)
+            {
+                state.Score -= cost;
+                M_Object.text = state.Score.ToString();
+                Message_Object.text = BuySuccessTxt;
+                data.status[index]++;
+            }
         }
     }
     
@@ -112,11 +115,14 @@ public class ShoppingManager : Bolt.EntityBehaviour<IPlayerMoveState>
         }
         else
         {
-            state.Score -= cost;
-            M_Object.text = state.Score.ToString();
-            Message_Object.text = BuySuccessTxt;
-            data.item[index]++;
-            itemButtons[index].SetActive(false);
+            if (entity.IsOwner)
+            {
+                state.Score -= cost;
+                M_Object.text = state.Score.ToString();
+                Message_Object.text = BuySuccessTxt;
+                data.item[index]++;
+                itemButtons[index].SetActive(false);
+            }
         }
     }
     
