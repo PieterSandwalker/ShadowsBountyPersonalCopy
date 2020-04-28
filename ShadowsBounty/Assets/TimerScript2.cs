@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class timerScript : Bolt.EntityBehaviour<ITimerState>
+public class TimerScript2 : Bolt.EntityBehaviour<ITimerState>
 {
     [SerializeField] TextMeshProUGUI CountDown_text;
+    public Canvas scoreboard;
     public float roundTime;
     //public float endbattleTime;
     float timer;
@@ -18,7 +19,7 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
     public override void Attached()
     {
         state.SecondsLeft = roundTime;
-        state.Round = 1;
+        state.Round = PlayerPrefs.GetInt("round");
     }
 
     // Start is called before the first frame update
@@ -50,7 +51,7 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
         {
             RoundOver();
         }
-        
+
     }
 
     private string ConvertTime()
@@ -73,10 +74,11 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
         state.Round++;
         roundNumber++;
         PlayerPrefs.SetInt("round", roundNumber);
-        BoltNetwork.LoadScene("MountainCity");
+        scoreboard.gameObject.SetActive(true);
 
 
 
     }
+
 
 }

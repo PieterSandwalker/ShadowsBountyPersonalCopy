@@ -41,7 +41,7 @@ public class CastleServerCallback : Bolt.GlobalEventListener
 
         // Spawn the time cube to keep time
 
-        BoltNetwork.Instantiate(BoltPrefabs.TimeCube2, spawnPosition, Quaternion.identity);
+        BoltNetwork.Instantiate(BoltPrefabs.TimeCube, spawnPosition, Quaternion.identity);
 
         BoltNetwork.Instantiate(BoltPrefabs.NavAI1_Variant, aiSpawn1, Quaternion.identity);
 

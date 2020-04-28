@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-public class ShoppingManager : MonoBehaviour
+public class ShoppingManager : Bolt.EntityBehaviour<IPlayerMoveState>
 {
     //PersistentManagerScript Instance;
 
@@ -38,7 +38,7 @@ public class ShoppingManager : MonoBehaviour
         //BountyTxt.text = Instance.Bounty.ToString();
         //Instance.SetupBounty();
         //M_Object.text = Instance.Bounty.ToString();
-        M_Object.text = Bounty.ToString();
+        M_Object.text = state.Score.ToString();
         Message_Object.text = OpeningTxt;
         Cursor.visible = true;
     }
@@ -64,7 +64,7 @@ public class ShoppingManager : MonoBehaviour
     public void NextGame()
     {
         //PlayerPrefs.SetInt("score", Bounty);
-        data.bounty = Bounty;
+        data.bounty = (int)state.Score;
         DataJSON.Save(data);
         //SceneManager.LoadScene("TreasureTesting");
         SceneManager.LoadScene("CastleAIMerge 1");
@@ -72,7 +72,7 @@ public class ShoppingManager : MonoBehaviour
     public void FinishShopping()
     {
         //PlayerPrefs.SetInt("score", Bounty);
-        data.bounty = Bounty;
+        data.bounty = (int)state.Score;
         DataJSON.Save(data);
     }
 
@@ -88,15 +88,15 @@ public class ShoppingManager : MonoBehaviour
     public void ShoppingStatus(int index)
     {
         int cost = statusPrice[index];
-        if (cost > Bounty)
+        if (cost > state.Score)
         {
             Debug.Log("not enough bounty");
             Message_Object.text = BuyFailTxt;
         }
         else
         {
-            Bounty -= cost;
-            M_Object.text = Bounty.ToString();
+            state.Score -= cost;
+            M_Object.text = state.Score.ToString();
             Message_Object.text = BuySuccessTxt;
             data.status[index]++;
         }
@@ -105,15 +105,15 @@ public class ShoppingManager : MonoBehaviour
     public void ShoppingItem(int index)
     {
         int cost = itemPrice[index];
-        if (cost > Bounty)
+        if (cost > state.Score)
         {
             Debug.Log("not enough bounty");
             Message_Object.text = BuyFailTxt;
         }
         else
         {
-            Bounty -= cost;
-            M_Object.text = Bounty.ToString();
+            state.Score -= cost;
+            M_Object.text = state.Score.ToString();
             Message_Object.text = BuySuccessTxt;
             data.item[index]++;
             itemButtons[index].SetActive(false);
