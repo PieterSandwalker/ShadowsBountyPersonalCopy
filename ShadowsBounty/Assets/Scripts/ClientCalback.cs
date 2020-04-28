@@ -1,9 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 [BoltGlobalBehaviour("MountainCity")]
 public class ClientCalback : Bolt.GlobalEventListener
 {
+    public override void Disconnected(BoltConnection connection)
+    {
+        SceneManager.LoadScene(0);
+    }
 
     public override void SceneLoadLocalDone(string map)
     {

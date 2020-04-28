@@ -8,8 +8,6 @@ public class TimerScript2 : Bolt.EntityBehaviour<ITimerState>
     [SerializeField] TextMeshProUGUI CountDown_text;
     public Canvas scoreboard;
     public float roundTime;
-    //public float endbattleTime;
-    float timer;
     bool canCount = true;
     bool done = false;
     int roundNumber;
@@ -25,7 +23,7 @@ public class TimerScript2 : Bolt.EntityBehaviour<ITimerState>
     // Start is called before the first frame update
     void Start()
     {
-        timer = roundTime;
+        state.SecondsLeft = roundTime;
         CountDown_text.text = ConvertTime();
         roundNumber = PlayerPrefs.GetInt("round");
         roundString = "Round" + state.Round.ToString() + " ";
@@ -73,11 +71,12 @@ public class TimerScript2 : Bolt.EntityBehaviour<ITimerState>
         //Debug.Log(PlayerPrefs.GetInt("score"));
         state.Round++;
         roundNumber++;
-        PlayerPrefs.SetInt("round", roundNumber);
         scoreboard.gameObject.SetActive(true);
-
-
-
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+        PlayerPrefs.SetInt("round", roundNumber);
+        
     }
 
 

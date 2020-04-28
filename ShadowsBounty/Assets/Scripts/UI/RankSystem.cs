@@ -37,7 +37,7 @@ public class RankSystem : Bolt.GlobalEventListener
         images[1] = magic;
         images[2] = royal;
         images[3] = thief;
-        
+
 
     }
 
@@ -46,7 +46,8 @@ public class RankSystem : Bolt.GlobalEventListener
 
     private void Update()
     {
-        float firstScore =-1;
+        
+        float firstScore = -1;
         float firstEmblem = -1;
         float secondScore = -1;
         float secondEmblem = -1;
@@ -57,13 +58,14 @@ public class RankSystem : Bolt.GlobalEventListener
         foreach (BoltEntity ent in BoltNetwork.Entities)
         {
 
+
             IPlayerMoveState state;
             if (ent.TryFindState<IPlayerMoveState>(out state))
             {
                 float tempTeam = state.TeamNumber;
                 float tempScore = state.Score;
-                
-                if(tempScore > firstScore)
+
+                if (tempScore > firstScore)
                 {
                     forthScore = thirdScore;
                     forthEmblem = thirdEmblem;
@@ -73,7 +75,7 @@ public class RankSystem : Bolt.GlobalEventListener
                     secondEmblem = firstEmblem;
                     firstScore = tempScore;
                     firstEmblem = tempTeam;
-                } else if(tempScore > secondScore)
+                } else if (tempScore > secondScore)
                 {
                     forthScore = thirdScore;
                     forthEmblem = thirdEmblem;
@@ -83,14 +85,14 @@ public class RankSystem : Bolt.GlobalEventListener
                     secondScore = tempScore;
 
 
-                } else if(tempScore > thirdScore)
+                } else if (tempScore > thirdScore)
                 {
                     forthScore = thirdScore;
                     forthEmblem = thirdEmblem;
                     thirdEmblem = tempTeam;
                     thirdScore = tempScore;
 
-                } else if(tempScore > forthScore)
+                } else if (tempScore > forthScore)
                 {
 
                     forthScore = tempScore;
@@ -105,7 +107,7 @@ public class RankSystem : Bolt.GlobalEventListener
         playerScore_4.text = forthScore.ToString();
         if (firstEmblem != -1)
         {
-            score1.sprite = images[(int) firstEmblem - 1].sprite;
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
         }
 
         if (secondEmblem != -1)
@@ -126,9 +128,22 @@ public class RankSystem : Bolt.GlobalEventListener
 
     }
 
-    public void BackMainMenu()
+
+
+    public void exitScript()
     {
-        Debug.Log("end");
-        SceneManager.LoadScene("MainMenu");
+        if (BoltNetwork.IsClient)
+        {
+            BoltNetwork.Server.Disconnect();
+        } else
+        {
+            foreach(BoltConnection connection in BoltNetwork.Clients)
+            {
+                connection.Disconnect();
+            }
+            BoltLauncher.Shutdown();
+        }
+            SceneManager.LoadScene(0);
+
     }
 }
