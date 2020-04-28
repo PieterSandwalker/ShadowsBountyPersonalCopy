@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerDetectionStats : MonoBehaviour
+public class PlayerDetectionStats : Bolt.EntityBehaviour<IPlayerMoveState>
 {
     public float audibleFactor = 0.0f;
     public float visibilityFactor = 0.0f;
@@ -34,14 +34,14 @@ public class PlayerDetectionStats : MonoBehaviour
     public float AudibleFactor { get => audibleFactor; set => audibleFactor = value; }
 
     // Start is called before the first frame update
-    void Start()
+    public override void Attached()
     {
         lightPoints = GameObject.FindGameObjectsWithTag(lightTag);
         skyLight = GameObject.FindGameObjectsWithTag(skylightTag)[0];
     }
 
     // Update is called once per frame
-    void Update()
+    public override void SimulateOwner()
     {
         UpdateVisibility();
         UpdateAudibility();
@@ -106,17 +106,15 @@ public class PlayerDetectionStats : MonoBehaviour
         }
 
         visibilityFactor = visibilityWeight*(readLightValue + readStatusValue); //add arbitrary weight
+        state.VisibilityLevel = visibilityFactor;
 
     }
     void UpdateAudibility()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
-        //if (rb.velocity.magnitude <= noMovementThreshold) audibleFactor = zeroNoticibility;
-        //else if (rb.velocity.magnitude <= minimalMovementThreshold) audibleFactor = minimalNoticibility;
-        //else if (rb.velocity.magnitude <= overtMovementThreshold) audibleFactor = overtNoticibility;
-        //else audibleFactor = obnoxiousNoticibility;
         audibleFactor = rb.velocity.magnitude * speedUnitWeight;
         audibleFactor *= audibilityWeight;
+        state.AudibilityLevel = audibleFactor;
 
     }
 }
