@@ -73,6 +73,28 @@ public class RankSystem : Bolt.GlobalEventListener
                     secondEmblem = firstEmblem;
                     firstScore = tempScore;
                     firstEmblem = tempTeam;
+                } else if(tempScore > secondScore)
+                {
+                    forthScore = thirdScore;
+                    forthEmblem = thirdEmblem;
+                    thirdScore = secondScore;
+                    thirdEmblem = secondEmblem;
+                    secondEmblem = tempTeam;
+                    secondScore = tempScore;
+
+
+                } else if(tempScore > thirdScore)
+                {
+                    forthScore = thirdScore;
+                    forthEmblem = thirdEmblem;
+                    thirdEmblem = tempTeam;
+                    thirdScore = tempScore;
+
+                } else if(tempScore > forthScore)
+                {
+
+                    forthScore = tempScore;
+                    forthScore = tempTeam;
                 }
             }
         }
