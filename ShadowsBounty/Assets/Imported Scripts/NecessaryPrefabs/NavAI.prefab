@@ -123,6 +123,7 @@ MonoBehaviour:
   patrolTag: PatrolPoint
   waterTag: WaterStation
   foodTag: MessHall
+  respawnTag: RespawnPoint
   playerTag: Player
   engageRadius: 15
   satisfactoryDetectionLevelVisual: 10
