@@ -27,4 +27,9 @@ public class NetworkDisconnectCallbacks : Bolt.GlobalEventListener
     {
         SceneManager.LoadScene(0);
     }
+
+    public override void BoltStartFailed()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
