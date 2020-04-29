@@ -8,7 +8,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryContro
     public bool hasKey;
 
     //wait to do
-    Dictionary<string, int> itemList;
+    //Dictionary<string, int> itemList;
 
     DataJSON data;
 

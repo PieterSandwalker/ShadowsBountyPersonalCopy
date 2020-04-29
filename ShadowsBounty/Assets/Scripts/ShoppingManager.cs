@@ -40,6 +40,8 @@ public class ShoppingManager : Bolt.EntityBehaviour<IPlayerMoveState>
         //M_Object.text = Instance.Bounty.ToString();
         M_Object.text = state.Score.ToString();
         Message_Object.text = OpeningTxt;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
     }
 
