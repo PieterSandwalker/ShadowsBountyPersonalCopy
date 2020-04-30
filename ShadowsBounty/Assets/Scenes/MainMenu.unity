@@ -1353,7 +1353,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Noah Benveniste: Lead Movement Developer, Dev Ops, Map Design'
+  m_Text: 'Noah Benveniste: Lead Movement Designer, Dev Ops Lead'
 --- !u!222 &482275279
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3027,7 +3027,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: OPTION
+  m_text: OPTIONS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
@@ -3056,8 +3056,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3073,7 +3073,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -3097,7 +3097,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 4.8754425, z: 1.3821106, w: -5.428917}
   m_textInfo:
     textComponent: {fileID: 678008546}
-    characterCount: 6
+    characterCount: 7
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -4283,7 +4283,7 @@ GameObject:
   - component: {fileID: 1009846919}
   - component: {fileID: 1009846918}
   m_Layer: 5
-  m_Name: Credit
+  m_Name: Credits
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5613,7 +5613,30 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sample
+  m_text: "Controls\r\n\r\nWASD/Right thumbstick \t\t-> movement\r\nMouse/Left thumbstick
+    \t\t-> camera control\r\nShift/Right trigger \t\t\t-> sprint\r\nc/Left trigger
+    \t\t\t-> crouch/slide\r\n1,2,3,4/d-pad up, left, down, right \t-> select items
+    in hot bar\r\nleft mouse button/right bumper \t\t-> use selected item\r\nm/start\t\t\t\t->
+    open shopping menu\r\nescape\t\t\t\t-> exit game\r\n\r\n\r\nMovement/Parkour Tutorial\r\n\r\nWallrunning
+    - \tTo wallrun, you must be running or sprinting parallel to a smooth wall. To
+    transition into\r\n\t\twallrunning, jump while running/sprinting next to a wall
+    and then hit left/right in midair\r\n\t\tuntil the character connects with the
+    wall. You will see the camera angle slightly and your\r\n\t\tcharacter will get
+    a boost of speed. To stop wallrunning early, you can press jump to launch\r\n\t\tyourself
+    off of the wall while retaining some forward momentum. This can be used to chain\r\n\t\twallrun
+    along multiple parallel walls.\r\n\r\nSliding - \t\tWhile running or sprinting,
+    press and hold crouch to slide. You can transition immediately into crouch\r\n\t\twalking
+    for stealthy movement from a slide. On sloped surfaces, you can hold down crouch
+    to build\r\n\t\tmomentum for a faster slide.\r\n\t\t\t\t\t\r\nStealth - \t\tHold
+    crouch while walking to move more silently to sneak around guards. You can use
+    the smoke bomb\r\n\t\tto break line of sight if you get spotted.\r\n\t\t\t\t\t\r\nGrappling
+    hook - \tWhen select, press the use selected item button to fire at an object
+    to use as an anchor point.\r\n\t\tHolding down the use item button will reel the
+    character in towards the anchor point. Letting go\r\n\t\tof the button releases
+    the grappling hook. For best results, try jumping and firing in midair.\r\n\t\t\t\t\t\t\t\t
+    \r\nTeleport - \t\tPress use selected item button to instantly teleport to the
+    location that your crosshair is currently\r\n\t\taiming at (this is useful for
+    getting unstuck if your character gets stuck in terrain or other geometry)."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5641,8 +5664,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -7248,7 +7271,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: OPTION
+  m_text: OPTIONS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
@@ -7636,7 +7659,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: CREDIT
+  m_text: CREDITS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
@@ -7706,7 +7729,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 4.8754425, z: 1.3821106, w: -5.428917}
   m_textInfo:
     textComponent: {fileID: 1846936827}
-    characterCount: 6
+    characterCount: 7
     spriteCount: 0
     spaceCount: 0
     wordCount: 1

@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
+/* Source: https://www.youtube.com/watch?v=PZ72ghUCe-4&t */
 
 public class GrapplingRope : MonoBehaviour {
     [Header("Values")]

@@ -4,6 +4,8 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/* Source: https://www.youtube.com/watch?v=PZ72ghUCe-4&t */
+
 /* BUGS */
 //Grappling hook model shrinks when you crouch
 //Solution: May need to make the player an empty object with the capsule as a component so that only the capsule's size changes
