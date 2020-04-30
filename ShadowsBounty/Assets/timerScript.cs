@@ -32,7 +32,7 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter)) RoundOver(); //Force scene transition; makes level testing easier
+        //if (Input.GetKeyDown(KeyCode.KeypadEnter)) RoundOver(); //Force scene transition; makes level testing easier
 
         if (state.SecondsLeft >= 0.0f && canCount)
         {
