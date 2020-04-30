@@ -73,7 +73,7 @@ MonoBehaviour:
     m_Type: 0
     m_ExpectedControlType: 
     m_Id: f5e476f5-1b25-4cd5-ba7d-036dbce61c5c
-    m_Processors: 
+    m_Processors: Scale
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
