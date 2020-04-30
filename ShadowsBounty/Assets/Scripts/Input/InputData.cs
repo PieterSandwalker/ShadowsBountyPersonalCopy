@@ -7,6 +7,11 @@ public class InputData : ScriptableObject
     public InputAction MovementAction;
     public InputAction LookAction;
 
+    public void Awake()
+    {
+        LookAction = new InputAction(processors: "fiafjsaif");
+    }
+
     //Used to re-enable player controls after unpausing game, exiting a menu, etc.
     public void EnableControls()
     {
