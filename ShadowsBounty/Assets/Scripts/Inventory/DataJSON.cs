@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Text;
+using System;
 
 [System.Serializable]
 public class DataJSON
@@ -51,8 +53,10 @@ public class DataJSON
     */
     public static void Save(string json)
     {
+        byte[] bytesToEncode = Encoding.UTF8.GetBytes(json);
+        string encodedText = Convert.ToBase64String(bytesToEncode);
         //File.WriteAllText(Application.dataPath + "/Data/data.txt", json);
-        File.WriteAllText(Application.dataPath + "/data.txt", json);
+        File.WriteAllText(Application.dataPath + "/data.txt", encodedText);
     }
 
     /**
@@ -73,7 +77,9 @@ public class DataJSON
         if (File.Exists(Application.dataPath + "/data.txt"))
         {
             string saveStr = File.ReadAllText(Application.dataPath + "/data.txt");
-            DataJSON data = JsonUtility.FromJson<DataJSON>(saveStr);
+            byte[] decodedBytes = Convert.FromBase64String(saveStr);
+            string decodedText = Encoding.UTF8.GetString(decodedBytes);
+            DataJSON data = JsonUtility.FromJson<DataJSON>(decodedText);
             return data;
         }
         return null;

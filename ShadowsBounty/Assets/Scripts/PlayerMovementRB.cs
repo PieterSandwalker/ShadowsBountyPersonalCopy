@@ -1,4 +1,7 @@
 // Some stupid rigidbody based movement by Dani
+
+/* Source: https://www.youtube.com/watch?v=XAC8U9-dTZU */
+
 using System.Collections.Generic;
 using System;
 using UnityEngine;

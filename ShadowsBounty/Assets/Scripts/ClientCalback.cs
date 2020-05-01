@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
 [BoltGlobalBehaviour("MountainCity")]
 public class ClientCalback : Bolt.GlobalEventListener
 {
@@ -21,7 +23,7 @@ public class ClientCalback : Bolt.GlobalEventListener
         spawnPositions[9] = new Vector3(-238, 20, -78);
         var random = Random.Range(0, 10);
         // instantiate Player
-        
+        bool catchNewBoy = true;
         foreach (BoltEntity entity in BoltNetwork.Entities)
         {
 
@@ -34,7 +36,14 @@ public class ClientCalback : Bolt.GlobalEventListener
                 newtransform.rotation = Quaternion.identity;
                 Debug.Log("we ran this");
                 entity.gameObject.transform.position = spawnPositions[random];
+                entity.gameObject.GetComponent<PlayerDetectionStats>().Attached();
+                catchNewBoy = false;
             }
+        }
+
+        if(catchNewBoy)
+        {
+            BoltNetwork.Instantiate(BoltPrefabs.Player2_0, spawnPositions[random], Quaternion.identity);
         }
     }
 }

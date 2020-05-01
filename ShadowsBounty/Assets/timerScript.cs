@@ -6,7 +6,6 @@ using UnityEngine;
 public class timerScript : Bolt.EntityBehaviour<ITimerState>
 {
     [SerializeField] TextMeshProUGUI CountDown_text;
-
     public float roundTime;
     //public float endbattleTime;
     float timer;
@@ -33,7 +32,7 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter)) RoundOver(); //Force scene transition; makes level testing easier
+        //if (Input.GetKeyDown(KeyCode.KeypadEnter)) RoundOver(); //Force scene transition; makes level testing easier
 
         if (state.SecondsLeft >= 0.0f && canCount)
         {
@@ -74,10 +73,10 @@ public class timerScript : Bolt.EntityBehaviour<ITimerState>
         state.Round++;
         roundNumber++;
         PlayerPrefs.SetInt("round", roundNumber);
+        BoltNetwork.LoadScene("MountainCity");
 
-            BoltNetwork.LoadScene("MountainCity");
 
-        
+
     }
 
 }

@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+
 [BoltGlobalBehaviour("Castle")]
 public class ClientCastleCallback : Bolt.GlobalEventListener
 {
+
+
     public override void SceneLoadLocalDone(string map)
     {
         // player spawns positions

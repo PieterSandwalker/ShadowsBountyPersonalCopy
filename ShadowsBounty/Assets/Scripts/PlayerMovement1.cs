@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Source: https://www.youtube.com/watch?v=XAC8U9-dTZU */
+
 public class PlayerMove : MonoBehaviour
 {
     /* */

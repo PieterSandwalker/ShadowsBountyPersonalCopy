@@ -5,12 +5,22 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class RankSystem : MonoBehaviour
+public class RankSystem : Bolt.GlobalEventListener
 {
     [SerializeField] TextMeshProUGUI playerScore_1;
     [SerializeField] TextMeshProUGUI playerScore_2;
     [SerializeField] TextMeshProUGUI playerScore_3;
     [SerializeField] TextMeshProUGUI playerScore_4;
+
+    public Image thief;
+    public Image royal;
+    public Image magic;
+    public Image mafia;
+    private Image[] images;
+    public Image score1;
+    public Image score2;
+    public Image score3;
+    public Image score4;
 
     DataJSON data;
 
@@ -22,11 +32,118 @@ public class RankSystem : MonoBehaviour
         playerScore_2.text = PlayerPrefs.GetInt("score").ToString();
         playerScore_3.text = PlayerPrefs.GetInt("score").ToString();
         playerScore_4.text = PlayerPrefs.GetInt("score").ToString();
+        images = new Image[4];
+        images[0] = mafia;
+        images[1] = magic;
+        images[2] = royal;
+        images[3] = thief;
+
+
     }
 
-    public void BackMainMenu()
+
+
+
+    private void Update()
     {
-        Debug.Log("end");
-        SceneManager.LoadScene("MainMenu");
+        
+        float firstScore = -1;
+        float firstEmblem = -1;
+        float secondScore = -1;
+        float secondEmblem = -1;
+        float thirdScore = -1;
+        float thirdEmblem = -1;
+        float forthScore = -1;
+        float forthEmblem = -1;
+        foreach (BoltEntity ent in BoltNetwork.Entities)
+        {
+
+
+            IPlayerMoveState state;
+            if (ent.TryFindState<IPlayerMoveState>(out state))
+            {
+                float tempTeam = state.TeamNumber;
+                float tempScore = state.Score;
+
+                if (tempScore > firstScore)
+                {
+                    forthScore = thirdScore;
+                    forthEmblem = thirdEmblem;
+                    thirdScore = secondScore;
+                    thirdEmblem = secondEmblem;
+                    secondScore = firstScore;
+                    secondEmblem = firstEmblem;
+                    firstScore = tempScore;
+                    firstEmblem = tempTeam;
+                } else if (tempScore > secondScore)
+                {
+                    forthScore = thirdScore;
+                    forthEmblem = thirdEmblem;
+                    thirdScore = secondScore;
+                    thirdEmblem = secondEmblem;
+                    secondEmblem = tempTeam;
+                    secondScore = tempScore;
+
+
+                } else if (tempScore > thirdScore)
+                {
+                    forthScore = thirdScore;
+                    forthEmblem = thirdEmblem;
+                    thirdEmblem = tempTeam;
+                    thirdScore = tempScore;
+
+                } else if (tempScore > forthScore)
+                {
+
+                    forthScore = tempScore;
+                    forthScore = tempTeam;
+                }
+            }
+        }
+
+        playerScore_1.text = firstScore.ToString();
+        playerScore_2.text = secondScore.ToString();
+        playerScore_3.text = thirdScore.ToString();
+        playerScore_4.text = forthScore.ToString();
+        if (firstEmblem != -1)
+        {
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
+        }
+
+        if (secondEmblem != -1)
+        {
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
+        }
+
+        if (thirdEmblem != -1)
+        {
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
+        }
+
+        if (forthEmblem != -1)
+        {
+            score1.sprite = images[(int)firstEmblem - 1].sprite;
+        }
+
+
+    }
+
+
+
+    public void exitScript()
+    {
+        if (BoltNetwork.IsClient)
+        {
+            BoltNetwork.Server.Disconnect();
+        } else
+        {
+            foreach(BoltConnection connection in BoltNetwork.Clients)
+            {
+                connection.Disconnect();
+            }
+            BoltLauncher.Shutdown();
+        }
+            SceneManager.LoadScene(0);
+
     }
 }

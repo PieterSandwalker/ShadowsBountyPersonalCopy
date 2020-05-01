@@ -8,7 +8,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryContro
     public bool hasKey;
 
     //wait to do
-    Dictionary<string, int> itemList;
+    //Dictionary<string, int> itemList;
 
     DataJSON data;
 
@@ -54,8 +54,9 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryContro
         selectItemIndex = -1;
         hasKey = false;
         data = DataJSON.Load();
-        score = data.bounty;
+        state.Score = data.bounty;
         itemListCheck = data.item;
+        HUD.GetComponent<HUD>().updateScore((int)state.Score);
         //default disable all item
         setFalse();
     }
@@ -66,6 +67,7 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryContro
         iControls = new InventoryControls();
         iControls.Inventory.SetCallbacks(this); // Bind callbacks
     }
+
 
     private void OnEnable()
     {
@@ -122,15 +124,16 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryContro
 
     public void AddScore(int point)
     {
-        score += point;
-        data.bounty = score;
+        state.Score += point;
+        data.bounty = (int)state.Score;
+        HUD.GetComponent<HUD>().updateScore((int)state.Score);
         DataJSON.Save(data);
     }
 
     public void setScore(int point)
     {
-        score = point;
-        data.bounty = score;
+        state.Score = point;
+        data.bounty = (int)state.Score;
         DataJSON.Save(data);
     }
 
@@ -148,12 +151,14 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryContro
 
     public void SceneOver()
     {
-        data.bounty = score;
+        data.bounty = (int)state.Score;
         DataJSON.Save(data);
     }
 
     private void Update()
     {
+
+        HUD.GetComponent<HUD>().updateScore((int)state.Score);
 
         //clear item after they be used
         //check any input forimprove performance
@@ -199,8 +204,8 @@ public class Inventory : Bolt.EntityBehaviour<IPlayerMoveState>, InventoryContro
                     shopmenu.SetActive(false);
                     ShoppingManager.GetComponent<ShoppingManager>().FinishShopping();
                     data = DataJSON.Load();
-                    score = data.bounty;
-                    HUD.GetComponent<HUD>().updateScore(score);
+                    state.Score = data.bounty;
+                    HUD.GetComponent<HUD>().updateScore((int)state.Score);
                     itemListCheck = data.item;
                 }
                 else

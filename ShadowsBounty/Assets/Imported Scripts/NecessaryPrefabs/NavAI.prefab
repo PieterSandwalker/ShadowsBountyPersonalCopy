@@ -123,6 +123,7 @@ MonoBehaviour:
   patrolTag: PatrolPoint
   waterTag: WaterStation
   foodTag: MessHall
+  respawnTag: RespawnPoint
   playerTag: Player
   engageRadius: 15
   satisfactoryDetectionLevelVisual: 10
@@ -132,6 +133,9 @@ MonoBehaviour:
   index: 0
   HitLocation: {x: 0, y: 0, z: 0}
   ranged: 0
+  investigateSound: {fileID: 0}
+  PursuitSound: {fileID: 0}
+  audio: {fileID: 0}
   food: 0
   water: 0
   rest: 0
