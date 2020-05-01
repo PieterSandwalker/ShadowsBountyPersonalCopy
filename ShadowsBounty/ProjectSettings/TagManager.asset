@@ -3,7 +3,31 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Wall
+  - Ledge
+  - Treasure
+  - Key
+  - PatrolPoint
+  - Guard
+  - PatrolPointSet1
+  - PatrolPointSet2
+  - PatrolPointSet3
+  - PatrolPointSet4
+  - PatrolPointSet5
+  - PatrolPointSet6
+  - PatrolPointSet7
+  - PatrolPointSet8
+  - WaterStation
+  - MessHall
+  - Light
+  - SkyLight
+  - PatrolPointSet9
+  - PatrolPointSet10
+  - PatrolPointSet11
+  - PatrolPointSet12
+  - RespawnPoint
+  - Smoked
   layers:
   - Default
   - TransparentFX
@@ -15,10 +39,10 @@ TagManager:
   - 
   - PostProcessing
   - Ground
-  - 
-  - 
-  - 
-  - 
+  - Vault
+  - Ledge
+  - Ladder
+  - Wallrun
   - 
   - 
   - 
