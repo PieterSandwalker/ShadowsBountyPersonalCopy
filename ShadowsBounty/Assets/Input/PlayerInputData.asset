@@ -80,7 +80,7 @@ MonoBehaviour:
       m_Id: 66e89d66-ea17-42cb-a2ca-d13a05f608f7
       m_Path: <Mouse>/delta
       m_Interactions: 
-      m_Processors: ScaleVector2(x=0.05,y=0.05)
+      m_Processors: ScaleVector2(x=0.1,y=0.1)
       m_Groups: 
       m_Action: Look
       m_Flags: 0
@@ -88,7 +88,7 @@ MonoBehaviour:
       m_Id: e579cb42-9147-41ed-a88f-3586be38d1e6
       m_Path: <Gamepad>/rightStick
       m_Interactions: 
-      m_Processors: ScaleVector2(x=3,y=3)
+      m_Processors: ScaleVector2(x=4,y=4)
       m_Groups: 
       m_Action: Look
       m_Flags: 0
